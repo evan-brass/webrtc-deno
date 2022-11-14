@@ -22,7 +22,7 @@ marshal = []
 sync = []
 
 [dependencies]
-tokio = { version = "1.19", features = ["full"] }
+tokio = { version = "1.19" }
 lazy_static = "1.4"
 async-trait = "0.1.56"
 ipnet = "2.5"

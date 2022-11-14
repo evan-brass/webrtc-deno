@@ -18,7 +18,7 @@ rust-version = "1.60.0"
 [dev-dependencies]
 webrtc = { path = "../webrtc" }
 
-tokio = { version = "1.15", features = ["full"] }
+tokio = { version = "1.15" }
 env_logger = "0.9"
 clap = "3.0"
 hyper = { version = "0.14", features = ["full"] }
