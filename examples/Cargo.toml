@@ -18,6 +18,8 @@ rust-version = "1.60.0"
 [dev-dependencies]
 webrtc = { path = "../webrtc" }
 
+wasm-bindgen = "0.2.83"
+wasm-bindgen-futures = "0.4.33"
 tokio = { version = "1.15" }
 env_logger = "0.9"
 clap = "3.0"

@@ -15,6 +15,8 @@ rust-version = "1.60.0"
 [dependencies]
 util = { version = "0.6.0", path = "../util", package = "webrtc-util", default-features = false, features = ["conn"] }
 
+wasm-bindgen = "0.2.83"
+wasm-bindgen-futures = "0.4.33"
 byteorder = "1"
 rand_core = "0.6.3"
 elliptic-curve = { version = "0.12.1", features = ["default", "ecdh"] }

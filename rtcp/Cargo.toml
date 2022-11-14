@@ -13,6 +13,8 @@ rust-version = "1.60.0"
 [dependencies]
 util = { version = "0.6.0", path = "../util", package = "webrtc-util", default-features = false, features = ["marshal"] }
 
+wasm-bindgen = "0.2.83"
+wasm-bindgen-futures = "0.4.33"
 bytes = "1"
 thiserror = "1.0"
 getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }

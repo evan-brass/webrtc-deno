@@ -23,6 +23,8 @@ log = "0.4.16"
 thiserror = "1.0"
 getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }
 getrandom2 = { package = "getrandom", version = "0.2.8", features = ["js"] }
+wasm-bindgen = "0.2.83"
+wasm-bindgen-futures = "0.4.33"
 
 [dev-dependencies]
 tokio-test = "0.4.0" # must match the min version of the `tokio` crate above

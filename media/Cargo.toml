@@ -16,6 +16,8 @@ rust-version = "1.60.0"
 util = { version = "0.6.0", path = "../util", package = "webrtc-util", default-features = false, features = ["marshal"] }
 rtp = { version = "0.6.7", path = "../rtp" }
 
+wasm-bindgen = "0.2.83"
+wasm-bindgen-futures = "0.4.33"
 byteorder = "1"
 bytes = "1"
 displaydoc = "0.2.3"

@@ -16,6 +16,8 @@ rtp = { version = "0.6.7", path = "../rtp" }
 rtcp = { version = "0.7.0", path = "../rtcp" }
 srtp = { version = "0.9.0", path = "../srtp", package = "webrtc-srtp" }
 
+wasm-bindgen = "0.2.83"
+wasm-bindgen-futures = "0.4.33"
 tokio = { version = "1.19", features = ["sync", "time"] }
 async-trait = "0.1.56"
 bytes = "1"
