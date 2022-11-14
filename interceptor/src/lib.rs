@@ -29,7 +29,7 @@ pub type Attributes = HashMap<usize, usize>;
 
 /// InterceptorBuilder provides an interface for constructing interceptors
 pub trait InterceptorBuilder {
-    fn build(&self, id: &str) -> Result<Arc<dyn Interceptor + Send + Sync>>;
+    fn build(&self, id: &str) -> Result<Arc<dyn Interceptor>>;
 }
 
 /// Interceptor can be used to add functionality to you PeerConnections by modifying any incoming/outgoing rtp/rtcp
@@ -40,23 +40,23 @@ pub trait Interceptor {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync>;
+        reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader>;
 
     /// bind_rtcp_writer lets you modify any outgoing RTCP packets. It is called once per PeerConnection. The returned method
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync>;
+        writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter>;
 
     /// bind_local_stream lets you modify any outgoing RTP packets. It is called once for per LocalStream. The returned method
     /// will be called once per rtp packet.
     async fn bind_local_stream(
         &self,
         info: &StreamInfo,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync>;
+        writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter>;
 
     /// unbind_local_stream is called when the Stream is removed. It can be used to clean up any data related to that track.
     async fn unbind_local_stream(&self, info: &StreamInfo);
@@ -66,8 +66,8 @@ pub trait Interceptor {
     async fn bind_remote_stream(
         &self,
         info: &StreamInfo,
-        reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync>;
+        reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader>;
 
     /// unbind_remote_stream is called when the Stream is removed. It can be used to clean up any data related to that track.
     async fn unbind_remote_stream(&self, info: &StreamInfo);
@@ -86,9 +86,9 @@ pub type RTPWriterBoxFn = Box<
     dyn (Fn(
             &rtp::packet::Packet,
             &Attributes,
-        ) -> Pin<Box<dyn Future<Output = Result<usize>> + Send + Sync>>)
-        + Send
-        + Sync,
+        ) -> Pin<Box<dyn Future<Output = Result<usize>>>>)
+       
+       ,
 >;
 pub struct RTPWriterFn(pub RTPWriterBoxFn);
 
@@ -111,9 +111,9 @@ pub type RTPReaderBoxFn = Box<
     dyn (Fn(
             &mut [u8],
             &Attributes,
-        ) -> Pin<Box<dyn Future<Output = Result<(usize, Attributes)>> + Send + Sync>>)
-        + Send
-        + Sync,
+        ) -> Pin<Box<dyn Future<Output = Result<(usize, Attributes)>>>>)
+       
+       ,
 >;
 pub struct RTPReaderFn(pub RTPReaderBoxFn);
 
@@ -131,18 +131,18 @@ pub trait RTCPWriter {
     /// write a batch of rtcp packets
     async fn write(
         &self,
-        pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+        pkts: &[Box<dyn rtcp::packet::Packet>],
         attributes: &Attributes,
     ) -> Result<usize>;
 }
 
 pub type RTCPWriterBoxFn = Box<
     dyn (Fn(
-            &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+            &[Box<dyn rtcp::packet::Packet>],
             &Attributes,
-        ) -> Pin<Box<dyn Future<Output = Result<usize>> + Send + Sync>>)
-        + Send
-        + Sync,
+        ) -> Pin<Box<dyn Future<Output = Result<usize>>>>)
+       
+       ,
 >;
 
 pub struct RTCPWriterFn(pub RTCPWriterBoxFn);
@@ -152,7 +152,7 @@ impl RTCPWriter for RTCPWriterFn {
     /// write a batch of rtcp packets
     async fn write(
         &self,
-        pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+        pkts: &[Box<dyn rtcp::packet::Packet>],
         attributes: &Attributes,
     ) -> Result<usize> {
         self.0(pkts, attributes).await
@@ -170,9 +170,9 @@ pub type RTCPReaderBoxFn = Box<
     dyn (Fn(
             &mut [u8],
             &Attributes,
-        ) -> Pin<Box<dyn Future<Output = Result<(usize, Attributes)>> + Send + Sync>>)
-        + Send
-        + Sync,
+        ) -> Pin<Box<dyn Future<Output = Result<(usize, Attributes)>>>>)
+       
+       ,
 >;
 
 pub struct RTCPReaderFn(pub RTCPReaderBoxFn);

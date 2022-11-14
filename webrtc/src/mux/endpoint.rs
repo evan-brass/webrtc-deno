@@ -13,7 +13,7 @@ pub struct Endpoint {
     pub(crate) id: usize,
     pub(crate) buffer: Buffer,
     pub(crate) match_fn: MatchFunc,
-    pub(crate) next_conn: Arc<dyn Conn + Send + Sync>,
+    pub(crate) next_conn: Arc<dyn Conn>,
     pub(crate) endpoints: Arc<Mutex<HashMap<usize, Arc<Endpoint>>>>,
 }
 

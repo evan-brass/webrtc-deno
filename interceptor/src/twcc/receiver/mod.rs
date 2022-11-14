@@ -29,7 +29,7 @@ impl ReceiverBuilder {
 }
 
 impl InterceptorBuilder for ReceiverBuilder {
-    fn build(&self, _id: &str) -> Result<Arc<dyn Interceptor + Send + Sync>> {
+    fn build(&self, _id: &str) -> Result<Arc<dyn Interceptor>> {
         let (close_tx, close_rx) = mpsc::channel(1);
         let (packet_chan_tx, packet_chan_rx) = mpsc::channel(1);
         Ok(Arc::new(Receiver {
@@ -92,7 +92,7 @@ impl Receiver {
     }
 
     async fn run(
-        rtcp_writer: Arc<dyn RTCPWriter + Send + Sync>,
+        rtcp_writer: Arc<dyn RTCPWriter>,
         internal: Arc<ReceiverInternal>,
     ) -> Result<()> {
         let mut close_rx = {
@@ -152,8 +152,8 @@ impl Interceptor for Receiver {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync> {
+        reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader> {
         reader
     }
 
@@ -161,8 +161,8 @@ impl Interceptor for Receiver {
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync> {
+        writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter> {
         if self.is_closed().await {
             return writer;
         }
@@ -193,8 +193,8 @@ impl Interceptor for Receiver {
     async fn bind_local_stream(
         &self,
         _info: &StreamInfo,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync> {
+        writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter> {
         writer
     }
 
@@ -206,8 +206,8 @@ impl Interceptor for Receiver {
     async fn bind_remote_stream(
         &self,
         info: &StreamInfo,
-        reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync> {
+        reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader> {
         let mut hdr_ext_id = 0u8;
         for e in &info.rtp_header_extensions {
             if e.uri == TRANSPORT_CC_URI {

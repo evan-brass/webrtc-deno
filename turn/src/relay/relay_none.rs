@@ -27,7 +27,7 @@ impl RelayAddressGenerator for RelayAddressGeneratorNone {
         &self,
         use_ipv4: bool,
         requested_port: u16,
-    ) -> Result<(Arc<dyn Conn + Send + Sync>, SocketAddr)> {
+    ) -> Result<(Arc<dyn Conn>, SocketAddr)> {
         let addr = self
             .net
             .resolve_addr(use_ipv4, &format!("{}:{}", self.address, requested_port))

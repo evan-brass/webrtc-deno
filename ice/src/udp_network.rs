@@ -53,7 +53,7 @@ impl EphemeralUDP {
 #[derive(Clone)]
 pub enum UDPNetwork {
     Ephemeral(EphemeralUDP),
-    Muxed(Arc<dyn UDPMux + Send + Sync>),
+    Muxed(Arc<dyn UDPMux>),
 }
 
 impl Default for UDPNetwork {

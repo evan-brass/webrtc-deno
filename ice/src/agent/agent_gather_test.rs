@@ -155,7 +155,7 @@ async fn test_vnet_gather_with_nat_1to1_as_host_candidates() -> Result<()> {
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
     let done_tx = Arc::new(Mutex::new(Some(done_tx)));
     a.on_candidate(Box::new(
-        move |c: Option<Arc<dyn Candidate + Send + Sync>>| {
+        move |c: Option<Arc<dyn Candidate>>| {
             let done_tx_clone = Arc::clone(&done_tx);
             Box::pin(async move {
                 if c.is_none() {
@@ -273,7 +273,7 @@ async fn test_vnet_gather_with_nat_1to1_as_srflx_candidates() -> Result<()> {
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
     let done_tx = Arc::new(Mutex::new(Some(done_tx)));
     a.on_candidate(Box::new(
-        move |c: Option<Arc<dyn Candidate + Send + Sync>>| {
+        move |c: Option<Arc<dyn Candidate>>| {
             let done_tx_clone = Arc::clone(&done_tx);
             Box::pin(async move {
                 if c.is_none() {
@@ -458,7 +458,7 @@ async fn test_vnet_gather_muxed_udp() -> Result<()> {
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
     let done_tx = Arc::new(Mutex::new(Some(done_tx)));
     a.on_candidate(Box::new(
-        move |c: Option<Arc<dyn Candidate + Send + Sync>>| {
+        move |c: Option<Arc<dyn Candidate>>| {
             let done_tx_clone = Arc::clone(&done_tx);
             Box::pin(async move {
                 if c.is_none() {

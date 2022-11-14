@@ -140,7 +140,7 @@ impl API {
         &self,
         kind: RTPCodecType,
         transport: Arc<RTCDtlsTransport>,
-        interceptor: Arc<dyn Interceptor + Send + Sync>,
+        interceptor: Arc<dyn Interceptor>,
     ) -> RTCRtpReceiver {
         RTCRtpReceiver::new(
             self.setting_engine.get_receive_mtu(),
@@ -154,9 +154,9 @@ impl API {
     /// new_rtp_sender constructs a new RTPSender
     pub async fn new_rtp_sender(
         &self,
-        track: Arc<dyn TrackLocal + Send + Sync>,
+        track: Arc<dyn TrackLocal>,
         transport: Arc<RTCDtlsTransport>,
-        interceptor: Arc<dyn Interceptor + Send + Sync>,
+        interceptor: Arc<dyn Interceptor>,
     ) -> RTCRtpSender {
         RTCRtpSender::new(
             self.setting_engine.get_receive_mtu(),

@@ -22,5 +22,5 @@ pub trait RelayAddressGenerator {
         &self,
         use_ipv4: bool,
         requested_port: u16,
-    ) -> Result<(Arc<dyn Conn + Send + Sync>, SocketAddr)>;
+    ) -> Result<(Arc<dyn Conn>, SocketAddr)>;
 }

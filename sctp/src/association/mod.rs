@@ -187,7 +187,7 @@ impl fmt::Display for AckState {
 /// Config collects the arguments to create_association construction into
 /// a single structure
 pub struct Config {
-    pub net_conn: Arc<dyn Conn + Send + Sync>,
+    pub net_conn: Arc<dyn Conn>,
     pub max_receive_buffer_size: u32,
     pub max_message_size: u32,
     pub name: String,
@@ -219,7 +219,7 @@ pub struct Association {
     awake_write_loop_ch: Arc<mpsc::Sender<()>>,
     close_loop_ch_rx: Mutex<broadcast::Receiver<()>>,
     accept_ch_rx: Mutex<mpsc::Receiver<Arc<Stream>>>,
-    net_conn: Arc<dyn Conn + Send + Sync>,
+    net_conn: Arc<dyn Conn>,
     bytes_received: Arc<AtomicUsize>,
     bytes_sent: Arc<AtomicUsize>,
 
@@ -437,7 +437,7 @@ impl Association {
     async fn read_loop(
         name: String,
         bytes_received: Arc<AtomicUsize>,
-        net_conn: Arc<dyn Conn + Send + Sync>,
+        net_conn: Arc<dyn Conn>,
         mut close_loop_ch: broadcast::Receiver<()>,
         association_internal: Arc<Mutex<AssociationInternal>>,
     ) {
@@ -492,7 +492,7 @@ impl Association {
     async fn write_loop(
         name: String,
         bytes_sent: Arc<AtomicUsize>,
-        net_conn: Arc<dyn Conn + Send + Sync>,
+        net_conn: Arc<dyn Conn>,
         mut close_loop_ch: broadcast::Receiver<()>,
         association_internal: Arc<Mutex<AssociationInternal>>,
         mut awake_write_loop_ch: mpsc::Receiver<()>,

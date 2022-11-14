@@ -71,7 +71,7 @@ impl fmt::Display for HandshakeState {
 }
 
 pub(crate) type VerifyPeerCertificateFn =
-    Arc<dyn (Fn(&[Vec<u8>], &[rustls::Certificate]) -> Result<()>) + Send + Sync>;
+    Arc<dyn (Fn(&[Vec<u8>], &[rustls::Certificate]) -> Result<()>)>;
 
 pub(crate) struct HandshakeConfig {
     pub(crate) local_psk_callback: Option<PskCallback>,

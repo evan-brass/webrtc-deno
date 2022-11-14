@@ -155,7 +155,7 @@ pub struct RTPReceiverInternal {
 
     transport: Arc<RTCDtlsTransport>,
     media_engine: Arc<MediaEngine>,
-    interceptor: Arc<dyn Interceptor + Send + Sync>,
+    interceptor: Arc<dyn Interceptor>,
 }
 
 impl RTPReceiverInternal {
@@ -225,7 +225,7 @@ impl RTPReceiverInternal {
     async fn read_rtcp(
         &self,
         receive_mtu: usize,
-    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>, Attributes)> {
+    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet>>, Attributes)> {
         let mut b = vec![0u8; receive_mtu];
         let (n, attributes) = self.read(&mut b).await?;
 
@@ -240,7 +240,7 @@ impl RTPReceiverInternal {
         &self,
         rid: &str,
         receive_mtu: usize,
-    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>, Attributes)> {
+    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet>>, Attributes)> {
         let mut b = vec![0u8; receive_mtu];
         let (n, attributes) = self.read_simulcast(&mut b, rid).await?;
 
@@ -407,7 +407,7 @@ impl RTCRtpReceiver {
         kind: RTPCodecType,
         transport: Arc<RTCDtlsTransport>,
         media_engine: Arc<MediaEngine>,
-        interceptor: Arc<dyn Interceptor + Send + Sync>,
+        interceptor: Arc<dyn Interceptor>,
     ) -> Self {
         let (state_tx, state_rx) = watch::channel(State::Unstarted);
 
@@ -627,7 +627,7 @@ impl RTCRtpReceiver {
     /// It also runs any configured interceptors.
     pub async fn read_rtcp(
         &self,
-    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>, Attributes)> {
+    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet>>, Attributes)> {
         self.internal.read_rtcp(self.receive_mtu).await
     }
 
@@ -635,7 +635,7 @@ impl RTCRtpReceiver {
     pub async fn read_simulcast_rtcp(
         &self,
         rid: &str,
-    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>, Attributes)> {
+    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet>>, Attributes)> {
         self.internal
             .read_simulcast_rtcp(rid, self.receive_mtu)
             .await

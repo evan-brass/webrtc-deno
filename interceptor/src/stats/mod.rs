@@ -605,13 +605,13 @@ mod test {
 
     #[test]
     fn test_rtp_stats_send_sync() {
-        fn test_send_sync<T: Send + Sync>() {}
+        fn test_send_sync<T: Send>() {}
         test_send_sync::<RTPStats>();
     }
 
     #[test]
     fn test_rtcp_stats_send_sync() {
-        fn test_send_sync<T: Send + Sync>() {}
+        fn test_send_sync<T: Send>() {}
         test_send_sync::<RTCPStats>();
     }
 }

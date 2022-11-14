@@ -59,14 +59,14 @@ pub(crate) struct PeerConnectionInternal {
     // A reference to the associated API state used by this connection
     pub(super) setting_engine: Arc<SettingEngine>,
     pub(crate) media_engine: Arc<MediaEngine>,
-    pub(super) interceptor: Weak<dyn Interceptor + Send + Sync>,
+    pub(super) interceptor: Weak<dyn Interceptor>,
     stats_interceptor: Arc<stats::StatsInterceptor>,
 }
 
 impl PeerConnectionInternal {
     pub(super) async fn new(
         api: &API,
-        interceptor: Weak<dyn Interceptor + Send + Sync>,
+        interceptor: Weak<dyn Interceptor>,
         stats_interceptor: Arc<stats::StatsInterceptor>,
         mut configuration: RTCConfiguration,
     ) -> Result<(Arc<Self>, RTCConfiguration)> {
@@ -484,7 +484,7 @@ impl PeerConnectionInternal {
     pub(super) async fn new_transceiver_from_track(
         &self,
         direction: RTCRtpTransceiverDirection,
-        track: Arc<dyn TrackLocal + Send + Sync>,
+        track: Arc<dyn TrackLocal>,
     ) -> Result<Arc<RTCRtpTransceiver>> {
         let interceptor = self
             .interceptor
@@ -578,7 +578,7 @@ impl PeerConnectionInternal {
 
     pub(crate) fn make_negotiation_needed_trigger(
         &self,
-    ) -> impl Fn() -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync {
+    ) -> impl Fn() -> Pin<Box<dyn Future<Output = ()>>> {
         let params = self.create_negotiation_needed_params();
         move || {
             let params = params.clone();
@@ -1492,7 +1492,7 @@ type IResult<T> = std::result::Result<T, interceptor::Error>;
 impl RTCPWriter for PeerConnectionInternal {
     async fn write(
         &self,
-        pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+        pkts: &[Box<dyn rtcp::packet::Packet>],
         _a: &Attributes,
     ) -> IResult<usize> {
         Ok(self.dtls_transport.write_rtcp(pkts).await?)

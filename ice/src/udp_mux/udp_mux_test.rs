@@ -66,7 +66,7 @@ async fn test_udp_mux() -> Result<()> {
     log::info!("Listening on {}", addr);
 
     let udp_mux = UDPMuxDefault::new(UDPMuxParams::new(udp_socket));
-    let udp_mux_dyn = Arc::clone(&udp_mux) as Arc<dyn UDPMux + Send + Sync>;
+    let udp_mux_dyn = Arc::clone(&udp_mux) as Arc<dyn UDPMux>;
 
     let udp_mux_dyn_1 = Arc::clone(&udp_mux_dyn);
     let h1 = tokio::spawn(async move {
@@ -152,7 +152,7 @@ async fn test_udp_mux() -> Result<()> {
 }
 
 async fn test_mux_connection(
-    mux: Arc<dyn UDPMux + Send + Sync>,
+    mux: Arc<dyn UDPMux>,
     ufrag: &str,
     listener_addr: SocketAddr,
     network: Network,

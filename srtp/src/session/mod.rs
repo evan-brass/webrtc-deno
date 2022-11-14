@@ -34,13 +34,13 @@ pub struct Session {
     new_stream_rx: Arc<Mutex<mpsc::Receiver<Arc<Stream>>>>,
     close_stream_tx: mpsc::Sender<u32>,
     close_session_tx: mpsc::Sender<()>,
-    pub(crate) udp_tx: Arc<dyn Conn + Send + Sync>,
+    pub(crate) udp_tx: Arc<dyn Conn>,
     is_rtp: bool,
 }
 
 impl Session {
     pub async fn new(
-        conn: Arc<dyn Conn + Send + Sync>,
+        conn: Arc<dyn Conn>,
         config: Config,
         is_rtp: bool,
     ) -> Result<Self> {
@@ -127,7 +127,7 @@ impl Session {
     }
 
     async fn incoming(
-        udp_rx: &Arc<dyn Conn + Send + Sync>,
+        udp_rx: &Arc<dyn Conn>,
         buf: &mut [u8],
         streams_map: &Arc<Mutex<HashMap<u32, Arc<Stream>>>>,
         close_stream_tx: &mpsc::Sender<u32>,
@@ -254,7 +254,7 @@ impl Session {
 
     pub async fn write_rtcp(
         &self,
-        pkt: &(dyn rtcp::packet::Packet + Send + Sync),
+        pkt: &(dyn rtcp::packet::Packet),
     ) -> Result<usize> {
         let raw = pkt.marshal()?;
         self.write(&raw, false).await
@@ -263,7 +263,7 @@ impl Session {
 
 /// create a list of Destination SSRCs
 /// that's a superset of all Destinations in the slice.
-fn destination_ssrc(pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>]) -> Vec<u32> {
+fn destination_ssrc(pkts: &[Box<dyn rtcp::packet::Packet>]) -> Vec<u32> {
     let mut ssrc_set = HashSet::new();
     for p in pkts {
         for ssrc in p.destination_ssrc() {

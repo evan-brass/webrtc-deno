@@ -75,7 +75,7 @@ pub struct SettingEngine {
     pub(crate) disable_media_engine_copy: bool,
     pub(crate) srtp_protection_profiles: Vec<SrtpProtectionProfile>,
     pub(crate) receive_mtu: usize,
-    pub(crate) mid_generator: Option<Arc<dyn Fn(isize) -> String + Send + Sync>>,
+    pub(crate) mid_generator: Option<Arc<dyn Fn(isize) -> String>>,
 }
 
 impl SettingEngine {
@@ -315,7 +315,7 @@ impl SettingEngine {
     /// Note that the spec says: All MID values MUST be generated in a fashion that does not leak user
     /// information, e.g., randomly or using a per-PeerConnection counter, and SHOULD be 3 bytes or less,
     /// to allow them to efficiently fit into the RTP header extension
-    pub fn set_mid_generator(&mut self, f: impl Fn(isize) -> String + Send + Sync + 'static) {
+    pub fn set_mid_generator(&mut self, f: impl Fn(isize) -> String + 'static) {
         self.mid_generator = Some(Arc::new(f));
     }
 }

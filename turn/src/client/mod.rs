@@ -54,12 +54,12 @@ pub struct ClientConfig {
     pub realm: String,
     pub software: String,
     pub rto_in_ms: u16,
-    pub conn: Arc<dyn Conn + Send + Sync>,
+    pub conn: Arc<dyn Conn>,
     pub vnet: Option<Arc<Net>>,
 }
 
 struct ClientInternal {
-    conn: Arc<dyn Conn + Send + Sync>,
+    conn: Arc<dyn Conn>,
     stun_serv_addr: String,
     turn_serv_addr: String,
     username: Username,

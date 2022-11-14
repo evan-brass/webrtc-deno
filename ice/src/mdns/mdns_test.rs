@@ -108,7 +108,7 @@ async fn test_multicast_dns_static_host_name() -> Result<()> {
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
     let done_tx = Arc::new(Mutex::new(Some(done_tx)));
     a.on_candidate(Box::new(
-        move |c: Option<Arc<dyn Candidate + Send + Sync>>| {
+        move |c: Option<Arc<dyn Candidate>>| {
             let done_tx_clone = Arc::clone(&done_tx);
             Box::pin(async move {
                 if c.is_none() {

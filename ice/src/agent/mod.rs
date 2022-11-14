@@ -64,30 +64,30 @@ impl Default for BindingRequest {
 }
 
 pub type OnConnectionStateChangeHdlrFn = Box<
-    dyn (FnMut(ConnectionState) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(ConnectionState) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 pub type OnSelectedCandidatePairChangeHdlrFn = Box<
     dyn (FnMut(
-            &Arc<dyn Candidate + Send + Sync>,
-            &Arc<dyn Candidate + Send + Sync>,
-        ) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+            &Arc<dyn Candidate>,
+            &Arc<dyn Candidate>,
+        ) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 pub type OnCandidateHdlrFn = Box<
     dyn (FnMut(
-            Option<Arc<dyn Candidate + Send + Sync>>,
-        ) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+            Option<Arc<dyn Candidate>>,
+        ) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
-pub type GatherCandidateCancelFn = Box<dyn Fn() + Send + Sync>;
+pub type GatherCandidateCancelFn = Box<dyn Fn()>;
 
 struct ChanReceivers {
     chan_state_rx: mpsc::Receiver<ConnectionState>,
-    chan_candidate_rx: mpsc::Receiver<Option<Arc<dyn Candidate + Send + Sync>>>,
+    chan_candidate_rx: mpsc::Receiver<Option<Arc<dyn Candidate>>>,
     chan_candidate_pair_rx: mpsc::Receiver<()>,
 }
 
@@ -262,7 +262,7 @@ impl Agent {
     }
 
     /// Adds a new remote candidate.
-    pub async fn add_remote_candidate(&self, c: &Arc<dyn Candidate + Send + Sync>) -> Result<()> {
+    pub async fn add_remote_candidate(&self, c: &Arc<dyn Candidate>) -> Result<()> {
         // cannot check for network yet because it might not be applied
         // when mDNS hostame is used.
         if c.tcp_type() == TcpType::Active {
@@ -310,7 +310,7 @@ impl Agent {
     }
 
     /// Returns the local candidates.
-    pub async fn get_local_candidates(&self) -> Result<Vec<Arc<dyn Candidate + Send + Sync>>> {
+    pub async fn get_local_candidates(&self) -> Result<Vec<Arc<dyn Candidate>>> {
         let mut res = vec![];
 
         {
@@ -494,8 +494,8 @@ impl Agent {
 
     async fn resolve_and_add_multicast_candidate(
         mdns_conn: Arc<DnsConn>,
-        c: Arc<dyn Candidate + Send + Sync>,
-    ) -> Result<Arc<dyn Candidate + Send + Sync>> {
+        c: Arc<dyn Candidate>,
+    ) -> Result<Arc<dyn Candidate>> {
         //TODO: hook up _close_query_signal_tx to Agent or Candidate's Close signal?
         let (_close_query_signal_tx, close_query_signal_rx) = mpsc::channel(1);
         let src = match mdns_conn.query(&c.address(), close_query_signal_rx).await {

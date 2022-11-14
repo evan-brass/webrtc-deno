@@ -24,7 +24,7 @@ use webrtc::util::{Conn, Marshal, Unmarshal};
 
 #[derive(Clone)]
 struct UdpConn {
-    conn: Arc<dyn Conn + Send + Sync>,
+    conn: Arc<dyn Conn>,
     payload_type: u8,
 }
 

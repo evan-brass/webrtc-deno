@@ -68,7 +68,7 @@ pub struct RTCRtpCodecCapability {
 impl RTCRtpCodecCapability {
     pub(crate) fn payloader_for_codec(
         &self,
-    ) -> Result<Box<dyn rtp::packetizer::Payloader + Send + Sync>> {
+    ) -> Result<Box<dyn rtp::packetizer::Payloader>> {
         let mime_type = self.mime_type.to_lowercase();
         if mime_type == MIME_TYPE_H264.to_lowercase() {
             Ok(Box::new(rtp::codecs::h264::H264Payloader::default()))

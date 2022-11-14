@@ -46,7 +46,7 @@ pub fn assert_inbound_message_integrity(m: &mut Message, key: &[u8]) -> Result<(
 /// `XORMappedAddress` returned by the stun server.
 /// Adapted from stun v0.2.
 pub async fn get_xormapped_addr(
-    conn: &Arc<dyn Conn + Send + Sync>,
+    conn: &Arc<dyn Conn>,
     server_addr: SocketAddr,
     deadline: Duration,
 ) -> Result<XorMappedAddress> {
@@ -59,7 +59,7 @@ pub async fn get_xormapped_addr(
 const MAX_MESSAGE_SIZE: usize = 1280;
 
 pub async fn stun_request(
-    conn: &Arc<dyn Conn + Send + Sync>,
+    conn: &Arc<dyn Conn>,
     server_addr: SocketAddr,
     deadline: Duration,
 ) -> Result<Message> {
@@ -136,7 +136,7 @@ pub async fn listen_udp_in_port_range(
     port_max: u16,
     port_min: u16,
     laddr: SocketAddr,
-) -> Result<Arc<dyn Conn + Send + Sync>> {
+) -> Result<Arc<dyn Conn>> {
     if laddr.port() != 0 || (port_min == 0 && port_max == 0) {
         return Ok(vnet.bind(laddr).await?);
     }

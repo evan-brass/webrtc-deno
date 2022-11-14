@@ -167,7 +167,7 @@ pub(crate) fn create_stream_info(
 }
 
 pub type TriggerNegotiationNeededFnOption =
-    Option<Box<dyn Fn() -> Pin<Box<dyn Future<Output = ()> + Send + Sync>> + Send + Sync>>;
+    Option<Box<dyn Fn() -> Pin<Box<dyn Future<Output = ()>>>>>;
 
 /// RTPTransceiver represents a combination of an RTPSender and an RTPReceiver that share a common mid.
 pub struct RTCRtpTransceiver {
@@ -253,7 +253,7 @@ impl RTCRtpTransceiver {
     pub async fn set_sender_track(
         self: &Arc<Self>,
         sender: Option<Arc<RTCRtpSender>>,
-        track: Option<Arc<dyn TrackLocal + Send + Sync>>,
+        track: Option<Arc<dyn TrackLocal>>,
     ) -> Result<()> {
         self.set_sender(sender).await;
         self.set_sending_track(track).await
@@ -452,7 +452,7 @@ impl RTCRtpTransceiver {
 
     pub(crate) async fn set_sending_track(
         &self,
-        track: Option<Arc<dyn TrackLocal + Send + Sync>>,
+        track: Option<Arc<dyn TrackLocal>>,
     ) -> Result<()> {
         let track_is_none = track.is_none();
         {

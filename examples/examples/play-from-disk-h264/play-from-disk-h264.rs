@@ -155,7 +155,7 @@ async fn main() -> Result<()> {
 
         // Add this newly created track to the PeerConnection
         let rtp_sender = peer_connection
-            .add_track(Arc::clone(&video_track) as Arc<dyn TrackLocal + Send + Sync>)
+            .add_track(Arc::clone(&video_track) as Arc<dyn TrackLocal>)
             .await?;
 
         // Read incoming RTCP packets
@@ -231,7 +231,7 @@ async fn main() -> Result<()> {
 
         // Add this newly created track to the PeerConnection
         let rtp_sender = peer_connection
-            .add_track(Arc::clone(&audio_track) as Arc<dyn TrackLocal + Send + Sync>)
+            .add_track(Arc::clone(&audio_track) as Arc<dyn TrackLocal>)
             .await?;
 
         // Read incoming RTCP packets

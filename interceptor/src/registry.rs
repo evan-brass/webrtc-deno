@@ -8,7 +8,7 @@ use std::sync::Arc;
 /// Registry is a collector for interceptors.
 #[derive(Default)]
 pub struct Registry {
-    builders: Vec<Box<dyn InterceptorBuilder + Send + Sync>>,
+    builders: Vec<Box<dyn InterceptorBuilder>>,
 }
 
 impl Registry {
@@ -17,18 +17,18 @@ impl Registry {
     }
 
     /// add adds a new InterceptorBuilder to the registry.
-    pub fn add(&mut self, builder: Box<dyn InterceptorBuilder + Send + Sync>) {
+    pub fn add(&mut self, builder: Box<dyn InterceptorBuilder>) {
         self.builders.push(builder);
     }
 
     /// build constructs a single Interceptor from an InterceptorRegistry
-    pub fn build(&self, id: &str) -> Result<Arc<dyn Interceptor + Send + Sync>> {
+    pub fn build(&self, id: &str) -> Result<Arc<dyn Interceptor>> {
         if self.builders.is_empty() {
             return Ok(Arc::new(NoOp {}));
         }
 
         self.build_chain(id)
-            .map(|c| Arc::new(c) as Arc<dyn Interceptor + Send + Sync>)
+            .map(|c| Arc::new(c) as Arc<dyn Interceptor>)
     }
 
     /// build_chain constructs a non-type erased Chain from an Interceptor registry.

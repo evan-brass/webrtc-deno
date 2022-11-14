@@ -5,12 +5,12 @@ use std::sync::atomic::AtomicUsize;
 #[derive(Default)]
 struct DummyObserver {
     nclosed: Arc<AtomicUsize>,
-    read_ch_tx: Arc<Mutex<Option<mpsc::Sender<Box<dyn Chunk + Send + Sync>>>>>,
+    read_ch_tx: Arc<Mutex<Option<mpsc::Sender<Box<dyn Chunk>>>>>,
 }
 
 #[async_trait(?Send)]
 impl ConnObserver for DummyObserver {
-    async fn write(&self, c: Box<dyn Chunk + Send + Sync>) -> Result<()> {
+    async fn write(&self, c: Box<dyn Chunk>) -> Result<()> {
         let mut chunk = ChunkUdp::new(c.destination_addr(), c.source_addr());
         chunk.user_data = c.user_data();
 
@@ -58,7 +58,7 @@ async fn test_udp_conn_send_to_recv_from() -> Result<()> {
 
     let dummy_obs = Arc::new(Mutex::new(DummyObserver::default()));
     let dummy_obs2 = Arc::clone(&dummy_obs);
-    let obs = dummy_obs2 as Arc<Mutex<dyn ConnObserver + Send + Sync>>;
+    let obs = dummy_obs2 as Arc<Mutex<dyn ConnObserver>>;
 
     let conn = Arc::new(UdpConn::new(src_addr, None, obs));
     {
@@ -152,7 +152,7 @@ async fn test_udp_conn_send_recv() -> Result<()> {
 
     let dummy_obs = Arc::new(Mutex::new(DummyObserver::default()));
     let dummy_obs2 = Arc::clone(&dummy_obs);
-    let obs = dummy_obs2 as Arc<Mutex<dyn ConnObserver + Send + Sync>>;
+    let obs = dummy_obs2 as Arc<Mutex<dyn ConnObserver>>;
 
     let conn = Arc::new(UdpConn::new(src_addr, Some(dst_addr), obs));
     {

@@ -44,7 +44,7 @@ impl Nic for DummyNic {
         net.set_router(r).await
     }
 
-    async fn on_inbound_chunk(&self, c: Box<dyn Chunk + Send + Sync>) {
+    async fn on_inbound_chunk(&self, c: Box<dyn Chunk>) {
         log::debug!("received: {}", c);
         match self.on_inbound_chunk_handler {
             0 => {
@@ -102,7 +102,7 @@ impl Nic for DummyNic {
     }
 }
 
-async fn get_ipaddr(nic: &Arc<Mutex<dyn Nic + Send + Sync>>) -> Result<IpAddr> {
+async fn get_ipaddr(nic: &Arc<Mutex<dyn Nic>>) -> Result<IpAddr> {
     let n = nic.lock().await;
     let eth0 = n.get_interface("eth0").await.ok_or(Error::ErrNoInterface)?;
     let addrs = eth0.addrs();
@@ -211,7 +211,7 @@ async fn test_router_standalone_routing() -> Result<()> {
         let nic = Arc::new(Mutex::new(dn));
 
         {
-            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic + Send + Sync>>;
+            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic>>;
             let mut w = wan.lock().await;
             w.add_net(n).await?;
         }
@@ -291,7 +291,7 @@ async fn test_router_standalone_add_chunk_filter() -> Result<()> {
         let nic = Arc::new(Mutex::new(dn));
 
         {
-            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic + Send + Sync>>;
+            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic>>;
             let mut w = wan.lock().await;
             w.add_net(n).await?;
         }
@@ -316,7 +316,7 @@ async fn test_router_standalone_add_chunk_filter() -> Result<()> {
     // this creates a filter that block the first chunk
     let make_filter_fn = |name: String| {
         let n = AtomicUsize::new(0);
-        Box::new(move |c: &(dyn Chunk + Send + Sync)| -> bool {
+        Box::new(move |c: &(dyn Chunk)| -> bool {
             let m = n.fetch_add(1, Ordering::SeqCst);
             let pass = m > 0;
             if pass {
@@ -394,7 +394,7 @@ async fn delay_sub_test(title: String, min_delay: Duration, max_jitter: Duration
         let nic = Arc::new(Mutex::new(dn));
 
         {
-            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic + Send + Sync>>;
+            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic>>;
             let mut w = wan.lock().await;
             w.add_net(n).await?;
         }
@@ -548,7 +548,7 @@ async fn test_router_one_child() -> Result<()> {
         let nic = Arc::new(Mutex::new(dn));
 
         {
-            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic + Send + Sync>>;
+            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic>>;
             let mut w = r.lock().await;
             w.add_net(n).await?;
         }
@@ -558,7 +558,7 @@ async fn test_router_one_child() -> Result<()> {
         }
 
         {
-            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic + Send + Sync>>;
+            let n = Arc::clone(&nic) as Arc<Mutex<dyn Nic>>;
             let ip = get_ipaddr(&n).await?;
             ips.push(ip);
         }

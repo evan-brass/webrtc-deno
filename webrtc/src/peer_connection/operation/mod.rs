@@ -13,13 +13,13 @@ use crate::error::Result;
 
 /// Operation is a function
 pub struct Operation(
-    pub Box<dyn (FnMut() -> Pin<Box<dyn Future<Output = bool> + Send + 'static>>) + Send + Sync>,
+    pub Box<dyn (FnMut() -> Pin<Box<dyn Future<Output = bool> + 'static>>)>,
     pub &'static str,
 );
 
 impl Operation {
     pub(crate) fn new(
-        op: impl FnMut() -> Pin<Box<dyn Future<Output = bool> + Send + 'static>> + Send + Sync + 'static,
+        op: impl FnMut() -> Pin<Box<dyn Future<Output = bool> + 'static>> + 'static,
         description: &'static str,
     ) -> Self {
         Self(Box::new(op), description)

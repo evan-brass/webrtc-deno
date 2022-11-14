@@ -14,7 +14,7 @@ use tokio::sync::{mpsc, Mutex};
 // an error should be returned to the user
 #[tokio::test]
 async fn test_track_local_static_no_codec_intersection() -> Result<()> {
-    let track: Arc<dyn TrackLocal + Send + Sync> = Arc::new(TrackLocalStaticSample::new(
+    let track: Arc<dyn TrackLocal> = Arc::new(TrackLocalStaticSample::new(
         RTCRtpCodecCapability {
             mime_type: "video/vp8".to_owned(),
             ..Default::default()
@@ -133,7 +133,7 @@ async fn test_track_local_static_closed() -> Result<()> {
         .add_transceiver_from_kind(RTPCodecType::Video, &[])
         .await?;
 
-    let vp8writer: Arc<dyn TrackLocal + Send + Sync> = Arc::new(TrackLocalStaticRTP::new(
+    let vp8writer: Arc<dyn TrackLocal> = Arc::new(TrackLocalStaticRTP::new(
         RTCRtpCodecCapability {
             mime_type: "video/vp8".to_owned(),
             ..Default::default()
@@ -252,7 +252,7 @@ async fn test_track_local_static_payload_type() -> Result<()> {
         .await?;
 
     answerer
-        .add_track(Arc::clone(&track) as Arc<dyn TrackLocal + Send + Sync>)
+        .add_track(Arc::clone(&track) as Arc<dyn TrackLocal>)
         .await?;
 
     let (on_track_fired_tx, on_track_fired_rx) = mpsc::channel::<()>(1);
@@ -316,7 +316,7 @@ async fn test_track_local_static_mutate_input() -> Result<()> {
 
     let (mut pc_offer, mut pc_answer) = new_pair(&api).await?;
 
-    let vp8writer: Arc<dyn TrackLocal + Send + Sync> = Arc::new(TrackLocalStaticRTP::new(
+    let vp8writer: Arc<dyn TrackLocal> = Arc::new(TrackLocalStaticRTP::new(
         RTCRtpCodecCapability {
             mime_type: MIME_TYPE_VP8.to_owned(),
             ..Default::default()
@@ -383,7 +383,7 @@ async fn test_track_local_static_binding_non_blocking() -> Result<()> {
         .add_transceiver_from_kind(RTPCodecType::Video, &[])
         .await?;
 
-    let vp8writer: Arc<dyn TrackLocal + Send + Sync> = Arc::new(TrackLocalStaticRTP::new(
+    let vp8writer: Arc<dyn TrackLocal> = Arc::new(TrackLocalStaticRTP::new(
         RTCRtpCodecCapability {
             mime_type: MIME_TYPE_VP8.to_owned(),
             ..Default::default()

@@ -63,11 +63,11 @@ impl ResponderStreamInternal {
 
 pub(super) struct ResponderStream {
     internal: Mutex<ResponderStreamInternal>,
-    pub(super) next_rtp_writer: Arc<dyn RTPWriter + Send + Sync>,
+    pub(super) next_rtp_writer: Arc<dyn RTPWriter>,
 }
 
 impl ResponderStream {
-    pub(super) fn new(log2_size: u8, writer: Arc<dyn RTPWriter + Send + Sync>) -> Self {
+    pub(super) fn new(log2_size: u8, writer: Arc<dyn RTPWriter>) -> Self {
         ResponderStream {
             internal: Mutex::new(ResponderStreamInternal::new(log2_size)),
             next_rtp_writer: writer,

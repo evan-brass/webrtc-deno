@@ -10,11 +10,11 @@ use std::fmt::{Debug, Display, Formatter};
 /// The contained param is likely to be a `ParamUnknown` but might be something more specific.
 #[derive(Clone, Debug)]
 pub struct ParamUnrecognized {
-    param: Box<dyn Param + Send + Sync>,
+    param: Box<dyn Param>,
 }
 
 impl ParamUnrecognized {
-    pub(crate) fn wrap(param: Box<dyn Param + Send + Sync>) -> Self {
+    pub(crate) fn wrap(param: Box<dyn Param>) -> Self {
         Self { param }
     }
 }
@@ -34,7 +34,7 @@ impl Param for ParamUnrecognized {
         }
     }
 
-    fn as_any(&self) -> &(dyn Any + Send + Sync) {
+    fn as_any(&self) -> &(dyn Any) {
         self
     }
 
@@ -58,7 +58,7 @@ impl Param for ParamUnrecognized {
         self.param.value_length() + PARAM_HEADER_LENGTH
     }
 
-    fn clone_to(&self) -> Box<dyn Param + Send + Sync> {
+    fn clone_to(&self) -> Box<dyn Param> {
         Box::new(self.clone())
     }
 }

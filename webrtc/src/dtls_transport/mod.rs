@@ -48,9 +48,9 @@ pub(crate) fn default_srtp_protection_profiles() -> Vec<SrtpProtectionProfile> {
 }
 
 pub type OnDTLSTransportStateChangeHdlrFn = Box<
-    dyn (FnMut(RTCDtlsTransportState) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(RTCDtlsTransportState) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 /// DTLSTransport allows an application access to information about the DTLS
@@ -140,7 +140,7 @@ impl RTCDtlsTransport {
     /// packet is discarded.
     pub async fn write_rtcp(
         &self,
-        pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+        pkts: &[Box<dyn rtcp::packet::Packet>],
     ) -> Result<usize> {
         let srtcp_session = self.srtcp_session.lock().await;
         if let Some(srtcp_session) = &*srtcp_session {
@@ -207,7 +207,7 @@ impl RTCDtlsTransport {
                 if let Some(srtp_endpoint) = &*se {
                     Some(Arc::new(
                         Session::new(
-                            Arc::clone(srtp_endpoint) as Arc<dyn Conn + Send + Sync>,
+                            Arc::clone(srtp_endpoint) as Arc<dyn Conn>,
                             srtp_config,
                             true,
                         )
@@ -247,7 +247,7 @@ impl RTCDtlsTransport {
                 if let Some(srtcp_endpoint) = &*se {
                     Some(Arc::new(
                         Session::new(
-                            Arc::clone(srtcp_endpoint) as Arc<dyn Conn + Send + Sync>,
+                            Arc::clone(srtcp_endpoint) as Arc<dyn Conn>,
                             srtcp_config,
                             false,
                         )
@@ -376,7 +376,7 @@ impl RTCDtlsTransport {
             // must not hold the DTLSTransport lock
             if role == DTLSRole::Client {
                 dtls::conn::DTLSConn::new(
-                    dtls_endpoint as Arc<dyn Conn + Send + Sync>,
+                    dtls_endpoint as Arc<dyn Conn>,
                     dtls_config,
                     true,
                     None,
@@ -384,7 +384,7 @@ impl RTCDtlsTransport {
                 .await
             } else {
                 dtls::conn::DTLSConn::new(
-                    dtls_endpoint as Arc<dyn Conn + Send + Sync>,
+                    dtls_endpoint as Arc<dyn Conn>,
                     dtls_config,
                     false,
                     None,
@@ -578,12 +578,12 @@ impl RTCDtlsTransport {
         &self,
         ssrc: SSRC,
         stream_info: &StreamInfo,
-        interceptor: &Arc<dyn Interceptor + Send + Sync>,
+        interceptor: &Arc<dyn Interceptor>,
     ) -> Result<(
         Option<Arc<srtp::stream::Stream>>,
-        Option<Arc<dyn RTPReader + Send + Sync>>,
+        Option<Arc<dyn RTPReader>>,
         Option<Arc<srtp::stream::Stream>>,
-        Option<Arc<dyn RTCPReader + Send + Sync>>,
+        Option<Arc<dyn RTCPReader>>,
     )> {
         let srtp_session = self
             .get_srtp_session()
@@ -591,7 +591,7 @@ impl RTCDtlsTransport {
             .ok_or(Error::ErrDtlsTransportNotStarted)?;
         //log::debug!("streams_for_ssrc: srtp_session.listen ssrc={}", ssrc);
         let rtp_read_stream = srtp_session.open(ssrc).await;
-        let rtp_stream_reader = Arc::clone(&rtp_read_stream) as Arc<dyn RTPReader + Send + Sync>;
+        let rtp_stream_reader = Arc::clone(&rtp_read_stream) as Arc<dyn RTPReader>;
         let rtp_interceptor = interceptor
             .bind_remote_stream(stream_info, rtp_stream_reader)
             .await;
@@ -602,7 +602,7 @@ impl RTCDtlsTransport {
             .ok_or(Error::ErrDtlsTransportNotStarted)?;
         //log::debug!("streams_for_ssrc: srtcp_session.listen ssrc={}", ssrc);
         let rtcp_read_stream = srtcp_session.open(ssrc).await;
-        let rtcp_stream_reader = Arc::clone(&rtcp_read_stream) as Arc<dyn RTCPReader + Send + Sync>;
+        let rtcp_stream_reader = Arc::clone(&rtcp_read_stream) as Arc<dyn RTCPReader>;
         let rtcp_interceptor = interceptor.bind_rtcp_reader(rtcp_stream_reader).await;
 
         Ok((

@@ -13,13 +13,13 @@ pub(crate) trait AckTimerObserver {
 
 /// ackTimer provides the retnransmission timer conforms with RFC 4960 Sec 6.3.1
 #[derive(Default, Debug)]
-pub(crate) struct AckTimer<T: 'static + AckTimerObserver + Send> {
+pub(crate) struct AckTimer<T: 'static + AckTimerObserver> {
     pub(crate) timeout_observer: Weak<Mutex<T>>,
     pub(crate) interval: Duration,
     pub(crate) close_tx: Option<mpsc::Sender<()>>,
 }
 
-impl<T: 'static + AckTimerObserver + Send> AckTimer<T> {
+impl<T: 'static + AckTimerObserver> AckTimer<T> {
     /// newAckTimer creates a new acknowledgement timer used to enable delayed ack.
     pub(crate) fn new(timeout_observer: Weak<Mutex<T>>, interval: Duration) -> Self {
         AckTimer {

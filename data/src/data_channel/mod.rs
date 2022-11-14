@@ -375,7 +375,7 @@ enum ReadFut {
     /// Nothing in progress.
     Idle,
     /// Reading data from the underlying stream.
-    Reading(Pin<Box<dyn Future<Output = Result<Vec<u8>>> + Send>>),
+    Reading(Pin<Box<dyn Future<Output = Result<Vec<u8>>>>>),
     /// Finished reading, but there's unread data in the temporary buffer.
     RemainingData(Vec<u8>),
 }
@@ -386,7 +386,7 @@ impl ReadFut {
     /// # Panics
     ///
     /// Panics if `ReadFut` variant is not `Reading`.
-    fn get_reading_mut(&mut self) -> &mut Pin<Box<dyn Future<Output = Result<Vec<u8>>> + Send>> {
+    fn get_reading_mut(&mut self) -> &mut Pin<Box<dyn Future<Output = Result<Vec<u8>>>>> {
         match self {
             ReadFut::Reading(ref mut fut) => fut,
             _ => panic!("expected ReadFut to be Reading"),
@@ -403,8 +403,8 @@ pub struct PollDataChannel {
     data_channel: Arc<DataChannel>,
 
     read_fut: ReadFut,
-    write_fut: Option<Pin<Box<dyn Future<Output = Result<usize>> + Send>>>,
-    shutdown_fut: Option<Pin<Box<dyn Future<Output = Result<()>> + Send>>>,
+    write_fut: Option<Pin<Box<dyn Future<Output = Result<usize>>>>>,
+    shutdown_fut: Option<Pin<Box<dyn Future<Output = Result<()>>>>>,
 
     read_buf_cap: usize,
 }

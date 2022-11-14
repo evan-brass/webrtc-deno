@@ -9,8 +9,8 @@ use tokio::sync::mpsc;
 use tokio::time::Duration;
 
 async fn pipe() -> Result<(
-    Arc<dyn Listener + Send + Sync>,
-    Arc<dyn Conn + Send + Sync>,
+    Arc<dyn Listener>,
+    Arc<dyn Conn>,
     UdpSocket,
 )> {
     // Start listening
@@ -95,7 +95,7 @@ async fn test_listener_accept_filter() -> Result<()> {
 
     for (name, packet, expected) in tests {
         let accept_filter: Option<AcceptFilterFn> = Some(Box::new(
-            |pkt: &[u8]| -> Pin<Box<dyn Future<Output = bool> + Send + 'static>> {
+            |pkt: &[u8]| -> Pin<Box<dyn Future<Output = bool> + 'static>> {
                 let p0 = pkt[0];
                 Box::pin(async move { p0 == 0xAA })
             },

@@ -37,7 +37,7 @@ async fn test_packetizer_abs_send_time() -> Result<()> {
     let sequencer = Box::new(new_fixed_sequencer(1234));
 
     let time_gen: Option<FnTimeGen> = Some(Arc::new(
-        || -> Pin<Box<dyn Future<Output = SystemTime> + Send + 'static>> {
+        || -> Pin<Box<dyn Future<Output = SystemTime> + 'static>> {
             Box::pin(async move {
                 let loc = FixedOffset::west(5 * 60 * 60); // UTC-5
                 let t = loc.ymd(1985, 6, 23).and_hms_nano(4, 0, 0, 0);

@@ -31,13 +31,13 @@ pub struct RTCIceCandidate {
 
 /// Conversion for ice_candidates
 pub(crate) fn rtc_ice_candidates_from_ice_candidates(
-    ice_candidates: &[Arc<dyn Candidate + Send + Sync>],
+    ice_candidates: &[Arc<dyn Candidate>],
 ) -> Vec<RTCIceCandidate> {
     ice_candidates.iter().map(|c| c.into()).collect()
 }
 
-impl From<&Arc<dyn Candidate + Send + Sync>> for RTCIceCandidate {
-    fn from(c: &Arc<dyn Candidate + Send + Sync>) -> Self {
+impl From<&Arc<dyn Candidate>> for RTCIceCandidate {
+    fn from(c: &Arc<dyn Candidate>) -> Self {
         let typ: RTCIceCandidateType = c.candidate_type().into();
         let protocol = RTCIceProtocol::from(c.network_type().network_short().as_str());
         let (related_address, related_port) = if let Some(ra) = c.related_address() {

@@ -42,7 +42,7 @@ impl SenderReport {
     }
 
     async fn run(
-        rtcp_writer: Arc<dyn RTCPWriter + Send + Sync>,
+        rtcp_writer: Arc<dyn RTCPWriter>,
         internal: Arc<SenderReportInternal>,
     ) -> Result<()> {
         let mut ticker = tokio::time::interval(internal.interval);
@@ -91,8 +91,8 @@ impl Interceptor for SenderReport {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync> {
+        reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader> {
         reader
     }
 
@@ -100,8 +100,8 @@ impl Interceptor for SenderReport {
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync> {
+        writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter> {
         if self.is_closed().await {
             return writer;
         }
@@ -127,8 +127,8 @@ impl Interceptor for SenderReport {
     async fn bind_local_stream(
         &self,
         info: &StreamInfo,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync> {
+        writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter> {
         let stream = Arc::new(SenderStream::new(
             info.ssrc,
             info.clock_rate,
@@ -154,8 +154,8 @@ impl Interceptor for SenderReport {
     async fn bind_remote_stream(
         &self,
         _info: &StreamInfo,
-        reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync> {
+        reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader> {
         reader
     }
 

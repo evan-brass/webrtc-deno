@@ -16,11 +16,11 @@ use std::time::SystemTime;
 /// Payloader payloads a byte array for use as rtp.Packet payloads
 pub trait Payloader: fmt::Debug {
     fn payload(&mut self, mtu: usize, b: &Bytes) -> Result<Vec<Bytes>>;
-    fn clone_to(&self) -> Box<dyn Payloader + Send + Sync>;
+    fn clone_to(&self) -> Box<dyn Payloader>;
 }
 
-impl Clone for Box<dyn Payloader + Send + Sync> {
-    fn clone(&self) -> Box<dyn Payloader + Send + Sync> {
+impl Clone for Box<dyn Payloader> {
+    fn clone(&self) -> Box<dyn Payloader> {
         self.clone_to()
     }
 }
@@ -31,11 +31,11 @@ pub trait Packetizer: fmt::Debug {
     fn enable_abs_send_time(&mut self, value: u8);
     async fn packetize(&mut self, payload: &Bytes, samples: u32) -> Result<Vec<Packet>>;
     fn skip_samples(&mut self, skipped_samples: u32);
-    fn clone_to(&self) -> Box<dyn Packetizer + Send + Sync>;
+    fn clone_to(&self) -> Box<dyn Packetizer>;
 }
 
-impl Clone for Box<dyn Packetizer + Send + Sync> {
-    fn clone(&self) -> Box<dyn Packetizer + Send + Sync> {
+impl Clone for Box<dyn Packetizer> {
+    fn clone(&self) -> Box<dyn Packetizer> {
         self.clone_to()
     }
 }
@@ -58,15 +58,15 @@ pub trait Depacketizer {
 // non-monotonic clock vs monotonically non-decreasing clock
 /// FnTimeGen provides current SystemTime
 pub type FnTimeGen =
-    Arc<dyn (Fn() -> Pin<Box<dyn Future<Output = SystemTime> + Send + 'static>>) + Send + Sync>;
+    Arc<dyn (Fn() -> Pin<Box<dyn Future<Output = SystemTime> + 'static>>)>;
 
 #[derive(Clone)]
 pub(crate) struct PacketizerImpl {
     pub(crate) mtu: usize,
     pub(crate) payload_type: u8,
     pub(crate) ssrc: u32,
-    pub(crate) payloader: Box<dyn Payloader + Send + Sync>,
-    pub(crate) sequencer: Box<dyn Sequencer + Send + Sync>,
+    pub(crate) payloader: Box<dyn Payloader>,
+    pub(crate) sequencer: Box<dyn Sequencer>,
     pub(crate) timestamp: u32,
     pub(crate) clock_rate: u32,
     pub(crate) abs_send_time: u8, //http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
@@ -90,8 +90,8 @@ pub fn new_packetizer(
     mtu: usize,
     payload_type: u8,
     ssrc: u32,
-    payloader: Box<dyn Payloader + Send + Sync>,
-    sequencer: Box<dyn Sequencer + Send + Sync>,
+    payloader: Box<dyn Payloader>,
+    sequencer: Box<dyn Sequencer>,
     clock_rate: u32,
 ) -> impl Packetizer {
     PacketizerImpl {
@@ -161,7 +161,7 @@ impl Packetizer for PacketizerImpl {
         self.timestamp = self.timestamp.wrapping_add(skipped_samples);
     }
 
-    fn clone_to(&self) -> Box<dyn Packetizer + Send + Sync> {
+    fn clone_to(&self) -> Box<dyn Packetizer> {
         Box::new(self.clone())
     }
 }

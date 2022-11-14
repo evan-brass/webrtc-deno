@@ -393,7 +393,7 @@ fn increase_time(arrival_time: &mut i64, increase_amount: i64) -> i64 {
     *arrival_time
 }
 
-fn marshal_all(pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>]) -> Result<()> {
+fn marshal_all(pkts: &[Box<dyn rtcp::packet::Packet>]) -> Result<()> {
     for pkt in pkts {
         let _ = pkt.marshal()?;
     }

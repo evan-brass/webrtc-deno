@@ -28,7 +28,7 @@ const INBOUND_MTU: usize = 1500;
 
 /// Server is an instance of the TURN Server
 pub struct Server {
-    auth_handler: Arc<dyn AuthHandler + Send + Sync>,
+    auth_handler: Arc<dyn AuthHandler>,
     realm: String,
     channel_bind_timeout: Duration,
     pub(crate) nonces: Arc<Mutex<HashMap<String, Instant>>>,
@@ -140,10 +140,10 @@ impl Server {
     }
 
     async fn read_loop(
-        conn: Arc<dyn Conn + Send + Sync>,
+        conn: Arc<dyn Conn>,
         allocation_manager: Arc<Manager>,
         nonces: Arc<Mutex<HashMap<String, Instant>>>,
-        auth_handler: Arc<dyn AuthHandler + Send + Sync>,
+        auth_handler: Arc<dyn AuthHandler>,
         realm: String,
         channel_bind_timeout: Duration,
         mut handle_rx: broadcast::Receiver<Command>,

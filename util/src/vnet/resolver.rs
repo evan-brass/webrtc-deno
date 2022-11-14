@@ -47,7 +47,7 @@ impl Resolver {
     pub(crate) fn lookup(
         &self,
         host_name: String,
-    ) -> Pin<Box<dyn Future<Output = Option<IpAddr>> + Send + 'static>> {
+    ) -> Pin<Box<dyn Future<Output = Option<IpAddr>> + 'static>> {
         if let Some(ip) = self.hosts.get(&host_name) {
             let ip2 = *ip;
             return Box::pin(async move { Some(ip2) });

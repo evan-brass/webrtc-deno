@@ -10,7 +10,7 @@ struct DummyObserver;
 
 #[async_trait(?Send)]
 impl ConnObserver for DummyObserver {
-    async fn write(&self, _c: Box<dyn Chunk + Send + Sync>) -> Result<()> {
+    async fn write(&self, _c: Box<dyn Chunk>) -> Result<()> {
         Ok(())
     }
 
@@ -300,7 +300,7 @@ async fn test_net_virtual_assign_port() -> Result<()> {
             let port = vnet.assign_port(ip, start, end).await?;
             log::debug!("{} got port: {}", i, port);
 
-            let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+            let obs: Arc<Mutex<dyn ConnObserver>> =
                 Arc::new(Mutex::new(DummyObserver::default()));
 
             let conn = Arc::new(UdpConn::new(SocketAddr::new(ip, port), None, obs));
@@ -628,7 +628,7 @@ async fn test_net_virtual_loopback2() -> Result<()> {
     Ok(())
 }
 
-async fn get_ipaddr(nic: &Arc<Mutex<dyn Nic + Send + Sync>>) -> Result<IpAddr> {
+async fn get_ipaddr(nic: &Arc<Mutex<dyn Nic>>) -> Result<IpAddr> {
     let n = nic.lock().await;
     let eth0 = n.get_interface("eth0").await.ok_or(Error::ErrNoInterface)?;
     let addrs = eth0.addrs();

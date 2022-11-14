@@ -91,7 +91,7 @@ pub struct StatsInterceptor {
     tx: mpsc::Sender<Message>,
 
     id: String,
-    now_gen: Arc<dyn Fn() -> SystemTime + Send + Sync>,
+    now_gen: Arc<dyn Fn() -> SystemTime>,
 }
 
 impl StatsInterceptor {
@@ -111,7 +111,7 @@ impl StatsInterceptor {
 
     fn with_time_gen<F>(id: String, now_gen: F) -> Self
     where
-        F: Fn() -> SystemTime + Send + Sync + 'static,
+        F: Fn() -> SystemTime + 'static,
     {
         let (tx, rx) = mpsc::channel(100);
         tokio::spawn(run_stats_reducer(rx));
@@ -304,8 +304,8 @@ impl Interceptor for StatsInterceptor {
     async fn bind_remote_stream(
         &self,
         info: &StreamInfo,
-        reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync> {
+        reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader> {
         let mut lock = self.recv_streams.lock();
 
         let e = lock
@@ -327,8 +327,8 @@ impl Interceptor for StatsInterceptor {
     async fn bind_local_stream(
         &self,
         info: &StreamInfo,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync> {
+        writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter> {
         let mut lock = self.send_streams.lock();
 
         let e = lock
@@ -353,8 +353,8 @@ impl Interceptor for StatsInterceptor {
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync> {
+        writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter> {
         let now = self.now_gen.clone();
 
         Arc::new(RTCPWriteInterceptor {
@@ -368,8 +368,8 @@ impl Interceptor for StatsInterceptor {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync> {
+        reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader> {
         let now = self.now_gen.clone();
 
         Arc::new(RTCPReadInterceptor {
@@ -381,7 +381,7 @@ impl Interceptor for StatsInterceptor {
 }
 
 pub struct RTCPReadInterceptor<F> {
-    rtcp_reader: Arc<dyn RTCPReader + Send + Sync>,
+    rtcp_reader: Arc<dyn RTCPReader>,
     tx: mpsc::Sender<Message>,
     now_gen: F,
 }
@@ -389,7 +389,7 @@ pub struct RTCPReadInterceptor<F> {
 #[async_trait(?Send)]
 impl<F> RTCPReader for RTCPReadInterceptor<F>
 where
-    F: Fn() -> SystemTime + Send + Sync,
+    F: Fn() -> SystemTime,
 {
     /// read a batch of rtcp packets
     async fn read(&self, buf: &mut [u8], attributes: &Attributes) -> Result<(usize, Attributes)> {
@@ -604,7 +604,7 @@ where
 }
 
 pub struct RTCPWriteInterceptor<F> {
-    rtcp_writer: Arc<dyn RTCPWriter + Send + Sync>,
+    rtcp_writer: Arc<dyn RTCPWriter>,
     tx: mpsc::Sender<Message>,
     now_gen: F,
 }
@@ -612,11 +612,11 @@ pub struct RTCPWriteInterceptor<F> {
 #[async_trait(?Send)]
 impl<F> RTCPWriter for RTCPWriteInterceptor<F>
 where
-    F: Fn() -> SystemTime + Send + Sync,
+    F: Fn() -> SystemTime,
 {
     async fn write(
         &self,
-        pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+        pkts: &[Box<dyn rtcp::packet::Packet>],
         attributes: &Attributes,
     ) -> Result<usize> {
         #[derive(Default, Debug)]
@@ -700,12 +700,12 @@ where
 }
 
 pub struct RTPReadRecorder {
-    rtp_reader: Arc<dyn RTPReader + Send + Sync>,
+    rtp_reader: Arc<dyn RTPReader>,
     tx: mpsc::Sender<Message>,
 }
 
 impl RTPReadRecorder {
-    fn new(rtp_reader: Arc<dyn RTPReader + Send + Sync>, tx: mpsc::Sender<Message>) -> Self {
+    fn new(rtp_reader: Arc<dyn RTPReader>, tx: mpsc::Sender<Message>) -> Self {
         Self { rtp_reader, tx }
     }
 }
@@ -743,12 +743,12 @@ impl RTPReader for RTPReadRecorder {
 }
 
 pub struct RTPWriteRecorder {
-    rtp_writer: Arc<dyn RTPWriter + Send + Sync>,
+    rtp_writer: Arc<dyn RTPWriter>,
     tx: mpsc::Sender<Message>,
 }
 
 impl RTPWriteRecorder {
-    fn new(rtp_writer: Arc<dyn RTPWriter + Send + Sync>, tx: mpsc::Sender<Message>) -> Self {
+    fn new(rtp_writer: Arc<dyn RTPWriter>, tx: mpsc::Sender<Message>) -> Self {
         Self { rtp_writer, tx }
     }
 }

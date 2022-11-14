@@ -48,7 +48,7 @@ pub(crate) const NONCE_LIFETIME: Duration = Duration::from_secs(3600); // https:
 // Request contains all the state needed to process a single incoming datagram
 pub struct Request {
     // Current Request State
-    pub conn: Arc<dyn Conn + Send + Sync>,
+    pub conn: Arc<dyn Conn>,
     pub src_addr: SocketAddr,
     pub buff: Vec<u8>,
 
@@ -57,17 +57,17 @@ pub struct Request {
     pub nonces: Arc<Mutex<HashMap<String, Instant>>>,
 
     // User Configuration
-    pub auth_handler: Arc<dyn AuthHandler + Send + Sync>,
+    pub auth_handler: Arc<dyn AuthHandler>,
     pub realm: String,
     pub channel_bind_timeout: Duration,
 }
 
 impl Request {
     pub fn new(
-        conn: Arc<dyn Conn + Send + Sync>,
+        conn: Arc<dyn Conn>,
         src_addr: SocketAddr,
         allocation_manager: Arc<Manager>,
-        auth_handler: Arc<dyn AuthHandler + Send + Sync>,
+        auth_handler: Arc<dyn AuthHandler>,
     ) -> Self {
         Request {
             conn,
@@ -835,7 +835,7 @@ pub(crate) fn build_nonce() -> Result<String> {
 }
 
 pub(crate) async fn build_and_send(
-    conn: &Arc<dyn Conn + Send + Sync>,
+    conn: &Arc<dyn Conn>,
     dst: SocketAddr,
     msg: Message,
 ) -> Result<()> {
@@ -845,7 +845,7 @@ pub(crate) async fn build_and_send(
 
 // Send a STUN packet and return the original error to the caller
 pub(crate) async fn build_and_send_err(
-    conn: &Arc<dyn Conn + Send + Sync>,
+    conn: &Arc<dyn Conn>,
     dst: SocketAddr,
     msg: Message,
     err: Error,

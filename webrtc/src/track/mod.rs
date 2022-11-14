@@ -14,9 +14,9 @@ pub(crate) const RTP_PAYLOAD_TYPE_BITMASK: u8 = 0x7F;
 pub(crate) struct TrackStream {
     pub(crate) stream_info: Option<StreamInfo>,
     pub(crate) rtp_read_stream: Option<Arc<srtp::stream::Stream>>,
-    pub(crate) rtp_interceptor: Option<Arc<dyn RTPReader + Send + Sync>>,
+    pub(crate) rtp_interceptor: Option<Arc<dyn RTPReader>>,
     pub(crate) rtcp_read_stream: Option<Arc<srtp::stream::Stream>>,
-    pub(crate) rtcp_interceptor: Option<Arc<dyn RTCPReader + Send + Sync>>,
+    pub(crate) rtcp_interceptor: Option<Arc<dyn RTCPReader>>,
 }
 
 /// TrackStreams maintains a mapping of RTP/RTCP streams to a specific track

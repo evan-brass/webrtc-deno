@@ -438,7 +438,7 @@ impl AssociationInternal {
         if self.will_retransmit_fast {
             self.will_retransmit_fast = false;
 
-            let mut to_fast_retrans: Vec<Box<dyn Chunk + Send + Sync>> = vec![];
+            let mut to_fast_retrans: Vec<Box<dyn Chunk>> = vec![];
             let mut fast_retrans_size = COMMON_HEADER_SIZE;
 
             let mut i = 0;
@@ -726,7 +726,7 @@ impl AssociationInternal {
                 if let ParamType::Unknown { param_type } = param.header().typ {
                     let needs_to_be_reported = ((param_type >> 14) & 0x01) == 1;
                     if needs_to_be_reported {
-                        let wrapped: Box<dyn Param + Send + Sync> =
+                        let wrapped: Box<dyn Param> =
                             Box::new(ParamUnrecognized::wrap(param.clone()));
                         Some(wrapped)
                     } else {
@@ -1661,7 +1661,7 @@ impl AssociationInternal {
 
     /// create_packet wraps chunks in a packet.
     /// The caller should hold the read lock.
-    pub(crate) fn create_packet(&self, chunks: Vec<Box<dyn Chunk + Send + Sync>>) -> Packet {
+    pub(crate) fn create_packet(&self, chunks: Vec<Box<dyn Chunk>>) -> Packet {
         Packet {
             verification_tag: self.peer_verification_tag,
             source_port: self.source_port,
@@ -1796,7 +1796,7 @@ impl AssociationInternal {
     #[allow(clippy::borrowed_box)]
     async fn handle_reconfig_param(
         &mut self,
-        raw: &Box<dyn Param + Send + Sync>,
+        raw: &Box<dyn Param>,
     ) -> Result<Option<Packet>> {
         if let Some(p) = raw.as_any().downcast_ref::<ParamOutgoingResetRequest>() {
             self.reconfig_requests
@@ -2166,7 +2166,7 @@ impl AssociationInternal {
     async fn handle_chunk(
         &mut self,
         p: &Packet,
-        chunk: &Box<dyn Chunk + Send + Sync>,
+        chunk: &Box<dyn Chunk>,
     ) -> Result<()> {
         chunk.check()?;
         let chunk_any = chunk.as_any();

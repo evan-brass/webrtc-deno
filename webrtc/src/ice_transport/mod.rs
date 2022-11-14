@@ -41,21 +41,21 @@ pub mod ice_server;
 pub mod ice_transport_state;
 
 pub type OnConnectionStateChangeHdlrFn = Box<
-    dyn (FnMut(RTCIceTransportState) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(RTCIceTransportState) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnSelectedCandidatePairChangeHdlrFn = Box<
-    dyn (FnMut(RTCIceCandidatePair) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(RTCIceCandidatePair) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 #[derive(Default)]
 struct ICETransportInternal {
     role: RTCIceRole,
-    conn: Option<Arc<dyn Conn + Send + Sync>>, //AgentConn
+    conn: Option<Arc<dyn Conn>>, //AgentConn
     mux: Option<Mux>,
     cancel_tx: Option<mpsc::Sender<()>>,
 }
@@ -127,8 +127,8 @@ impl RTCIceTransport {
                 Arc::clone(&self.on_selected_candidate_pair_change_handler);
             agent
                 .on_selected_candidate_pair_change(Box::new(
-                    move |local: &Arc<dyn Candidate + Send + Sync>,
-                          remote: &Arc<dyn Candidate + Send + Sync>| {
+                    move |local: &Arc<dyn Candidate>,
+                          remote: &Arc<dyn Candidate>| {
                         let on_selected_candidate_pair_change_handler_clone =
                             Arc::clone(&on_selected_candidate_pair_change_handler);
                         let local = RTCIceCandidate::from(local);
@@ -157,7 +157,7 @@ impl RTCIceTransport {
                 internal.cancel_tx = Some(cancel_tx);
             }
 
-            let conn: Arc<dyn Conn + Send + Sync> = match role {
+            let conn: Arc<dyn Conn> = match role {
                 RTCIceRole::Controlling => {
                     agent
                         .dial(
@@ -271,7 +271,7 @@ impl RTCIceTransport {
 
         if let Some(agent) = self.gatherer.get_agent().await {
             for rc in remote_candidates {
-                let c: Arc<dyn Candidate + Send + Sync> = Arc::new(rc.to_ice().await?);
+                let c: Arc<dyn Candidate> = Arc::new(rc.to_ice().await?);
                 agent.add_remote_candidate(&c).await?;
             }
             Ok(())
@@ -289,7 +289,7 @@ impl RTCIceTransport {
 
         if let Some(agent) = self.gatherer.get_agent().await {
             if let Some(r) = remote_candidate {
-                let c: Arc<dyn Candidate + Send + Sync> = Arc::new(r.to_ice().await?);
+                let c: Arc<dyn Candidate> = Arc::new(r.to_ice().await?);
                 agent.add_remote_candidate(&c).await?;
             }
 

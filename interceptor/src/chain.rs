@@ -7,16 +7,16 @@ use std::sync::Arc;
 /// Chain is an interceptor that runs all child interceptors in order.
 #[derive(Default)]
 pub struct Chain {
-    interceptors: Vec<Arc<dyn Interceptor + Send + Sync>>,
+    interceptors: Vec<Arc<dyn Interceptor>>,
 }
 
 impl Chain {
     /// new returns a new Chain interceptor.
-    pub fn new(interceptors: Vec<Arc<dyn Interceptor + Send + Sync>>) -> Self {
+    pub fn new(interceptors: Vec<Arc<dyn Interceptor>>) -> Self {
         Chain { interceptors }
     }
 
-    pub fn add(&mut self, icpr: Arc<dyn Interceptor + Send + Sync>) {
+    pub fn add(&mut self, icpr: Arc<dyn Interceptor>) {
         self.interceptors.push(icpr);
     }
 }
@@ -27,8 +27,8 @@ impl Interceptor for Chain {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        mut reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync> {
+        mut reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader> {
         for icpr in &self.interceptors {
             reader = icpr.bind_rtcp_reader(reader).await;
         }
@@ -39,8 +39,8 @@ impl Interceptor for Chain {
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        mut writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync> {
+        mut writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter> {
         for icpr in &self.interceptors {
             writer = icpr.bind_rtcp_writer(writer).await;
         }
@@ -52,8 +52,8 @@ impl Interceptor for Chain {
     async fn bind_local_stream(
         &self,
         info: &StreamInfo,
-        mut writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync> {
+        mut writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter> {
         for icpr in &self.interceptors {
             writer = icpr.bind_local_stream(info, writer).await;
         }
@@ -72,8 +72,8 @@ impl Interceptor for Chain {
     async fn bind_remote_stream(
         &self,
         info: &StreamInfo,
-        mut reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync> {
+        mut reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader> {
         for icpr in &self.interceptors {
             reader = icpr.bind_remote_stream(info, reader).await;
         }

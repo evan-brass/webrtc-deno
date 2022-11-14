@@ -5,11 +5,11 @@ use std::sync::{Arc, Mutex};
 pub trait Sequencer: fmt::Debug {
     fn next_sequence_number(&self) -> u16;
     fn roll_over_count(&self) -> u64;
-    fn clone_to(&self) -> Box<dyn Sequencer + Send + Sync>;
+    fn clone_to(&self) -> Box<dyn Sequencer>;
 }
 
-impl Clone for Box<dyn Sequencer + Send + Sync> {
-    fn clone(&self) -> Box<dyn Sequencer + Send + Sync> {
+impl Clone for Box<dyn Sequencer> {
+    fn clone(&self) -> Box<dyn Sequencer> {
         self.clone_to()
     }
 }
@@ -68,7 +68,7 @@ impl Sequencer for SequencerImpl {
         self.0.lock().unwrap().roll_over_count
     }
 
-    fn clone_to(&self) -> Box<dyn Sequencer + Send + Sync> {
+    fn clone_to(&self) -> Box<dyn Sequencer> {
         Box::new(self.clone())
     }
 }

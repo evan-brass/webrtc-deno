@@ -51,7 +51,7 @@ async fn test_rtp_sender_replace_track() -> Result<()> {
     ));
 
     let rtp_sender = sender
-        .add_track(Arc::clone(&track_a) as Arc<dyn TrackLocal + Send + Sync>)
+        .add_track(Arc::clone(&track_a) as Arc<dyn TrackLocal>)
         .await?;
 
     let (seen_packet_a_tx, seen_packet_a_rx) = mpsc::channel::<()>(1);
@@ -108,7 +108,7 @@ async fn test_rtp_sender_replace_track() -> Result<()> {
 
     rtp_sender
         .replace_track(Some(
-            Arc::clone(&track_b) as Arc<dyn TrackLocal + Send + Sync>
+            Arc::clone(&track_b) as Arc<dyn TrackLocal>
         ))
         .await?;
 
@@ -168,7 +168,7 @@ async fn test_rtp_sender_set_read_deadline() -> Result<()> {
     ));
 
     let rtp_sender = sender
-        .add_track(Arc::clone(&track) as Arc<dyn TrackLocal + Send + Sync>)
+        .add_track(Arc::clone(&track) as Arc<dyn TrackLocal>)
         .await?;
 
     let peer_connections_connected = WaitGroup::new();
@@ -228,7 +228,7 @@ async fn test_rtp_sender_replace_track_invalid_track_kind_change() -> Result<()>
     ));
 
     let rtp_sender = sender
-        .add_track(Arc::clone(&track_a) as Arc<dyn TrackLocal + Send + Sync>)
+        .add_track(Arc::clone(&track_a) as Arc<dyn TrackLocal>)
         .await?;
 
     signal_pair(&mut sender, &mut receiver).await?;
@@ -293,7 +293,7 @@ async fn test_rtp_sender_replace_track_invalid_codec_change() -> Result<()> {
     ));
 
     let rtp_sender = sender
-        .add_track(Arc::clone(&track_a) as Arc<dyn TrackLocal + Send + Sync>)
+        .add_track(Arc::clone(&track_a) as Arc<dyn TrackLocal>)
         .await?;
 
     {

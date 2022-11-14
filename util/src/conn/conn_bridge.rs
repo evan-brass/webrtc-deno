@@ -66,7 +66,7 @@ impl Conn for BridgeConn {
     }
 }
 
-pub type FilterCbFn = Box<dyn Fn(&Bytes) -> bool + Send + Sync>;
+pub type FilterCbFn = Box<dyn Fn(&Bytes) -> bool>;
 
 /// Bridge represents a network between the two endpoints.
 #[derive(Default)]

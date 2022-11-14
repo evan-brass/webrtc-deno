@@ -50,7 +50,7 @@ impl VNetInternal {
 
 #[async_trait(?Send)]
 impl ConnObserver for VNetInternal {
-    async fn write(&self, c: Box<dyn Chunk + Send + Sync>) -> Result<()> {
+    async fn write(&self, c: Box<dyn Chunk>) -> Result<()> {
         if c.network() == UDP_STR && c.get_destination_ip().is_loopback() {
             if let Some(conn) = self.udp_conns.find(&c.destination_addr()).await {
                 let read_ch_tx = conn.get_inbound_ch();
@@ -157,7 +157,7 @@ impl Nic for VNet {
         Ok(())
     }
 
-    async fn on_inbound_chunk(&self, c: Box<dyn Chunk + Send + Sync>) {
+    async fn on_inbound_chunk(&self, c: Box<dyn Chunk>) {
         if c.network() == UDP_STR {
             let vi = self.vi.lock().await;
             if let Some(conn) = vi.udp_conns.find(&c.destination_addr()).await {
@@ -323,7 +323,7 @@ impl VNet {
     pub(crate) async fn bind(
         &self,
         mut local_addr: SocketAddr,
-    ) -> Result<Arc<dyn Conn + Send + Sync>> {
+    ) -> Result<Arc<dyn Conn>> {
         // validate address. do we have that address?
         if !self.has_ipaddr(local_addr.ip()) {
             return Err(Error::ErrCantAssignRequestedAddr);
@@ -339,7 +339,7 @@ impl VNet {
             }
         }
 
-        let v = Arc::clone(&self.vi) as Arc<Mutex<dyn ConnObserver + Send + Sync>>;
+        let v = Arc::clone(&self.vi) as Arc<Mutex<dyn ConnObserver>>;
         let conn = Arc::new(UdpConn::new(local_addr, None, v));
 
         {
@@ -354,7 +354,7 @@ impl VNet {
         &self,
         use_ipv4: bool,
         remote_addr: &str,
-    ) -> Result<Arc<dyn Conn + Send + Sync>> {
+    ) -> Result<Arc<dyn Conn>> {
         let rem_addr = self.resolve_addr(use_ipv4, remote_addr).await?;
 
         // Determine source address
@@ -519,7 +519,7 @@ impl Net {
         }
     }
 
-    pub async fn bind(&self, addr: SocketAddr) -> Result<Arc<dyn Conn + Send + Sync>> {
+    pub async fn bind(&self, addr: SocketAddr) -> Result<Arc<dyn Conn>> {
         match self {
             Net::VNet(vnet) => {
                 let net = vnet.lock().await;
@@ -533,7 +533,7 @@ impl Net {
         &self,
         use_ipv4: bool,
         remote_addr: &str,
-    ) -> Result<Arc<dyn Conn + Send + Sync>> {
+    ) -> Result<Arc<dyn Conn>> {
         match self {
             Net::VNet(vnet) => {
                 let net = vnet.lock().await;
@@ -555,9 +555,9 @@ impl Net {
         }
     }
 
-    pub fn get_nic(&self) -> Result<Arc<Mutex<dyn Nic + Send + Sync>>> {
+    pub fn get_nic(&self) -> Result<Arc<Mutex<dyn Nic>>> {
         match self {
-            Net::VNet(vnet) => Ok(Arc::clone(vnet) as Arc<Mutex<dyn Nic + Send + Sync>>),
+            Net::VNet(vnet) => Ok(Arc::clone(vnet) as Arc<Mutex<dyn Nic>>),
             Net::Ifs(_) => Err(Error::ErrVnetDisabled),
         }
     }

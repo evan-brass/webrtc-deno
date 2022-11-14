@@ -60,7 +60,7 @@ pub(crate) struct RelayConnConfig {
     pub(crate) read_ch_rx: Arc<Mutex<mpsc::Receiver<InboundData>>>,
 }
 
-pub struct RelayConnInternal<T: 'static + RelayConnObserver + Send + Sync> {
+pub struct RelayConnInternal<T: 'static + RelayConnObserver> {
     obs: Arc<Mutex<T>>,
     relayed_addr: SocketAddr,
     perm_map: PermissionMap,
@@ -71,7 +71,7 @@ pub struct RelayConnInternal<T: 'static + RelayConnObserver + Send + Sync> {
 }
 
 // RelayConn is the implementation of the Conn interfaces for UDP Relayed network connections.
-pub struct RelayConn<T: 'static + RelayConnObserver + Send + Sync> {
+pub struct RelayConn<T: 'static + RelayConnObserver> {
     relayed_addr: SocketAddr,
     read_ch_rx: Arc<Mutex<mpsc::Receiver<InboundData>>>,
     relay_conn: Arc<Mutex<RelayConnInternal<T>>>,
@@ -79,7 +79,7 @@ pub struct RelayConn<T: 'static + RelayConnObserver + Send + Sync> {
     refresh_perms_timer: PeriodicTimer,
 }
 
-impl<T: 'static + RelayConnObserver + Send + Sync> RelayConn<T> {
+impl<T: 'static + RelayConnObserver> RelayConn<T> {
     // new creates a new instance of UDPConn
     pub(crate) async fn new(obs: Arc<Mutex<T>>, config: RelayConnConfig) -> Self {
         log::debug!("initial lifetime: {} seconds", config.lifetime.as_secs());
@@ -107,7 +107,7 @@ impl<T: 'static + RelayConnObserver + Send + Sync> RelayConn<T> {
 }
 
 #[async_trait(?Send)]
-impl<T: RelayConnObserver + Send + Sync> Conn for RelayConn<T> {
+impl<T: RelayConnObserver> Conn for RelayConn<T> {
     async fn connect(&self, _addr: SocketAddr) -> Result<(), util::Error> {
         Err(io::Error::new(io::ErrorKind::Other, "Not applicable").into())
     }
@@ -190,7 +190,7 @@ impl<T: RelayConnObserver + Send + Sync> Conn for RelayConn<T> {
     }
 }
 
-impl<T: RelayConnObserver + Send + Sync> RelayConnInternal<T> {
+impl<T: RelayConnObserver> RelayConnInternal<T> {
     // new creates a new instance of UDPConn
     fn new(obs: Arc<Mutex<T>>, config: RelayConnConfig) -> Self {
         RelayConnInternal {
@@ -581,7 +581,7 @@ impl<T: RelayConnObserver + Send + Sync> RelayConnInternal<T> {
 }
 
 #[async_trait(?Send)]
-impl<T: RelayConnObserver + Send + Sync> PeriodicTimerTimeoutHandler for RelayConnInternal<T> {
+impl<T: RelayConnObserver> PeriodicTimerTimeoutHandler for RelayConnInternal<T> {
     async fn on_timeout(&mut self, id: TimerIdRefresh) {
         log::debug!("refresh timer {:?} expired", id);
         match id {

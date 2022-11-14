@@ -54,7 +54,7 @@ struct GatherCandidatesLocalUDPMuxParams {
     ext_ip_mapper: Arc<Option<ExternalIpMapper>>,
     net: Arc<Net>,
     agent_internal: Arc<AgentInternal>,
-    udp_mux: Arc<dyn UDPMux + Send + Sync>,
+    udp_mux: Arc<dyn UDPMux>,
 }
 
 struct GatherCandidatesSrflxMappedParasm {
@@ -282,7 +282,7 @@ impl Agent {
                     // accessible from the current interface.
                 case udp:*/
 
-                let conn: Arc<dyn Conn + Send + Sync> = match listen_udp_in_port_range(
+                let conn: Arc<dyn Conn> = match listen_udp_in_port_range(
                     &net,
                     ephemeral_config.port_max(),
                     ephemeral_config.port_min(),
@@ -327,7 +327,7 @@ impl Agent {
                     ..CandidateHostConfig::default()
                 };
 
-                let candidate: Arc<dyn Candidate + Send + Sync> =
+                let candidate: Arc<dyn Candidate> =
                     match host_config.new_candidate_host().await {
                         Ok(candidate) => {
                             if mdns_mode == MulticastDnsMode::QueryAndGather {
@@ -458,7 +458,7 @@ impl Agent {
             tcp_type: TcpType::Unspecified,
         };
 
-        let candidate: Arc<dyn Candidate + Send + Sync> =
+        let candidate: Arc<dyn Candidate> =
             Arc::new(host_config.new_candidate_host().await?);
 
         agent_internal.add_candidate(&candidate).await?;
@@ -492,7 +492,7 @@ impl Agent {
             tokio::spawn(async move {
                 let _d = w;
 
-                let conn: Arc<dyn Conn + Send + Sync> = match listen_udp_in_port_range(
+                let conn: Arc<dyn Conn> = match listen_udp_in_port_range(
                     &net2,
                     port_max,
                     port_min,
@@ -553,7 +553,7 @@ impl Agent {
                     rel_port: laddr.port(),
                 };
 
-                let candidate: Arc<dyn Candidate + Send + Sync> =
+                let candidate: Arc<dyn Candidate> =
                     match srflx_config.new_candidate_server_reflexive().await {
                         Ok(candidate) => Arc::new(candidate),
                         Err(err) => {
@@ -634,7 +634,7 @@ impl Agent {
                         }
                     };
 
-                    let conn: Arc<dyn Conn + Send + Sync> = match listen_udp_in_port_range(
+                    let conn: Arc<dyn Conn> = match listen_udp_in_port_range(
                         &net2,
                         port_max,
                         port_min,
@@ -689,7 +689,7 @@ impl Agent {
                         rel_port: laddr.port(),
                     };
 
-                    let candidate: Arc<dyn Candidate + Send + Sync> =
+                    let candidate: Arc<dyn Candidate> =
                         match srflx_config.new_candidate_server_reflexive().await {
                             Ok(candidate) => Arc::new(candidate),
                             Err(err) => {
@@ -862,7 +862,7 @@ impl Agent {
                     relay_client: Some(Arc::clone(&client)),
                 };
 
-                let candidate: Arc<dyn Candidate + Send + Sync> =
+                let candidate: Arc<dyn Candidate> =
                     match relay_config.new_candidate_relay().await {
                         Ok(candidate) => Arc::new(candidate),
                         Err(err) => {

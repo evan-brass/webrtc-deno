@@ -42,20 +42,20 @@ pub trait UDPMux {
     async fn close(&self) -> Result<(), Error>;
 
     /// Get the underlying connection for a given ufrag.
-    async fn get_conn(self: Arc<Self>, ufrag: &str) -> Result<Arc<dyn Conn + Send + Sync>, Error>;
+    async fn get_conn(self: Arc<Self>, ufrag: &str) -> Result<Arc<dyn Conn>, Error>;
 
     /// Remove the underlying connection for a given ufrag.
     async fn remove_conn_by_ufrag(&self, ufrag: &str);
 }
 
 pub struct UDPMuxParams {
-    conn: Box<dyn Conn + Send + Sync>,
+    conn: Box<dyn Conn>,
 }
 
 impl UDPMuxParams {
     pub fn new<C>(conn: C) -> Self
     where
-        C: Conn + Send + Sync + 'static,
+        C: Conn + 'static,
     {
         Self {
             conn: Box::new(conn),
@@ -110,7 +110,7 @@ impl UDPMuxDefault {
         let params = UDPMuxConnParams {
             local_addr,
             key: ufrag.into(),
-            udp_mux: Arc::downgrade(self) as Weak<dyn UDPMuxWriter + Send + Sync>,
+            udp_mux: Arc::downgrade(self) as Weak<dyn UDPMuxWriter>,
         };
 
         Ok(UDPMuxConn::new(params))
@@ -254,7 +254,7 @@ impl UDPMux for UDPMuxDefault {
         Ok(())
     }
 
-    async fn get_conn(self: Arc<Self>, ufrag: &str) -> Result<Arc<dyn Conn + Send + Sync>, Error> {
+    async fn get_conn(self: Arc<Self>, ufrag: &str) -> Result<Arc<dyn Conn>, Error> {
         if self.is_closed().await {
             return Err(Error::ErrUseClosedNetworkConn);
         }
@@ -264,7 +264,7 @@ impl UDPMux for UDPMuxDefault {
             if let Some(conn) = conns.get(ufrag) {
                 // UDPMuxConn uses `Arc` internally so it's cheap to clone, but because
                 // we implement `Conn` we need to further wrap it in an `Arc` here.
-                return Ok(Arc::new(conn.clone()) as Arc<dyn Conn + Send + Sync>);
+                return Ok(Arc::new(conn.clone()) as Arc<dyn Conn>);
             }
 
             let muxed_conn = self.create_muxed_conn(ufrag).await?;
@@ -280,7 +280,7 @@ impl UDPMux for UDPMuxDefault {
 
             conns.insert(ufrag.into(), muxed_conn.clone());
 
-            Ok(Arc::new(muxed_conn) as Arc<dyn Conn + Send + Sync>)
+            Ok(Arc::new(muxed_conn) as Arc<dyn Conn>)
         }
     }
 

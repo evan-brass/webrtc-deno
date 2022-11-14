@@ -125,13 +125,13 @@ impl GeneratorStreamInternal {
 }
 
 pub(super) struct GeneratorStream {
-    parent_rtp_reader: Arc<dyn RTPReader + Send + Sync>,
+    parent_rtp_reader: Arc<dyn RTPReader>,
 
     internal: Mutex<GeneratorStreamInternal>,
 }
 
 impl GeneratorStream {
-    pub(super) fn new(log2_size_minus_6: u8, reader: Arc<dyn RTPReader + Send + Sync>) -> Self {
+    pub(super) fn new(log2_size_minus_6: u8, reader: Arc<dyn RTPReader>) -> Self {
         GeneratorStream {
             parent_rtp_reader: reader,
             internal: Mutex::new(GeneratorStreamInternal::new(log2_size_minus_6)),

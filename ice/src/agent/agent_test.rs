@@ -59,7 +59,7 @@ async fn test_pair_priority() -> Result<()> {
         },
         ..Default::default()
     };
-    let host_local: Arc<dyn Candidate + Send + Sync> =
+    let host_local: Arc<dyn Candidate> =
         Arc::new(host_config.new_candidate_host().await?);
 
     let relay_config = CandidateRelayConfig {
@@ -117,7 +117,7 @@ async fn test_pair_priority() -> Result<()> {
     };
     let host_remote = host_config.new_candidate_host().await?;
 
-    let remotes: Vec<Arc<dyn Candidate + Send + Sync>> = vec![
+    let remotes: Vec<Arc<dyn Candidate>> = vec![
         Arc::new(relay_remote),
         Arc::new(srflx_remote),
         Arc::new(prflx_remote),
@@ -257,7 +257,7 @@ async fn test_handle_peer_reflexive_udp_pflx_candidate() -> Result<()> {
         ..Default::default()
     };
 
-    let local: Arc<dyn Candidate + Send + Sync> = Arc::new(host_config.new_candidate_host().await?);
+    let local: Arc<dyn Candidate> = Arc::new(host_config.new_candidate_host().await?);
     let remote = SocketAddr::from_str("172.17.0.3:999")?;
 
     let (username, local_pwd, tie_breaker) = {
@@ -356,7 +356,7 @@ async fn test_handle_peer_reflexive_unknown_remote() -> Result<()> {
         ..Default::default()
     };
 
-    let local: Arc<dyn Candidate + Send + Sync> = Arc::new(host_config.new_candidate_host().await?);
+    let local: Arc<dyn Candidate> = Arc::new(host_config.new_candidate_host().await?);
     let remote = SocketAddr::from_str("172.17.0.3:999")?;
 
     let mut msg = Message::new();
@@ -648,7 +648,7 @@ async fn test_inbound_validity() -> Result<()> {
     .init();*/
 
     let remote = SocketAddr::from_str("172.17.0.3:999")?;
-    let local: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let local: Arc<dyn Candidate> = Arc::new(
         CandidateHostConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1054,7 +1054,7 @@ async fn test_invalid_gather() -> Result<()> {
 async fn test_candidate_pair_stats() -> Result<()> {
     let a = Agent::new(AgentConfig::default()).await?;
 
-    let host_local: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let host_local: Arc<dyn Candidate> = Arc::new(
         CandidateHostConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1069,7 +1069,7 @@ async fn test_candidate_pair_stats() -> Result<()> {
         .await?,
     );
 
-    let relay_remote: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let relay_remote: Arc<dyn Candidate> = Arc::new(
         CandidateRelayConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1086,7 +1086,7 @@ async fn test_candidate_pair_stats() -> Result<()> {
         .await?,
     );
 
-    let srflx_remote: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let srflx_remote: Arc<dyn Candidate> = Arc::new(
         CandidateServerReflexiveConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1102,7 +1102,7 @@ async fn test_candidate_pair_stats() -> Result<()> {
         .await?,
     );
 
-    let prflx_remote: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let prflx_remote: Arc<dyn Candidate> = Arc::new(
         CandidatePeerReflexiveConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1118,7 +1118,7 @@ async fn test_candidate_pair_stats() -> Result<()> {
         .await?,
     );
 
-    let host_remote: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let host_remote: Arc<dyn Candidate> = Arc::new(
         CandidateHostConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1221,7 +1221,7 @@ async fn test_candidate_pair_stats() -> Result<()> {
 async fn test_local_candidate_stats() -> Result<()> {
     let a = Agent::new(AgentConfig::default()).await?;
 
-    let host_local: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let host_local: Arc<dyn Candidate> = Arc::new(
         CandidateHostConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1236,7 +1236,7 @@ async fn test_local_candidate_stats() -> Result<()> {
         .await?,
     );
 
-    let srflx_local: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let srflx_local: Arc<dyn Candidate> = Arc::new(
         CandidateServerReflexiveConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1314,7 +1314,7 @@ async fn test_local_candidate_stats() -> Result<()> {
 async fn test_remote_candidate_stats() -> Result<()> {
     let a = Agent::new(AgentConfig::default()).await?;
 
-    let relay_remote: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let relay_remote: Arc<dyn Candidate> = Arc::new(
         CandidateRelayConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1331,7 +1331,7 @@ async fn test_remote_candidate_stats() -> Result<()> {
         .await?,
     );
 
-    let srflx_remote: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let srflx_remote: Arc<dyn Candidate> = Arc::new(
         CandidateServerReflexiveConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1347,7 +1347,7 @@ async fn test_remote_candidate_stats() -> Result<()> {
         .await?,
     );
 
-    let prflx_remote: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let prflx_remote: Arc<dyn Candidate> = Arc::new(
         CandidatePeerReflexiveConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1363,7 +1363,7 @@ async fn test_remote_candidate_stats() -> Result<()> {
         .await?,
     );
 
-    let host_remote: Arc<dyn Candidate + Send + Sync> = Arc::new(
+    let host_remote: Arc<dyn Candidate> = Arc::new(
         CandidateHostConfig {
             base_config: CandidateBaseConfig {
                 network: "udp".to_owned(),
@@ -1879,7 +1879,7 @@ async fn test_agent_restart_both_side() -> Result<()> {
 
     // Get all addresses of candidates concatenated
     let generate_candidate_address_strings =
-        |res: Result<Vec<Arc<dyn Candidate + Send + Sync>>>| -> String {
+        |res: Result<Vec<Arc<dyn Candidate>>>| -> String {
             assert!(res.is_ok());
 
             let mut out = String::new();
@@ -2122,7 +2122,7 @@ async fn test_run_task_in_selected_candidate_pair_change_callback() -> Result<()
     let is_tested_tx = Arc::new(Mutex::new(Some(is_tested_tx)));
     a_agent
         .on_selected_candidate_pair_change(Box::new(
-            move |_: &Arc<dyn Candidate + Send + Sync>, _: &Arc<dyn Candidate + Send + Sync>| {
+            move |_: &Arc<dyn Candidate>, _: &Arc<dyn Candidate>| {
                 let is_tested_tx_clone = Arc::clone(&is_tested_tx);
                 Box::pin(async move {
                     let mut tx = is_tested_tx_clone.lock().await;

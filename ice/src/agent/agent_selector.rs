@@ -18,21 +18,21 @@ trait ControllingSelector {
     async fn contact_candidates(&self);
     async fn ping_candidate(
         &self,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     );
     async fn handle_success_response(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
         remote_addr: SocketAddr,
     );
     async fn handle_binding_request(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     );
 }
 
@@ -42,26 +42,26 @@ trait ControlledSelector {
     async fn contact_candidates(&self);
     async fn ping_candidate(
         &self,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     );
     async fn handle_success_response(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
         remote_addr: SocketAddr,
     );
     async fn handle_binding_request(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     );
 }
 
 impl AgentInternal {
-    async fn is_nominatable(&self, c: &Arc<dyn Candidate + Send + Sync>) -> bool {
+    async fn is_nominatable(&self, c: &Arc<dyn Candidate>) -> bool {
         let start_time = self.start_time.lock().await;
         match c.candidate_type() {
             CandidateType::Host => {
@@ -172,8 +172,8 @@ impl AgentInternal {
 
     pub(crate) async fn ping_candidate(
         &self,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         if self.is_controlling.load(Ordering::SeqCst) {
             ControllingSelector::ping_candidate(self, local, remote).await;
@@ -185,8 +185,8 @@ impl AgentInternal {
     pub(crate) async fn handle_success_response(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
         remote_addr: SocketAddr,
     ) {
         if self.is_controlling.load(Ordering::SeqCst) {
@@ -199,8 +199,8 @@ impl AgentInternal {
     pub(crate) async fn handle_binding_request(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         if self.is_controlling.load(Ordering::SeqCst) {
             ControllingSelector::handle_binding_request(self, m, local, remote).await;
@@ -273,8 +273,8 @@ impl ControllingSelector for AgentInternal {
 
     async fn ping_candidate(
         &self,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         let (msg, result) = {
             let ufrag_pwd = self.ufrag_pwd.lock().await;
@@ -304,8 +304,8 @@ impl ControllingSelector for AgentInternal {
     async fn handle_success_response(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
         remote_addr: SocketAddr,
     ) {
         if let Some(pending_request) = self.handle_inbound_binding_success(m.transaction_id).await {
@@ -354,8 +354,8 @@ impl ControllingSelector for AgentInternal {
     async fn handle_binding_request(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         self.send_binding_success(m, local, remote).await;
         log::trace!("controllingSelector: sendBindingSuccess");
@@ -425,8 +425,8 @@ impl ControlledSelector for AgentInternal {
 
     async fn ping_candidate(
         &self,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         let (msg, result) = {
             let ufrag_pwd = self.ufrag_pwd.lock().await;
@@ -456,8 +456,8 @@ impl ControlledSelector for AgentInternal {
     async fn handle_success_response(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
         remote_addr: SocketAddr,
     ) {
         // https://tools.ietf.org/html/rfc8445#section-7.3.1.5
@@ -502,8 +502,8 @@ impl ControlledSelector for AgentInternal {
     async fn handle_binding_request(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         if self.find_pair(local, remote).await.is_none() {
             self.add_pair(local.clone(), remote.clone()).await;

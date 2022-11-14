@@ -21,7 +21,7 @@ pub(crate) struct ReceiverReportInternal {
 
 pub(crate) struct ReceiverReportRtcpReader {
     pub(crate) internal: Arc<ReceiverReportInternal>,
-    pub(crate) parent_rtcp_reader: Arc<dyn RTCPReader + Send + Sync>,
+    pub(crate) parent_rtcp_reader: Arc<dyn RTCPReader>,
 }
 
 #[async_trait(?Send)]
@@ -80,7 +80,7 @@ impl ReceiverReport {
     }
 
     async fn run(
-        rtcp_writer: Arc<dyn RTCPWriter + Send + Sync>,
+        rtcp_writer: Arc<dyn RTCPWriter>,
         internal: Arc<ReceiverReportInternal>,
     ) -> Result<()> {
         let mut ticker = tokio::time::interval(internal.interval);
@@ -130,8 +130,8 @@ impl Interceptor for ReceiverReport {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync> {
+        reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader> {
         Arc::new(ReceiverReportRtcpReader {
             internal: Arc::clone(&self.internal),
             parent_rtcp_reader: reader,
@@ -142,8 +142,8 @@ impl Interceptor for ReceiverReport {
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync> {
+        writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter> {
         if self.is_closed().await {
             return writer;
         }
@@ -169,8 +169,8 @@ impl Interceptor for ReceiverReport {
     async fn bind_local_stream(
         &self,
         _info: &StreamInfo,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync> {
+        writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter> {
         writer
     }
 
@@ -182,8 +182,8 @@ impl Interceptor for ReceiverReport {
     async fn bind_remote_stream(
         &self,
         info: &StreamInfo,
-        reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync> {
+        reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader> {
         let stream = Arc::new(ReceiverStream::new(
             info.ssrc,
             info.clock_rate,

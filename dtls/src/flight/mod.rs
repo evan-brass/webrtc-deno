@@ -75,7 +75,7 @@ pub(crate) trait Flight: fmt::Display + fmt::Debug {
         state: &mut State,
         cache: &HandshakeCache,
         cfg: &HandshakeConfig,
-    ) -> Result<Box<dyn Flight + Send + Sync>, (Option<Alert>, Option<Error>)>;
+    ) -> Result<Box<dyn Flight>, (Option<Alert>, Option<Error>)>;
 
     async fn generate(
         &self,

@@ -22,7 +22,7 @@ const MAX_BUFFER_SIZE: usize = 1000 * 1000; // 1MB
 /// Config collects the arguments to mux.Mux construction into
 /// a single structure
 pub struct Config {
-    pub conn: Arc<dyn Conn + Send + Sync>,
+    pub conn: Arc<dyn Conn>,
     pub buffer_size: usize,
 }
 
@@ -30,7 +30,7 @@ pub struct Config {
 #[derive(Clone)]
 pub struct Mux {
     id: Arc<AtomicUsize>,
-    next_conn: Arc<dyn Conn + Send + Sync>,
+    next_conn: Arc<dyn Conn>,
     endpoints: Arc<Mutex<HashMap<usize, Arc<Endpoint>>>>,
     buffer_size: usize,
     closed_ch_tx: Option<mpsc::Sender<()>>,
@@ -94,7 +94,7 @@ impl Mux {
 
     async fn read_loop(
         buffer_size: usize,
-        next_conn: Arc<dyn Conn + Send + Sync>,
+        next_conn: Arc<dyn Conn>,
         mut closed_ch_rx: mpsc::Receiver<()>,
         endpoints: Arc<Mutex<HashMap<usize, Arc<Endpoint>>>>,
     ) {

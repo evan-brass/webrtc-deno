@@ -146,7 +146,7 @@ impl ReceiverStreamInternal {
 }
 
 pub(crate) struct ReceiverStream {
-    parent_rtp_reader: Arc<dyn RTPReader + Send + Sync>,
+    parent_rtp_reader: Arc<dyn RTPReader>,
     now: Option<FnTimeGen>,
 
     internal: Mutex<ReceiverStreamInternal>,
@@ -156,7 +156,7 @@ impl ReceiverStream {
     pub(crate) fn new(
         ssrc: u32,
         clock_rate: u32,
-        reader: Arc<dyn RTPReader + Send + Sync>,
+        reader: Arc<dyn RTPReader>,
         now: Option<FnTimeGen>,
     ) -> Self {
         let receiver_ssrc = rand::random::<u32>();

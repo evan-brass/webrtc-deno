@@ -20,7 +20,7 @@ lazy_static! {
     static ref TRACK_REMOTE_UNIQUE_ID: AtomicUsize = AtomicUsize::new(0);
 }
 pub type OnMuteHdlrFn = Box<
-    dyn (FnMut() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>) + Send + Sync + 'static,
+    dyn (FnMut() -> Pin<Box<dyn Future<Output = ()> + 'static>>) + 'static,
 >;
 
 #[derive(Default)]
@@ -51,7 +51,7 @@ pub struct TrackRemote {
     rid: String,
 
     media_engine: Arc<MediaEngine>,
-    interceptor: Arc<dyn Interceptor + Send + Sync>,
+    interceptor: Arc<dyn Interceptor>,
 
     handlers: Mutex<Handlers>,
 
@@ -82,7 +82,7 @@ impl TrackRemote {
         rid: String,
         receiver: Weak<RTPReceiverInternal>,
         media_engine: Arc<MediaEngine>,
-        interceptor: Arc<dyn Interceptor + Send + Sync>,
+        interceptor: Arc<dyn Interceptor>,
     ) -> Self {
         TrackRemote {
             tid: TRACK_REMOTE_UNIQUE_ID.fetch_add(1, Ordering::SeqCst),
@@ -194,7 +194,7 @@ impl TrackRemote {
 
     pub async fn onmute<F>(&self, handler: F)
     where
-        F: FnMut() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + 'static + Sync,
+        F: FnMut() -> Pin<Box<dyn Future<Output = ()> + 'static>> + 'static,
     {
         let mut handlers = self.handlers.lock().await;
         handlers.on_mute = Some(Box::new(handler));
@@ -202,7 +202,7 @@ impl TrackRemote {
 
     pub async fn onunmute<F>(&self, handler: F)
     where
-        F: FnMut() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>> + Send + 'static + Sync,
+        F: FnMut() -> Pin<Box<dyn Future<Output = ()> + 'static>> + 'static,
     {
         let mut handlers = self.handlers.lock().await;
         handlers.on_unmute = Some(Box::new(handler));

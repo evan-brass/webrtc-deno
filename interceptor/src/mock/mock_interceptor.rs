@@ -5,43 +5,43 @@ use std::pin::Pin;
 
 pub type BindRtcpReaderFn = Box<
     dyn (Fn(
-            Arc<dyn RTCPReader + Send + Sync>,
+            Arc<dyn RTCPReader>,
         )
-            -> Pin<Box<dyn Future<Output = Arc<dyn RTCPReader + Send + Sync>> + Send + Sync>>)
-        + Send
-        + Sync,
+            -> Pin<Box<dyn Future<Output = Arc<dyn RTCPReader>>>>)
+       
+       ,
 >;
 
 pub type BindRtcpWriterFn = Box<
     dyn (Fn(
-            Arc<dyn RTCPWriter + Send + Sync>,
+            Arc<dyn RTCPWriter>,
         )
-            -> Pin<Box<dyn Future<Output = Arc<dyn RTCPWriter + Send + Sync>> + Send + Sync>>)
-        + Send
-        + Sync,
+            -> Pin<Box<dyn Future<Output = Arc<dyn RTCPWriter>>>>)
+       
+       ,
 >;
 pub type BindLocalStreamFn = Box<
     dyn (Fn(
             &StreamInfo,
-            Arc<dyn RTPWriter + Send + Sync>,
-        ) -> Pin<Box<dyn Future<Output = Arc<dyn RTPWriter + Send + Sync>> + Send + Sync>>)
-        + Send
-        + Sync,
+            Arc<dyn RTPWriter>,
+        ) -> Pin<Box<dyn Future<Output = Arc<dyn RTPWriter>>>>)
+       
+       ,
 >;
 pub type UnbindLocalStreamFn =
-    Box<dyn (Fn(&StreamInfo) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>) + Send + Sync>;
+    Box<dyn (Fn(&StreamInfo) -> Pin<Box<dyn Future<Output = ()>>>)>;
 pub type BindRemoteStreamFn = Box<
     dyn (Fn(
             &StreamInfo,
-            Arc<dyn RTPReader + Send + Sync>,
-        ) -> Pin<Box<dyn Future<Output = Arc<dyn RTPReader + Send + Sync>> + Send + Sync>>)
-        + Send
-        + Sync,
+            Arc<dyn RTPReader>,
+        ) -> Pin<Box<dyn Future<Output = Arc<dyn RTPReader>>>>)
+       
+       ,
 >;
 pub type UnbindRemoteStreamFn =
-    Box<dyn (Fn(&StreamInfo) -> Pin<Box<dyn Future<Output = ()> + Send + Sync>>) + Send + Sync>;
+    Box<dyn (Fn(&StreamInfo) -> Pin<Box<dyn Future<Output = ()>>>)>;
 pub type CloseFn =
-    Box<dyn (Fn() -> Pin<Box<dyn Future<Output = Result<()>> + Send + Sync>>) + Send + Sync>;
+    Box<dyn (Fn() -> Pin<Box<dyn Future<Output = Result<()>>>>)>;
 
 /// MockInterceptor is an mock Interceptor fot testing.
 #[derive(Default)]
@@ -61,8 +61,8 @@ impl Interceptor for MockInterceptor {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync> {
+        reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader> {
         if let Some(f) = &self.bind_rtcp_reader_fn {
             f(reader).await
         } else {
@@ -74,8 +74,8 @@ impl Interceptor for MockInterceptor {
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync> {
+        writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter> {
         if let Some(f) = &self.bind_rtcp_writer_fn {
             f(writer).await
         } else {
@@ -88,8 +88,8 @@ impl Interceptor for MockInterceptor {
     async fn bind_local_stream(
         &self,
         info: &StreamInfo,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync> {
+        writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter> {
         if let Some(f) = &self.bind_local_stream_fn {
             f(info, writer).await
         } else {
@@ -109,8 +109,8 @@ impl Interceptor for MockInterceptor {
     async fn bind_remote_stream(
         &self,
         info: &StreamInfo,
-        reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync> {
+        reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader> {
         if let Some(f) = &self.bind_remote_stream_fn {
             f(info, reader).await
         } else {

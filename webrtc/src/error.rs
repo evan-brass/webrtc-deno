@@ -418,7 +418,7 @@ pub enum Error {
 }
 
 pub type OnErrorHdlrFn =
-    Box<dyn (FnMut(Error) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>) + Send + Sync>;
+    Box<dyn (FnMut(Error) -> Pin<Box<dyn Future<Output = ()> + 'static>>)>;
 
 // Because Tokio SendError is parameterized, we sadly lose the backtrace.
 impl<T> From<MpscSendError<T>> for Error {

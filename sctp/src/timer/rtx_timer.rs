@@ -106,14 +106,14 @@ pub(crate) trait RtxTimerObserver {
 
 /// rtxTimer provides the retnransmission timer conforms with RFC 4960 Sec 6.3.1
 #[derive(Default, Debug)]
-pub(crate) struct RtxTimer<T: 'static + RtxTimerObserver + Send> {
+pub(crate) struct RtxTimer<T: 'static + RtxTimerObserver> {
     pub(crate) timeout_observer: Weak<Mutex<T>>,
     pub(crate) id: RtxTimerId,
     pub(crate) max_retrans: usize,
     pub(crate) close_tx: Arc<Mutex<Option<mpsc::Sender<()>>>>,
 }
 
-impl<T: 'static + RtxTimerObserver + Send> RtxTimer<T> {
+impl<T: 'static + RtxTimerObserver> RtxTimer<T> {
     /// newRTXTimer creates a new retransmission timer.
     /// if max_retrans is set to 0, it will keep retransmitting until stop() is called.
     /// (it will never make on_retransmission_failure() callback.

@@ -51,8 +51,8 @@ pub(crate) fn default_candidate_types() -> Vec<CandidateType> {
     ]
 }
 
-pub type InterfaceFilterFn = Box<dyn (Fn(&str) -> bool) + Send + Sync>;
-pub type IpFilterFn = Box<dyn (Fn(IpAddr) -> bool) + Send + Sync>;
+pub type InterfaceFilterFn = Box<dyn (Fn(&str) -> bool)>;
+pub type IpFilterFn = Box<dyn (Fn(IpAddr) -> bool)>;
 
 /// Collects the arguments to `ice::Agent` construction into a single structure, for
 /// future-proofness of the interface.

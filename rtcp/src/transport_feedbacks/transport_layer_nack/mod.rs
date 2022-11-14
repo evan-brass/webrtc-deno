@@ -25,7 +25,7 @@ pub struct NackPair {
 }
 
 pub type RangeFn =
-    Box<dyn (Fn(u16) -> Pin<Box<dyn Future<Output = bool> + Send + 'static>>) + Send + Sync>;
+    Box<dyn (Fn(u16) -> Pin<Box<dyn Future<Output = bool> + 'static>>)>;
 
 pub struct NackIterator {
     packet_id: u16,
@@ -137,18 +137,18 @@ impl Packet for TransportLayerNack {
         HEADER_LENGTH + NACK_OFFSET + self.nacks.len() * 4
     }
 
-    fn as_any(&self) -> &(dyn Any + Send + Sync) {
+    fn as_any(&self) -> &(dyn Any) {
         self
     }
 
-    fn equal(&self, other: &(dyn Packet + Send + Sync)) -> bool {
+    fn equal(&self, other: &(dyn Packet)) -> bool {
         other
             .as_any()
             .downcast_ref::<TransportLayerNack>()
             .map_or(false, |a| self == a)
     }
 
-    fn cloned(&self) -> Box<dyn Packet + Send + Sync> {
+    fn cloned(&self) -> Box<dyn Packet> {
         Box::new(self.clone())
     }
 }

@@ -9,11 +9,11 @@ use tokio::sync::Mutex;
 /// will infer the last packet that it reads as the reply address for `Write`
 pub struct DisconnectedPacketConn {
     raddr: Mutex<SocketAddr>,
-    pconn: Arc<dyn Conn + Send + Sync>,
+    pconn: Arc<dyn Conn>,
 }
 
 impl DisconnectedPacketConn {
-    pub fn new(conn: Arc<dyn Conn + Send + Sync>) -> Self {
+    pub fn new(conn: Arc<dyn Conn>) -> Self {
         DisconnectedPacketConn {
             raddr: Mutex::new(SocketAddr::new(Ipv4Addr::new(0, 0, 0, 0).into(), 0)),
             pconn: conn,

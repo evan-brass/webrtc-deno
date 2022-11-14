@@ -14,7 +14,7 @@ const RECEIVE_MTU: usize = 8192;
 const DEFAULT_LISTEN_BACKLOG: usize = 128; // same as Linux default
 
 pub type AcceptFilterFn =
-    Box<dyn (Fn(&[u8]) -> Pin<Box<dyn Future<Output = bool> + Send + 'static>>) + Send + Sync>;
+    Box<dyn (Fn(&[u8]) -> Pin<Box<dyn Future<Output = bool> + 'static>>)>;
 
 type AcceptDoneCh = (mpsc::Receiver<Arc<UdpConn>>, watch::Receiver<()>);
 
@@ -22,7 +22,7 @@ type AcceptDoneCh = (mpsc::Receiver<Arc<UdpConn>>, watch::Receiver<()>);
 /// [SCTP](https://github.com/webrtc-rs/sctp) transport to provide a connection-oriented
 /// listener over a UDP.
 struct ListenerImpl {
-    pconn: Arc<dyn Conn + Send + Sync>,
+    pconn: Arc<dyn Conn>,
     accepting: Arc<AtomicBool>,
     accept_ch_tx: Arc<Mutex<Option<mpsc::Sender<Arc<UdpConn>>>>>,
     done_ch_tx: Arc<Mutex<Option<watch::Sender<()>>>>,
@@ -33,7 +33,7 @@ struct ListenerImpl {
 #[async_trait(?Send)]
 impl Listener for ListenerImpl {
     /// accept waits for and returns the next connection to the listener.
-    async fn accept(&self) -> Result<(Arc<dyn Conn + Send + Sync>, SocketAddr)> {
+    async fn accept(&self) -> Result<(Arc<dyn Conn>, SocketAddr)> {
         let (accept_ch_rx, done_ch_rx) = &mut *self.ch_rx.lock().await;
 
         tokio::select! {
@@ -139,7 +139,7 @@ impl ListenConfig {
     /// 2. Creating a new Conn when receiving from a new remote.
     async fn read_loop(
         mut done_ch_rx: watch::Receiver<()>,
-        pconn: Arc<dyn Conn + Send + Sync>,
+        pconn: Arc<dyn Conn>,
         accepting: Arc<AtomicBool>,
         accept_filter: Option<AcceptFilterFn>,
         accept_ch_tx: Arc<Mutex<Option<mpsc::Sender<Arc<UdpConn>>>>>,
@@ -185,7 +185,7 @@ impl ListenConfig {
     }
 
     async fn get_udp_conn(
-        pconn: &Arc<dyn Conn + Send + Sync>,
+        pconn: &Arc<dyn Conn>,
         accepting: &Arc<AtomicBool>,
         accept_filter: &Option<AcceptFilterFn>,
         accept_ch_tx: &Arc<Mutex<Option<mpsc::Sender<Arc<UdpConn>>>>>,
@@ -233,7 +233,7 @@ impl ListenConfig {
 
 /// UdpConn augments a connection-oriented connection over a UdpSocket
 pub struct UdpConn {
-    pconn: Arc<dyn Conn + Send + Sync>,
+    pconn: Arc<dyn Conn>,
     conns: Arc<Mutex<HashMap<String, Arc<UdpConn>>>>,
     raddr: SocketAddr,
     buffer: Buffer,
@@ -241,7 +241,7 @@ pub struct UdpConn {
 
 impl UdpConn {
     fn new(
-        pconn: Arc<dyn Conn + Send + Sync>,
+        pconn: Arc<dyn Conn>,
         conns: Arc<Mutex<HashMap<String, Arc<UdpConn>>>>,
         raddr: SocketAddr,
     ) -> Self {

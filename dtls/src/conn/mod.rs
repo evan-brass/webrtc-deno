@@ -55,12 +55,12 @@ type PacketSendRequest = (Vec<Packet>, Option<mpsc::Sender<Result<()>>>);
 struct ConnReaderContext {
     is_client: bool,
     replay_protection_window: usize,
-    replay_detector: Vec<Box<dyn ReplayDetector + Send>>,
+    replay_detector: Vec<Box<dyn ReplayDetector>>,
     decrypted_tx: mpsc::Sender<Result<Vec<u8>>>,
     encrypted_packets: Vec<Vec<u8>>,
     fragment_buffer: FragmentBuffer,
     cache: HandshakeCache,
-    cipher_suite: Arc<Mutex<Option<Box<dyn CipherSuite + Send + Sync>>>>,
+    cipher_suite: Arc<Mutex<Option<Box<dyn CipherSuite>>>>,
     remote_epoch: Arc<AtomicU16>,
     handshake_tx: mpsc::Sender<mpsc::Sender<()>>,
     handshake_done_rx: mpsc::Receiver<()>,
@@ -69,7 +69,7 @@ struct ConnReaderContext {
 
 // Conn represents a DTLS connection
 pub struct DTLSConn {
-    conn: Arc<dyn Conn + Send + Sync>,
+    conn: Arc<dyn Conn>,
     pub(crate) cache: HandshakeCache, // caching of handshake messages for verifyData generation
     decrypted_rx: Mutex<mpsc::Receiver<Result<Vec<u8>>>>, // Decrypted Application Data or error, pull by calling `Read`
     pub(crate) state: State,                              // Internal state
@@ -90,7 +90,7 @@ pub struct DTLSConn {
     cancelHandshaker      func()
     cancelHandshakeReader func()
     */
-    pub(crate) current_flight: Box<dyn Flight + Send + Sync>,
+    pub(crate) current_flight: Box<dyn Flight>,
     pub(crate) flights: Option<Vec<Packet>>,
     pub(crate) cfg: HandshakeConfig,
     pub(crate) retransmit: bool,
@@ -142,7 +142,7 @@ impl Conn for DTLSConn {
 
 impl DTLSConn {
     pub async fn new(
-        conn: Arc<dyn Conn + Send + Sync>,
+        conn: Arc<dyn Conn>,
         mut config: Config,
         is_client: bool,
         initial_state: Option<State>,
@@ -227,17 +227,17 @@ impl DTLSConn {
 
         let (state, flight, initial_fsm_state) = if let Some(state) = initial_state {
             let flight = if is_client {
-                Box::new(Flight5 {}) as Box<dyn Flight + Send + Sync>
+                Box::new(Flight5 {}) as Box<dyn Flight>
             } else {
-                Box::new(Flight6 {}) as Box<dyn Flight + Send + Sync>
+                Box::new(Flight6 {}) as Box<dyn Flight>
             };
 
             (state, flight, HandshakeState::Finished)
         } else {
             let flight = if is_client {
-                Box::new(Flight1 {}) as Box<dyn Flight + Send + Sync>
+                Box::new(Flight1 {}) as Box<dyn Flight>
             } else {
-                Box::new(Flight0 {}) as Box<dyn Flight + Send + Sync>
+                Box::new(Flight0 {}) as Box<dyn Flight>
             };
 
             (
@@ -520,12 +520,12 @@ impl DTLSConn {
     }
 
     async fn handle_outgoing_packets(
-        next_conn: &Arc<dyn util::Conn + Send + Sync>,
+        next_conn: &Arc<dyn util::Conn>,
         mut pkts: Vec<Packet>,
         cache: &mut HandshakeCache,
         is_client: bool,
         local_sequence_number: &Arc<Mutex<Vec<u64>>>,
-        cipher_suite: &Arc<Mutex<Option<Box<dyn CipherSuite + Send + Sync>>>>,
+        cipher_suite: &Arc<Mutex<Option<Box<dyn CipherSuite>>>>,
         maximum_transmission_unit: usize,
     ) -> Result<()> {
         let mut raw_packets = vec![];
@@ -589,7 +589,7 @@ impl DTLSConn {
 
     async fn process_packet(
         local_sequence_number: &Arc<Mutex<Vec<u64>>>,
-        cipher_suite: &Arc<Mutex<Option<Box<dyn CipherSuite + Send + Sync>>>>,
+        cipher_suite: &Arc<Mutex<Option<Box<dyn CipherSuite>>>>,
         p: &mut Packet,
     ) -> Result<Vec<u8>> {
         let epoch = p.record.record_layer_header.epoch as usize;
@@ -630,7 +630,7 @@ impl DTLSConn {
 
     async fn process_handshake_packet(
         local_sequence_number: &Arc<Mutex<Vec<u64>>>,
-        cipher_suite: &Arc<Mutex<Option<Box<dyn CipherSuite + Send + Sync>>>>,
+        cipher_suite: &Arc<Mutex<Option<Box<dyn CipherSuite>>>>,
         maximum_transmission_unit: usize,
         p: &Packet,
         h: &Handshake,
@@ -744,7 +744,7 @@ impl DTLSConn {
 
     async fn read_and_buffer(
         ctx: &mut ConnReaderContext,
-        next_conn: &Arc<dyn util::Conn + Send + Sync>,
+        next_conn: &Arc<dyn util::Conn>,
         handle_queue_rx: &mut mpsc::Receiver<mpsc::Sender<()>>,
         buf: &mut [u8],
         local_epoch: &Arc<AtomicU16>,

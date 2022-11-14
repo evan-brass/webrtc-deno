@@ -810,7 +810,7 @@ pub(crate) async fn extract_ice_details(
         for a in &m.attributes {
             if a.is_ice_candidate() {
                 if let Some(value) = &a.value {
-                    let c: Arc<dyn Candidate + Send + Sync> =
+                    let c: Arc<dyn Candidate> =
                         Arc::new(unmarshal_candidate(value).await?);
                     let candidate = RTCIceCandidate::from(&c);
                     candidates.push(candidate);

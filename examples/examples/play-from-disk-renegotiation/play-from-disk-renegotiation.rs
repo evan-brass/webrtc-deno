@@ -175,7 +175,7 @@ async fn add_video(
     ));
 
     let rtp_sender = match pc
-        .add_track(Arc::clone(&video_track) as Arc<dyn TrackLocal + Send + Sync>)
+        .add_track(Arc::clone(&video_track) as Arc<dyn TrackLocal>)
         .await
     {
         Ok(rtp_sender) => rtp_sender,

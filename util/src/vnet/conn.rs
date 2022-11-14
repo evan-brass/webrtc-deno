@@ -17,12 +17,12 @@ const MAX_READ_QUEUE_SIZE: usize = 1024;
 /// vNet implements this
 #[async_trait(?Send)]
 pub(crate) trait ConnObserver {
-    async fn write(&self, c: Box<dyn Chunk + Send + Sync>) -> Result<()>;
+    async fn write(&self, c: Box<dyn Chunk>) -> Result<()>;
     async fn on_closed(&self, addr: SocketAddr);
     fn determine_source_ip(&self, loc_ip: IpAddr, dst_ip: IpAddr) -> Option<IpAddr>;
 }
 
-pub(crate) type ChunkChTx = mpsc::Sender<Box<dyn Chunk + Send + Sync>>;
+pub(crate) type ChunkChTx = mpsc::Sender<Box<dyn Chunk>>;
 
 /// UDPConn is the implementation of the Conn and PacketConn interfaces for UDP network connections.
 /// comatible with net.PacketConn and net.Conn
@@ -30,16 +30,16 @@ pub(crate) struct UdpConn {
     loc_addr: SocketAddr,
     rem_addr: Mutex<Option<SocketAddr>>,
     read_ch_tx: Arc<Mutex<Option<ChunkChTx>>>,
-    read_ch_rx: Mutex<mpsc::Receiver<Box<dyn Chunk + Send + Sync>>>,
+    read_ch_rx: Mutex<mpsc::Receiver<Box<dyn Chunk>>>,
     closed: AtomicBool,
-    obs: Arc<Mutex<dyn ConnObserver + Send + Sync>>,
+    obs: Arc<Mutex<dyn ConnObserver>>,
 }
 
 impl UdpConn {
     pub(crate) fn new(
         loc_addr: SocketAddr,
         rem_addr: Option<SocketAddr>,
-        obs: Arc<Mutex<dyn ConnObserver + Send + Sync>>,
+        obs: Arc<Mutex<dyn ConnObserver>>,
     ) -> Self {
         let (read_ch_tx, read_ch_rx) = mpsc::channel(MAX_READ_QUEUE_SIZE);
 
@@ -127,7 +127,7 @@ impl Conn for UdpConn {
         let mut chunk = ChunkUdp::new(src_addr, target);
         chunk.user_data = buf.to_vec();
         {
-            let c: Box<dyn Chunk + Send + Sync> = Box::new(chunk);
+            let c: Box<dyn Chunk> = Box::new(chunk);
             let obs = self.obs.lock().await;
             obs.write(c).await?
         }

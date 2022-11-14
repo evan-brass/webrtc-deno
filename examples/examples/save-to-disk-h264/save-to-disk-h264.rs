@@ -23,7 +23,7 @@ use webrtc::rtp_transceiver::rtp_receiver::RTCRtpReceiver;
 use webrtc::track::track_remote::TrackRemote;
 
 async fn save_to_disk(
-    writer: Arc<Mutex<dyn webrtc::media::io::Writer + Send + Sync>>,
+    writer: Arc<Mutex<dyn webrtc::media::io::Writer>>,
     track: Arc<TrackRemote>,
     notify: Arc<Notify>,
 ) -> Result<()> {
@@ -120,9 +120,9 @@ async fn main() -> Result<()> {
     let video_file = matches.value_of("video").unwrap();
     let audio_file = matches.value_of("audio").unwrap();
 
-    let h264_writer: Arc<Mutex<dyn webrtc::media::io::Writer + Send + Sync>> =
+    let h264_writer: Arc<Mutex<dyn webrtc::media::io::Writer>> =
         Arc::new(Mutex::new(H264Writer::new(File::create(video_file)?)));
-    let ogg_writer: Arc<Mutex<dyn webrtc::media::io::Writer + Send + Sync>> = Arc::new(Mutex::new(
+    let ogg_writer: Arc<Mutex<dyn webrtc::media::io::Writer>> = Arc::new(Mutex::new(
         OggWriter::new(File::create(audio_file)?, 48000, 2)?,
     ));
 

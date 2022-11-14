@@ -46,7 +46,7 @@ impl SenderStreamInternal {
 }
 
 pub(crate) struct SenderStream {
-    next_rtp_writer: Arc<dyn RTPWriter + Send + Sync>,
+    next_rtp_writer: Arc<dyn RTPWriter>,
     now: Option<FnTimeGen>,
 
     internal: Mutex<SenderStreamInternal>,
@@ -56,7 +56,7 @@ impl SenderStream {
     pub(crate) fn new(
         ssrc: u32,
         clock_rate: u32,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
+        writer: Arc<dyn RTPWriter>,
         now: Option<FnTimeGen>,
     ) -> Self {
         SenderStream {

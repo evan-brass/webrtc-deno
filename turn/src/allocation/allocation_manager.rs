@@ -12,14 +12,14 @@ use util::Conn;
 
 // ManagerConfig a bag of config params for Manager.
 pub struct ManagerConfig {
-    pub relay_addr_generator: Box<dyn RelayAddressGenerator + Send + Sync>,
+    pub relay_addr_generator: Box<dyn RelayAddressGenerator>,
 }
 
 // Manager is used to hold active allocations
 pub struct Manager {
     allocations: AllocationMap,
     reservations: Arc<Mutex<HashMap<String, u16>>>,
-    relay_addr_generator: Box<dyn RelayAddressGenerator + Send + Sync>,
+    relay_addr_generator: Box<dyn RelayAddressGenerator>,
 }
 
 impl Manager {
@@ -78,7 +78,7 @@ impl Manager {
     pub async fn create_allocation(
         &self,
         five_tuple: FiveTuple,
-        turn_socket: Arc<dyn Conn + Send + Sync>,
+        turn_socket: Arc<dyn Conn>,
         requested_port: u16,
         lifetime: Duration,
         username: Username,

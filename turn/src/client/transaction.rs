@@ -15,7 +15,7 @@ const MAX_RTX_INTERVAL_IN_MS: u16 = 1600;
 const MAX_RTX_COUNT: u16 = 7; // total 7 requests (Rc)
 
 async fn on_rtx_timeout(
-    conn: &Arc<dyn Conn + Send + Sync>,
+    conn: &Arc<dyn Conn>,
     tr_map: &Arc<Mutex<TransactionMap>>,
     tr_key: &str,
     n_rtx: u16,
@@ -163,7 +163,7 @@ impl Transaction {
     // start_rtx_timer starts the transaction timer
     pub async fn start_rtx_timer(
         &mut self,
-        conn: Arc<dyn Conn + Send + Sync>,
+        conn: Arc<dyn Conn>,
         tr_map: Arc<Mutex<TransactionMap>>,
     ) {
         let (timer_ch_tx, mut timer_ch_rx) = mpsc::channel(1);

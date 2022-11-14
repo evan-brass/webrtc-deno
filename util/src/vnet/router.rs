@@ -64,14 +64,14 @@ pub struct RouterConfig {
 pub trait Nic {
     async fn get_interface(&self, ifc_name: &str) -> Option<Interface>;
     async fn add_addrs_to_interface(&mut self, ifc_name: &str, addrs: &[IpNet]) -> Result<()>;
-    async fn on_inbound_chunk(&self, c: Box<dyn Chunk + Send + Sync>);
+    async fn on_inbound_chunk(&self, c: Box<dyn Chunk>);
     async fn get_static_ips(&self) -> Vec<IpAddr>;
     async fn set_router(&self, r: Arc<Mutex<Router>>) -> Result<()>;
 }
 
 // ChunkFilter is a handler users can add to filter chunks.
 // If the filter returns false, the packet will be dropped.
-pub type ChunkFilterFn = Box<dyn (Fn(&(dyn Chunk + Send + Sync)) -> bool) + Send + Sync>;
+pub type ChunkFilterFn = Box<dyn (Fn(&(dyn Chunk)) -> bool)>;
 
 #[derive(Default)]
 pub struct RouterInternal {
@@ -79,7 +79,7 @@ pub struct RouterInternal {
     pub(crate) ipv4net: IpNet,                     // read-only
     pub(crate) parent: Option<Arc<Mutex<Router>>>, // read-only
     pub(crate) nat: NetworkAddressTranslator,      // read-only
-    pub(crate) nics: HashMap<String, Arc<Mutex<dyn Nic + Send + Sync>>>, // read-only
+    pub(crate) nics: HashMap<String, Arc<Mutex<dyn Nic>>>, // read-only
     pub(crate) chunk_filters: Vec<ChunkFilterFn>,  // requires mutex [x]
     pub(crate) last_id: u8, // requires mutex [x], used to assign the last digit of IPv4 address
 }
@@ -126,8 +126,8 @@ impl Nic for Router {
         Err(Error::ErrNotFound)
     }
 
-    async fn on_inbound_chunk(&self, c: Box<dyn Chunk + Send + Sync>) {
-        let from_parent: Box<dyn Chunk + Send + Sync> = {
+    async fn on_inbound_chunk(&self, c: Box<dyn Chunk>) {
+        let from_parent: Box<dyn Chunk> = {
             let router_internal = self.router_internal.lock().await;
             match router_internal.nat.translate_inbound(&*c).await {
                 Ok(from) => {
@@ -381,14 +381,14 @@ impl Router {
     pub async fn add_router(&mut self, child: Arc<Mutex<Router>>) -> Result<()> {
         // Router is a NIC. Add it as a NIC so that packets are routed to this child
         // router.
-        let nic = Arc::clone(&child) as Arc<Mutex<dyn Nic + Send + Sync>>;
+        let nic = Arc::clone(&child) as Arc<Mutex<dyn Nic>>;
         self.children.push(child);
         self.add_net(nic).await
     }
 
     // AddNet ...
     // after router.add_net(nic), also call nic.set_router(router) to set nic's router
-    pub async fn add_net(&mut self, nic: Arc<Mutex<dyn Nic + Send + Sync>>) -> Result<()> {
+    pub async fn add_net(&mut self, nic: Arc<Mutex<dyn Nic>>) -> Result<()> {
         let mut router_internal = self.router_internal.lock().await;
         router_internal.add_nic(nic).await
     }
@@ -407,7 +407,7 @@ impl Router {
         router_internal.chunk_filters.push(filter);
     }
 
-    pub(crate) async fn push(&self, mut c: Box<dyn Chunk + Send + Sync>) {
+    pub(crate) async fn push(&self, mut c: Box<dyn Chunk>) {
         log::debug!("[{}] route {}", self.name, c);
         if self.done.is_some() {
             c.set_timestamp();
@@ -525,7 +525,7 @@ impl Router {
 
 impl RouterInternal {
     // caller must hold the mutex
-    pub(crate) async fn add_nic(&mut self, nic: Arc<Mutex<dyn Nic + Send + Sync>>) -> Result<()> {
+    pub(crate) async fn add_nic(&mut self, nic: Arc<Mutex<dyn Nic>>) -> Result<()> {
         let mut ips = {
             let ni = nic.lock().await;
             ni.get_static_ips().await

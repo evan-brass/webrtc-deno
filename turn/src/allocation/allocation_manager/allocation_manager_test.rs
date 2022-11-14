@@ -167,7 +167,7 @@ async fn test_create_allocation_duplicate_five_tuple() -> Result<()> {
     //env_logger::init();
 
     // turn server initialization
-    let turn_socket: Arc<dyn Conn + Send + Sync> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
+    let turn_socket: Arc<dyn Conn> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
 
     let m = new_test_manager();
 
@@ -202,7 +202,7 @@ async fn test_delete_allocation() -> Result<()> {
     //env_logger::init();
 
     // turn server initialization
-    let turn_socket: Arc<dyn Conn + Send + Sync> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
+    let turn_socket: Arc<dyn Conn> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
 
     let m = new_test_manager();
 
@@ -239,7 +239,7 @@ async fn test_allocation_timeout() -> Result<()> {
     //env_logger::init();
 
     // turn server initialization
-    let turn_socket: Arc<dyn Conn + Send + Sync> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
+    let turn_socket: Arc<dyn Conn> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
 
     let m = new_test_manager();
 
@@ -292,7 +292,7 @@ async fn test_manager_close() -> Result<()> {
     // env_logger::init();
 
     // turn server initialization
-    let turn_socket: Arc<dyn Conn + Send + Sync> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
+    let turn_socket: Arc<dyn Conn> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
 
     let m = new_test_manager();
 
@@ -338,7 +338,7 @@ async fn test_manager_close() -> Result<()> {
 
 #[tokio::test]
 async fn test_delete_allocation_by_username() -> Result<()> {
-    let turn_socket: Arc<dyn Conn + Send + Sync> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
+    let turn_socket: Arc<dyn Conn> = Arc::new(UdpSocket::bind("0.0.0.0:0").await?);
 
     let m = new_test_manager();
 

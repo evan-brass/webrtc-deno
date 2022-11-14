@@ -165,8 +165,8 @@ impl NetworkAddressTranslator {
 
     pub(crate) async fn translate_outbound(
         &self,
-        from: &(dyn Chunk + Send + Sync),
-    ) -> Result<Option<Box<dyn Chunk + Send + Sync>>> {
+        from: &(dyn Chunk),
+    ) -> Result<Option<Box<dyn Chunk>>> {
         let mut to = from.clone_to();
 
         if from.network() == UDP_STR {
@@ -296,8 +296,8 @@ impl NetworkAddressTranslator {
 
     pub(crate) async fn translate_inbound(
         &self,
-        from: &(dyn Chunk + Send + Sync),
-    ) -> Result<Option<Box<dyn Chunk + Send + Sync>>> {
+        from: &(dyn Chunk),
+    ) -> Result<Option<Box<dyn Chunk>>> {
         let mut to = from.clone_to();
 
         if from.network() == UDP_STR {

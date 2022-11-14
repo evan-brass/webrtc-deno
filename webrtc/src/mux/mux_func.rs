@@ -1,5 +1,5 @@
 /// MatchFunc allows custom logic for mapping packets to an Endpoint
-pub type MatchFunc = Box<dyn (Fn(&[u8]) -> bool) + Send + Sync>;
+pub type MatchFunc = Box<dyn (Fn(&[u8]) -> bool)>;
 
 /// match_all always returns true
 pub fn match_all(_b: &[u8]) -> bool {

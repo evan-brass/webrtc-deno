@@ -203,7 +203,7 @@ async fn main() -> Result<(), Error> {
         let client2 = Arc::clone(&client);
         ice_agent
             .on_candidate(Box::new(
-                move |c: Option<Arc<dyn Candidate + Send + Sync>>| {
+                move |c: Option<Arc<dyn Candidate>>| {
                     let client3 = Arc::clone(&client2);
                     Box::pin(async move {
                         if let Some(c) = c {
@@ -293,7 +293,7 @@ async fn main() -> Result<(), Error> {
                         if let Some(s) = result {
                             if let Ok(c) = unmarshal_candidate(&s).await {
                                 println!("add_remote_candidate: {}", c);
-                                let c: Arc<dyn Candidate + Send + Sync> = Arc::new(c);
+                                let c: Arc<dyn Candidate> = Arc::new(c);
                                 let _ = ice_agent2.add_remote_candidate(&c).await;
                             }else{
                                 println!("unmarshal_candidate error!");
@@ -313,7 +313,7 @@ async fn main() -> Result<(), Error> {
 
         let (_cancel_tx, cancel_rx) = mpsc::channel(1);
         // Start the ICE Agent. One side must be controlled, and the other must be controlling
-        let conn: Arc<dyn Conn + Send + Sync> = if is_controlling {
+        let conn: Arc<dyn Conn> = if is_controlling {
             ice_agent.dial(cancel_rx, remote_ufrag, remote_pwd).await?
         } else {
             ice_agent

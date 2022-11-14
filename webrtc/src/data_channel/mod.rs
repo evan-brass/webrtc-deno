@@ -32,16 +32,16 @@ use crate::stats::{DataChannelStats, StatsReportType};
 const DATA_CHANNEL_BUFFER_SIZE: u16 = u16::MAX;
 
 pub type OnMessageHdlrFn = Box<
-    dyn (FnMut(DataChannelMessage) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(DataChannelMessage) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnOpenHdlrFn =
-    Box<dyn (FnOnce() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>) + Send + Sync>;
+    Box<dyn (FnOnce() -> Pin<Box<dyn Future<Output = ()> + 'static>>)>;
 
 pub type OnCloseHdlrFn =
-    Box<dyn (FnMut() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>) + Send + Sync>;
+    Box<dyn (FnMut() -> Pin<Box<dyn Future<Output = ()> + 'static>>)>;
 
 /// DataChannel represents a WebRTC DataChannel
 /// The DataChannel interface represents a network channel

@@ -15,8 +15,8 @@ use util::conn::*;
 
 async fn create_new_association_pair(
     br: &Arc<Bridge>,
-    ca: Arc<dyn Conn + Send + Sync>,
-    cb: Arc<dyn Conn + Send + Sync>,
+    ca: Arc<dyn Conn>,
+    cb: Arc<dyn Conn>,
     ack_mode: AckMode,
     recv_buf_size: u32,
 ) -> Result<(Association, Association)> {
@@ -2120,11 +2120,11 @@ impl FakeEchoConn {
 }
 
 trait AsAny {
-    fn as_any(&self) -> &(dyn std::any::Any + Send + Sync);
+    fn as_any(&self) -> &(dyn std::any::Any);
 }
 
 impl AsAny for FakeEchoConn {
-    fn as_any(&self) -> &(dyn std::any::Any + Send + Sync) {
+    fn as_any(&self) -> &(dyn std::any::Any) {
         self
     }
 }
@@ -2203,7 +2203,7 @@ async fn test_stats() -> Result<()> {
 
     let conn = Arc::new(FakeEchoConn::new());
     let a = Association::client(Config {
-        net_conn: Arc::clone(&conn) as Arc<dyn Conn + Send + Sync>,
+        net_conn: Arc::clone(&conn) as Arc<dyn Conn>,
         max_receive_buffer_size: 0,
         max_message_size: 0,
         name: "client".to_owned(),

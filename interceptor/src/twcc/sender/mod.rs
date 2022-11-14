@@ -31,7 +31,7 @@ impl SenderBuilder {
 
 impl InterceptorBuilder for SenderBuilder {
     /// build constructs a new SenderInterceptor
-    fn build(&self, _id: &str) -> Result<Arc<dyn Interceptor + Send + Sync>> {
+    fn build(&self, _id: &str) -> Result<Arc<dyn Interceptor>> {
         Ok(Arc::new(Sender {
             next_sequence_nr: Arc::new(AtomicU32::new(self.init_sequence_nr)),
             streams: Mutex::new(HashMap::new()),
@@ -58,8 +58,8 @@ impl Interceptor for Sender {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync> {
+        reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader> {
         reader
     }
 
@@ -67,8 +67,8 @@ impl Interceptor for Sender {
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync> {
+        writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter> {
         writer
     }
 
@@ -77,8 +77,8 @@ impl Interceptor for Sender {
     async fn bind_local_stream(
         &self,
         info: &StreamInfo,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync> {
+        writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter> {
         let mut hdr_ext_id = 0u8;
         for e in &info.rtp_header_extensions {
             if e.uri == TRANSPORT_CC_URI {
@@ -116,8 +116,8 @@ impl Interceptor for Sender {
     async fn bind_remote_stream(
         &self,
         _info: &StreamInfo,
-        reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync> {
+        reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader> {
         reader
     }
 

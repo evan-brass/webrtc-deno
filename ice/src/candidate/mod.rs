@@ -79,10 +79,10 @@ pub trait Candidate: fmt::Display {
     async fn close(&self) -> Result<()>;
     fn seen(&self, outbound: bool);
 
-    async fn write_to(&self, raw: &[u8], dst: &(dyn Candidate + Send + Sync)) -> Result<usize>;
+    async fn write_to(&self, raw: &[u8], dst: &(dyn Candidate)) -> Result<usize>;
     fn equal(&self, other: &dyn Candidate) -> bool;
     async fn set_ip(&self, ip: &IpAddr) -> Result<()>;
-    fn get_conn(&self) -> Option<&Arc<dyn util::Conn + Send + Sync>>;
+    fn get_conn(&self) -> Option<&Arc<dyn util::Conn>>;
     fn get_closed_ch(&self) -> Arc<Mutex<Option<broadcast::Sender<()>>>>;
 }
 
@@ -227,8 +227,8 @@ impl fmt::Display for CandidatePairState {
 /// Represents a combination of a local and remote candidate.
 pub struct CandidatePair {
     pub(crate) ice_role_controlling: AtomicBool,
-    pub remote: Arc<dyn Candidate + Send + Sync>,
-    pub local: Arc<dyn Candidate + Send + Sync>,
+    pub remote: Arc<dyn Candidate>,
+    pub local: Arc<dyn Candidate>,
     pub(crate) binding_request_count: AtomicU16,
     pub(crate) state: AtomicU8, // convert it to CandidatePairState,
     pub(crate) nominated: AtomicBool,
@@ -284,8 +284,8 @@ impl PartialEq for CandidatePair {
 impl CandidatePair {
     #[must_use]
     pub fn new(
-        local: Arc<dyn Candidate + Send + Sync>,
-        remote: Arc<dyn Candidate + Send + Sync>,
+        local: Arc<dyn Candidate>,
+        remote: Arc<dyn Candidate>,
         controlling: bool,
     ) -> Self {
         Self {

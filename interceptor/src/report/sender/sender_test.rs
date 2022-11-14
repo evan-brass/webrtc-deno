@@ -13,7 +13,7 @@ async fn test_sender_interceptor_before_any_packet() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = SenderReport::builder()
+    let icpr: Arc<dyn Interceptor> = SenderReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -65,7 +65,7 @@ async fn test_sender_interceptor_after_rtp_packets() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = SenderReport::builder()
+    let icpr: Arc<dyn Interceptor> = SenderReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -129,7 +129,7 @@ async fn test_sender_interceptor_after_rtp_packets_overflow() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = SenderReport::builder()
+    let icpr: Arc<dyn Interceptor> = SenderReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;

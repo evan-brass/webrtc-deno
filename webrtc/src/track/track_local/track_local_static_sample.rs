@@ -9,8 +9,8 @@ use tokio::sync::Mutex;
 
 #[derive(Debug, Clone)]
 struct TrackLocalStaticSampleInternal {
-    packetizer: Option<Box<dyn rtp::packetizer::Packetizer + Send + Sync>>,
-    sequencer: Option<Box<dyn rtp::sequence::Sequencer + Send + Sync>>,
+    packetizer: Option<Box<dyn rtp::packetizer::Packetizer>>,
+    sequencer: Option<Box<dyn rtp::sequence::Sequencer>>,
     clock_rate: f64,
     did_warn_about_wonky_pause: bool,
 }
@@ -174,7 +174,7 @@ impl TrackLocal for TrackLocalStaticSample {
         }
 
         let payloader = codec.capability.payloader_for_codec()?;
-        let sequencer: Box<dyn rtp::sequence::Sequencer + Send + Sync> =
+        let sequencer: Box<dyn rtp::sequence::Sequencer> =
             Box::new(rtp::sequence::new_random_sequencer());
         internal.packetizer = Some(Box::new(rtp::packetizer::new_packetizer(
             RTP_OUTBOUND_MTU,

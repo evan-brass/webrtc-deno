@@ -113,40 +113,40 @@ pub fn math_rand_alpha(n: usize) -> String {
 }
 
 pub type OnSignalingStateChangeHdlrFn = Box<
-    dyn (FnMut(RTCSignalingState) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(RTCSignalingState) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnICEConnectionStateChangeHdlrFn = Box<
-    dyn (FnMut(RTCIceConnectionState) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(RTCIceConnectionState) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnPeerConnectionStateChangeHdlrFn = Box<
-    dyn (FnMut(RTCPeerConnectionState) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(RTCPeerConnectionState) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnDataChannelHdlrFn = Box<
-    dyn (FnMut(Arc<RTCDataChannel>) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(Arc<RTCDataChannel>) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnTrackHdlrFn = Box<
     dyn (FnMut(
             Option<Arc<TrackRemote>>,
             Option<Arc<RTCRtpReceiver>>,
-        ) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+        ) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnNegotiationNeededHdlrFn =
-    Box<dyn (FnMut() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>) + Send + Sync>;
+    Box<dyn (FnMut() -> Pin<Box<dyn Future<Output = ()> + 'static>>)>;
 
 #[derive(Clone)]
 struct StartTransportsParams {
@@ -186,9 +186,9 @@ pub struct RTCPeerConnection {
 
     configuration: RTCConfiguration,
 
-    interceptor_rtcp_writer: Arc<dyn RTCPWriter + Send + Sync>,
+    interceptor_rtcp_writer: Arc<dyn RTCPWriter>,
 
-    interceptor: Arc<dyn Interceptor + Send + Sync>,
+    interceptor: Arc<dyn Interceptor>,
 
     pub(crate) internal: Arc<PeerConnectionInternal>,
 }
@@ -220,7 +220,7 @@ impl RTCPeerConnection {
     pub(crate) async fn new(api: &API, mut configuration: RTCConfiguration) -> Result<Self> {
         RTCPeerConnection::init_configuration(&mut configuration)?;
 
-        let (interceptor, stats_interceptor): (Arc<dyn Interceptor + Send + Sync>, _) = {
+        let (interceptor, stats_interceptor): (Arc<dyn Interceptor>, _) = {
             let mut chain = api.interceptor_registry.build_chain("")?;
             let stats_interceptor = stats::make_stats_interceptor("");
             chain.add(stats_interceptor.clone());
@@ -232,7 +232,7 @@ impl RTCPeerConnection {
         let (internal, configuration) =
             PeerConnectionInternal::new(api, weak_interceptor, stats_interceptor, configuration)
                 .await?;
-        let internal_rtcp_writer = Arc::clone(&internal) as Arc<dyn RTCPWriter + Send + Sync>;
+        let internal_rtcp_writer = Arc::clone(&internal) as Arc<dyn RTCPWriter>;
         let interceptor_rtcp_writer = interceptor.bind_rtcp_writer(internal_rtcp_writer).await;
 
         // <https://w3c.github.io/webrtc-pc/#constructor> (Step #2)
@@ -1622,7 +1622,7 @@ impl RTCPeerConnection {
         };
 
         let ice_candidate = if !candidate_value.is_empty() {
-            let candidate: Arc<dyn Candidate + Send + Sync> =
+            let candidate: Arc<dyn Candidate> =
                 Arc::new(unmarshal_candidate(candidate_value).await?);
 
             Some(RTCIceCandidate::from(&candidate))
@@ -1678,7 +1678,7 @@ impl RTCPeerConnection {
     /// add_track adds a Track to the PeerConnection
     pub async fn add_track(
         &self,
-        track: Arc<dyn TrackLocal + Send + Sync>,
+        track: Arc<dyn TrackLocal>,
     ) -> Result<Arc<RTCRtpSender>> {
         if self.internal.is_closed.load(Ordering::SeqCst) {
             return Err(Error::ErrConnectionClosed);
@@ -1784,7 +1784,7 @@ impl RTCPeerConnection {
     /// add_transceiver_from_track Create a new RtpTransceiver(SendRecv or SendOnly) and add it to the set of transceivers.
     pub async fn add_transceiver_from_track<'a>(
         &'a self,
-        track: Arc<dyn TrackLocal + Send + Sync>,
+        track: Arc<dyn TrackLocal>,
         init: &'a [RTCRtpTransceiverInit],
     ) -> Result<Arc<RTCRtpTransceiver>> {
         if self.internal.is_closed.load(Ordering::SeqCst) {
@@ -1897,7 +1897,7 @@ impl RTCPeerConnection {
     /// packet is discarded. It also runs any configured interceptors.
     pub async fn write_rtcp(
         &self,
-        pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+        pkts: &[Box<dyn rtcp::packet::Packet>],
     ) -> Result<usize> {
         let a = Attributes::new();
         Ok(self.interceptor_rtcp_writer.write(pkts, &a).await?)

@@ -8,7 +8,7 @@ use rtcp::transport_feedbacks::transport_layer_nack::TransportLayerNack;
 #[tokio::test]
 async fn test_generator_interceptor() -> Result<()> {
     const INTERVAL: Duration = Duration::from_millis(10);
-    let icpr: Arc<dyn Interceptor + Send + Sync> = Generator::builder()
+    let icpr: Arc<dyn Interceptor> = Generator::builder()
         .with_log2_size_minus_6(0)
         .with_skip_last_n(2)
         .with_interval(INTERVAL)

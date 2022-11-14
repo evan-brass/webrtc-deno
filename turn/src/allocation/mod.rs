@@ -66,9 +66,9 @@ impl AllocationInfo {
 // use create_allocation and get_allocation to operate
 pub struct Allocation {
     protocol: Protocol,
-    turn_socket: Arc<dyn Conn + Send + Sync>,
+    turn_socket: Arc<dyn Conn>,
     pub(crate) relay_addr: SocketAddr,
-    pub(crate) relay_socket: Arc<dyn Conn + Send + Sync>,
+    pub(crate) relay_socket: Arc<dyn Conn>,
     five_tuple: FiveTuple,
     username: Username,
     permissions: Arc<Mutex<HashMap<String, Permission>>>,
@@ -87,8 +87,8 @@ fn addr2ipfingerprint(addr: &SocketAddr) -> String {
 impl Allocation {
     // creates a new instance of NewAllocation.
     pub fn new(
-        turn_socket: Arc<dyn Conn + Send + Sync>,
-        relay_socket: Arc<dyn Conn + Send + Sync>,
+        turn_socket: Arc<dyn Conn>,
+        relay_socket: Arc<dyn Conn>,
         relay_addr: SocketAddr,
         five_tuple: FiveTuple,
         username: Username,

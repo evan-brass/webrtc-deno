@@ -37,8 +37,8 @@ async fn build_pipe() -> Result<(DTLSConn, DTLSConn)> {
 }
 
 async fn pipe_conn(
-    ca: Arc<dyn util::Conn + Send + Sync>,
-    cb: Arc<dyn util::Conn + Send + Sync>,
+    ca: Arc<dyn util::Conn>,
+    cb: Arc<dyn util::Conn>,
 ) -> Result<(DTLSConn, DTLSConn)> {
     let (c_tx, mut c_rx) = mpsc::channel(1);
 
@@ -98,7 +98,7 @@ fn psk_callback_hint_fail(_hint: &[u8]) -> Result<Vec<u8>> {
 }
 
 async fn create_test_client(
-    ca: Arc<dyn util::Conn + Send + Sync>,
+    ca: Arc<dyn util::Conn>,
     mut cfg: Config,
     generate_certificate: bool,
 ) -> Result<DTLSConn> {
@@ -112,7 +112,7 @@ async fn create_test_client(
 }
 
 async fn create_test_server(
-    cb: Arc<dyn util::Conn + Send + Sync>,
+    cb: Arc<dyn util::Conn>,
     mut cfg: Config,
     generate_certificate: bool,
 ) -> Result<DTLSConn> {
@@ -438,7 +438,7 @@ async fn test_export_keying_material() -> Result<()> {
         handshake_completed_successfully: Arc::new(AtomicBool::new(false)),
         connection_closed_by_user: false,
         closed: AtomicBool::new(false),
-        current_flight: Box::new(Flight0 {}) as Box<dyn Flight + Send + Sync>,
+        current_flight: Box::new(Flight0 {}) as Box<dyn Flight>,
         flights: None,
         cfg: HandshakeConfig::default(),
         retransmit: false,
@@ -2407,7 +2407,7 @@ async fn test_multiple_hello_verify_request() -> Result<()> {
 
 async fn send_client_hello(
     cookie: Vec<u8>,
-    ca: &Arc<dyn Conn + Send + Sync>,
+    ca: &Arc<dyn Conn>,
     sequence_number: u64,
     send_renegotiation_info: bool,
 ) -> Result<()> {
@@ -2469,7 +2469,7 @@ async fn test_renegotation_info() -> Result<()> {
 
         tokio::time::sleep(Duration::from_millis(5)).await;
 
-        let ca: Arc<dyn Conn + Send + Sync> = Arc::new(ca);
+        let ca: Arc<dyn Conn> = Arc::new(ca);
         send_client_hello(vec![], &ca, 0, send_renegotiation_info).await?;
 
         let n = ca.recv(&mut resp).await?;

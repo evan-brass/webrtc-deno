@@ -111,8 +111,8 @@ struct ClientSettings {
     max_attempts: u32,
     closed: bool,
     //handler: Handler,
-    collector: Option<Box<dyn Collector + Send>>,
-    c: Option<Arc<dyn Conn + Send + Sync>>,
+    collector: Option<Box<dyn Collector>>,
+    c: Option<Arc<dyn Conn>>,
 }
 
 impl Default for ClientSettings {
@@ -164,13 +164,13 @@ impl ClientBuilder {
 
     /// with_collector rests client timeout collector, the implementation
     /// of ticker which calls function on each tick.
-    pub fn with_collector(mut self, coll: Box<dyn Collector + Send>) -> Self {
+    pub fn with_collector(mut self, coll: Box<dyn Collector>) -> Self {
         self.settings.collector = Some(coll);
         self
     }
 
     /// with_conn sets transport connection
-    pub fn with_conn(mut self, conn: Arc<dyn Conn + Send + Sync>) -> Self {
+    pub fn with_conn(mut self, conn: Arc<dyn Conn>) -> Self {
         self.settings.c = Some(conn);
         self
     }
@@ -220,7 +220,7 @@ pub struct Client {
 impl Client {
     async fn read_until_closed(
         mut close_rx: mpsc::Receiver<()>,
-        c: Arc<dyn Conn + Send + Sync>,
+        c: Arc<dyn Conn>,
         client_agent_tx: Arc<mpsc::Sender<ClientAgent>>,
     ) {
         let mut msg = Message::new();
@@ -277,7 +277,7 @@ impl Client {
     }
 
     fn start(
-        conn: Option<Arc<dyn Conn + Send + Sync>>,
+        conn: Option<Arc<dyn Conn>>,
         mut handler_rx: mpsc::UnboundedReceiver<Event>,
         client_agent_tx: Arc<mpsc::Sender<ClientAgent>>,
         mut t: HashMap<TransactionId, ClientTransaction>,

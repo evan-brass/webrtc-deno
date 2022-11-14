@@ -78,7 +78,7 @@ async fn main() -> Result<(), Error> {
         server_name: "webrtc.rs".to_owned(),
         ..Default::default()
     };
-    let dtls_conn: Arc<dyn Conn + Send + Sync> =
+    let dtls_conn: Arc<dyn Conn> =
         Arc::new(DTLSConn::new(conn, config, true, None).await?);
 
     println!("Connected; type 'exit' to shutdown gracefully");

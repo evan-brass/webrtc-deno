@@ -620,7 +620,7 @@ async fn test_media_description_fingerprints() -> Result<()> {
     ];
 
     for i in 0..2 {
-        let track: Arc<dyn TrackLocal + Send + Sync> = Arc::new(TrackLocalStaticSample::new(
+        let track: Arc<dyn TrackLocal> = Arc::new(TrackLocalStaticSample::new(
             RTCRtpCodecCapability {
                 mime_type: "video/vp8".to_owned(),
                 ..Default::default()

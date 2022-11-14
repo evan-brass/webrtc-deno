@@ -26,9 +26,9 @@ async fn test_peer_connection_interceptor() -> Result<()> {
         let mut ir = Registry::new();
 
         let BindLocalStreamFn = |info: &StreamInfo,
-                                 writer: Arc<dyn RTPWriter + Send + Sync>|
+                                 writer: Arc<dyn RTPWriter>|
          -> Pin<
-            Box<dyn Future<Output = Arc<dyn RTPWriter + Send + Sync>> + Send + Sync>,
+            Box<dyn Future<Output = Arc<dyn RTPWriter>>>,
         > {
             let writer2 = Arc::clone(&writer);
             Box::pin(async move {
@@ -38,8 +38,8 @@ async fn test_peer_connection_interceptor() -> Result<()> {
                           -> Pin<
                         Box<
                             dyn Future<Output = std::result::Result<usize, interceptor::Error>>
-                                + Send
-                                + Sync,
+                               
+                               ,
                         >,
                     > {
                         let writer3 = Arc::clone(&writer2);
@@ -57,7 +57,7 @@ async fn test_peer_connection_interceptor() -> Result<()> {
                             Ok(0)
                         })
                     },
-                ))) as Arc<dyn RTPWriter + Send + Sync>
+                ))) as Arc<dyn RTPWriter>
             })
         };
 
@@ -75,7 +75,7 @@ async fn test_peer_connection_interceptor() -> Result<()> {
             build:
                 Box::new(
                     |_: &str| -> std::result::Result<
-                        Arc<dyn Interceptor + Send + Sync>,
+                        Arc<dyn Interceptor>,
                         interceptor::Error,
                     > {
                         Ok(Arc::new(MockInterceptor {
@@ -86,7 +86,7 @@ async fn test_peer_connection_interceptor() -> Result<()> {
         });
         let mock_builder = MockBuilder::new(
                     |_: &str| -> std::result::Result<
-                        Arc<dyn Interceptor + Send + Sync>,
+                        Arc<dyn Interceptor>,
                         interceptor::Error,
                     > {
                         Ok(Arc::new(MockInterceptor {

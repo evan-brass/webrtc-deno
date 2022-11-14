@@ -7,14 +7,14 @@ use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex};
 use util::{Marshal, Unmarshal};
 
-type RTCPPackets = Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>;
+type RTCPPackets = Vec<Box<dyn rtcp::packet::Packet>>;
 
 /// MockStream is a helper struct for testing interceptors.
 pub struct MockStream {
-    interceptor: Arc<dyn Interceptor + Send + Sync>,
+    interceptor: Arc<dyn Interceptor>,
 
-    rtcp_writer: Mutex<Option<Arc<dyn RTCPWriter + Send + Sync>>>,
-    rtp_writer: Mutex<Option<Arc<dyn RTPWriter + Send + Sync>>>,
+    rtcp_writer: Mutex<Option<Arc<dyn RTCPWriter>>>,
+    rtp_writer: Mutex<Option<Arc<dyn RTPWriter>>>,
 
     rtcp_out_modified_tx: mpsc::Sender<RTCPPackets>,
     rtp_out_modified_tx: mpsc::Sender<rtp::packet::Packet>,
@@ -34,7 +34,7 @@ impl MockStream {
     /// new creates a new MockStream
     pub async fn new(
         info: &StreamInfo,
-        interceptor: Arc<dyn Interceptor + Send + Sync>,
+        interceptor: Arc<dyn Interceptor>,
     ) -> Arc<Self> {
         let (rtcp_in_tx, rtcp_in_rx) = mpsc::channel(1000);
         let (rtp_in_tx, rtp_in_rx) = mpsc::channel(1000);
@@ -64,7 +64,7 @@ impl MockStream {
         });
 
         let rtcp_writer = interceptor
-            .bind_rtcp_writer(Arc::clone(&stream) as Arc<dyn RTCPWriter + Send + Sync>)
+            .bind_rtcp_writer(Arc::clone(&stream) as Arc<dyn RTCPWriter>)
             .await;
         {
             let mut rw = stream.rtcp_writer.lock().await;
@@ -73,7 +73,7 @@ impl MockStream {
         let rtp_writer = interceptor
             .bind_local_stream(
                 info,
-                Arc::clone(&stream) as Arc<dyn RTPWriter + Send + Sync>,
+                Arc::clone(&stream) as Arc<dyn RTPWriter>,
             )
             .await;
         {
@@ -82,7 +82,7 @@ impl MockStream {
         }
 
         let rtcp_reader = interceptor
-            .bind_rtcp_reader(Arc::clone(&stream) as Arc<dyn RTCPReader + Send + Sync>)
+            .bind_rtcp_reader(Arc::clone(&stream) as Arc<dyn RTCPReader>)
             .await;
         tokio::spawn(async move {
             let mut buf = vec![0u8; 1500];
@@ -114,7 +114,7 @@ impl MockStream {
         let rtp_reader = interceptor
             .bind_remote_stream(
                 info,
-                Arc::clone(&stream) as Arc<dyn RTPReader + Send + Sync>,
+                Arc::clone(&stream) as Arc<dyn RTPReader>,
             )
             .await;
         tokio::spawn(async move {
@@ -150,7 +150,7 @@ impl MockStream {
     /// write_rtcp writes a batch of rtcp packet to the stream, using the interceptor
     pub async fn write_rtcp(
         &self,
-        pkt: &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+        pkt: &[Box<dyn rtcp::packet::Packet>],
     ) -> Result<usize> {
         let a = Attributes::new();
         let rtcp_writer = self.rtcp_writer.lock().await;
@@ -173,7 +173,7 @@ impl MockStream {
     }
 
     /// receive_rtcp schedules a new rtcp batch, so it can be read be the stream
-    pub async fn receive_rtcp(&self, pkts: Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>) {
+    pub async fn receive_rtcp(&self, pkts: Vec<Box<dyn rtcp::packet::Packet>>) {
         let rtcp_in_tx = self.rtcp_in_tx.lock().await;
         if let Some(tx) = &*rtcp_in_tx {
             let _ = tx.send(pkts).await;
@@ -189,7 +189,7 @@ impl MockStream {
     }
 
     /// written_rtcp returns a channel containing the rtcp batches written, modified by the interceptor
-    pub async fn written_rtcp(&self) -> Option<Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>> {
+    pub async fn written_rtcp(&self) -> Option<Vec<Box<dyn rtcp::packet::Packet>>> {
         let mut rtcp_out_modified_rx = self.rtcp_out_modified_rx.lock().await;
         rtcp_out_modified_rx.recv().await
     }
@@ -199,7 +199,7 @@ impl MockStream {
     /// NB: This method discards all other previously recoreded packet batches.
     pub async fn last_written_rtcp(
         &self,
-    ) -> Option<Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>> {
+    ) -> Option<Vec<Box<dyn rtcp::packet::Packet>>> {
         let mut last = None;
         let mut rtcp_out_modified_rx = self.rtcp_out_modified_rx.lock().await;
 
@@ -219,7 +219,7 @@ impl MockStream {
     /// read_rtcp returns a channel containing the rtcp batched read, modified by the interceptor
     pub async fn read_rtcp(
         &self,
-    ) -> Option<Result<Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>>> {
+    ) -> Option<Result<Vec<Box<dyn rtcp::packet::Packet>>>> {
         let mut rtcp_in_modified_rx = self.rtcp_in_modified_rx.lock().await;
         rtcp_in_modified_rx.recv().await
     }
@@ -248,7 +248,7 @@ impl MockStream {
 impl RTCPWriter for MockStream {
     async fn write(
         &self,
-        pkts: &[Box<dyn rtcp::packet::Packet + Send + Sync>],
+        pkts: &[Box<dyn rtcp::packet::Packet>],
         _attributes: &Attributes,
     ) -> Result<usize> {
         let _ = self.rtcp_out_modified_tx.send(pkts.to_vec()).await;

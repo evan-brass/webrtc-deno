@@ -20,7 +20,7 @@ pub async fn listen<A: 'static + ToSocketAddrs>(laddr: A, config: Config) -> Res
 
     let mut lc = ListenConfig {
         accept_filter: Some(Box::new(
-            |packet: &[u8]| -> Pin<Box<dyn Future<Output = bool> + Send + 'static>> {
+            |packet: &[u8]| -> Pin<Box<dyn Future<Output = bool> + 'static>> {
                 let pkts = match unpack_datagram(packet) {
                     Ok(pkts) => {
                         if pkts.is_empty() {
@@ -50,13 +50,13 @@ pub async fn listen<A: 'static + ToSocketAddrs>(laddr: A, config: Config) -> Res
 
 /// DTLSListener represents a DTLS listener
 pub struct DTLSListener {
-    parent: Arc<dyn Listener + Send + Sync>,
+    parent: Arc<dyn Listener>,
     config: Config,
 }
 
 impl DTLSListener {
     ///  creates a DTLS listener which accepts connections from an inner Listener.
-    pub fn new(parent: Arc<dyn Listener + Send + Sync>, config: Config) -> Result<Self> {
+    pub fn new(parent: Arc<dyn Listener>, config: Config) -> Result<Self> {
         validate_config(false, &config)?;
 
         Ok(DTLSListener { parent, config })
@@ -71,7 +71,7 @@ impl Listener for DTLSListener {
     /// You have to either close or read on all connection that are created.
     /// Connection handshake will timeout using ConnectContextMaker in the Config.
     /// If you want to specify the timeout duration, set ConnectContextMaker.
-    async fn accept(&self) -> UtilResult<(Arc<dyn Conn + Send + Sync>, SocketAddr)> {
+    async fn accept(&self) -> UtilResult<(Arc<dyn Conn>, SocketAddr)> {
         let (conn, raddr) = self.parent.accept().await?;
         let dtls_conn = DTLSConn::new(conn, self.config.clone(), false, None)
             .await

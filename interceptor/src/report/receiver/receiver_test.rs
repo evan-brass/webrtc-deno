@@ -13,7 +13,7 @@ async fn test_receiver_interceptor_before_any_packet() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -65,7 +65,7 @@ async fn test_receiver_interceptor_after_rtp_packets() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -130,7 +130,7 @@ async fn test_receiver_interceptor_after_rtp_and_rtcp_packets() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -212,7 +212,7 @@ async fn test_receiver_interceptor_overflow() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -282,7 +282,7 @@ async fn test_receiver_interceptor_overflow_five_pkts() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -384,7 +384,7 @@ async fn test_receiver_interceptor_packet_loss() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -495,7 +495,7 @@ async fn test_receiver_interceptor_overflow_and_packet_loss() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -565,7 +565,7 @@ async fn test_receiver_interceptor_reordered_packets() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -627,7 +627,7 @@ async fn test_receiver_interceptor_jitter() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;
@@ -707,7 +707,7 @@ async fn test_receiver_interceptor_delay() -> Result<()> {
         Arc::new(move || mt.now())
     };
 
-    let icpr: Arc<dyn Interceptor + Send + Sync> = ReceiverReport::builder()
+    let icpr: Arc<dyn Interceptor> = ReceiverReport::builder()
         .with_interval(Duration::from_millis(50))
         .with_now_fn(time_gen)
         .build("")?;

@@ -24,7 +24,7 @@ pub struct CandidateBaseConfig {
     pub component: u16,
     pub priority: u32,
     pub foundation: String,
-    pub conn: Option<Arc<dyn util::Conn + Send + Sync>>,
+    pub conn: Option<Arc<dyn util::Conn>>,
     pub initialized_ch: Option<broadcast::Receiver<()>>,
 }
 
@@ -46,7 +46,7 @@ pub struct CandidateBase {
     pub(crate) last_sent: AtomicU64,
     pub(crate) last_received: AtomicU64,
 
-    pub(crate) conn: Option<Arc<dyn util::Conn + Send + Sync>>,
+    pub(crate) conn: Option<Arc<dyn util::Conn>>,
     pub(crate) closed_ch: Arc<Mutex<Option<broadcast::Sender<()>>>>,
 
     pub(crate) foundation_override: String,
@@ -268,7 +268,7 @@ impl Candidate for CandidateBase {
         }
     }
 
-    async fn write_to(&self, raw: &[u8], dst: &(dyn Candidate + Send + Sync)) -> Result<usize> {
+    async fn write_to(&self, raw: &[u8], dst: &(dyn Candidate)) -> Result<usize> {
         let n = if let Some(conn) = &self.conn {
             let addr = dst.addr().await;
             conn.send_to(raw, addr).await?
@@ -301,7 +301,7 @@ impl Candidate for CandidateBase {
         Ok(())
     }
 
-    fn get_conn(&self) -> Option<&Arc<dyn util::Conn + Send + Sync>> {
+    fn get_conn(&self) -> Option<&Arc<dyn util::Conn>> {
         self.conn.as_ref()
     }
 

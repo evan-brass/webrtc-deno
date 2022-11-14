@@ -47,7 +47,7 @@ impl RelayAddressGenerator for RelayAddressGeneratorRanges {
         &self,
         use_ipv4: bool,
         requested_port: u16,
-    ) -> Result<(Arc<dyn Conn + Send + Sync>, SocketAddr)> {
+    ) -> Result<(Arc<dyn Conn>, SocketAddr)> {
         let max_retries = if self.max_retries == 0 {
             10
         } else {

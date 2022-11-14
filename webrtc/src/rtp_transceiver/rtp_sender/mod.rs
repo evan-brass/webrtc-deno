@@ -26,7 +26,7 @@ pub(crate) struct RTPSenderInternal {
     pub(crate) send_called_rx: Mutex<mpsc::Receiver<()>>,
     pub(crate) stop_called_rx: Arc<Notify>,
     pub(crate) stop_called_signal: Arc<AtomicBool>,
-    pub(crate) rtcp_interceptor: Mutex<Option<Arc<dyn RTCPReader + Send + Sync>>>,
+    pub(crate) rtcp_interceptor: Mutex<Option<Arc<dyn RTCPReader>>>,
 }
 
 impl RTPSenderInternal {
@@ -64,7 +64,7 @@ impl RTPSenderInternal {
     async fn read_rtcp(
         &self,
         receive_mtu: usize,
-    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>, Attributes)> {
+    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet>>, Attributes)> {
         let mut b = vec![0u8; receive_mtu];
         let (n, attributes) = self.read(&mut b).await?;
 
@@ -77,7 +77,7 @@ impl RTPSenderInternal {
 
 /// RTPSender allows an application to control how a given Track is encoded and transmitted to a remote peer
 pub struct RTCRtpSender {
-    pub(crate) track: Mutex<Option<Arc<dyn TrackLocal + Send + Sync>>>,
+    pub(crate) track: Mutex<Option<Arc<dyn TrackLocal>>>,
 
     pub(crate) srtp_stream: Arc<SrtpWriterFuture>,
     pub(crate) stream_info: Mutex<StreamInfo>,
@@ -95,7 +95,7 @@ pub struct RTCRtpSender {
     pub(crate) negotiated: AtomicBool,
 
     pub(crate) media_engine: Arc<MediaEngine>,
-    pub(crate) interceptor: Arc<dyn Interceptor + Send + Sync>,
+    pub(crate) interceptor: Arc<dyn Interceptor>,
 
     pub(crate) id: String,
 
@@ -127,10 +127,10 @@ impl std::fmt::Debug for RTCRtpSender {
 impl RTCRtpSender {
     pub async fn new(
         receive_mtu: usize,
-        track: Arc<dyn TrackLocal + Send + Sync>,
+        track: Arc<dyn TrackLocal>,
         transport: Arc<RTCDtlsTransport>,
         media_engine: Arc<MediaEngine>,
-        interceptor: Arc<dyn Interceptor + Send + Sync>,
+        interceptor: Arc<dyn Interceptor>,
         start_paused: bool,
     ) -> RTCRtpSender {
         let id = generate_crypto_random_string(
@@ -159,7 +159,7 @@ impl RTCRtpSender {
             rtp_write_session: Mutex::new(None),
         });
 
-        let srtp_rtcp_reader = Arc::clone(&srtp_stream) as Arc<dyn RTCPReader + Send + Sync>;
+        let srtp_rtcp_reader = Arc::clone(&srtp_stream) as Arc<dyn RTCPReader>;
         let rtcp_interceptor = interceptor.bind_rtcp_reader(srtp_rtcp_reader).await;
         {
             let mut internal_rtcp_interceptor = internal.rtcp_interceptor.lock().await;
@@ -274,7 +274,7 @@ impl RTCRtpSender {
     }
 
     /// track returns the RTCRtpTransceiver track, or nil
-    pub async fn track(&self) -> Option<Arc<dyn TrackLocal + Send + Sync>> {
+    pub async fn track(&self) -> Option<Arc<dyn TrackLocal>> {
         let track = self.track.lock().await;
         track.clone()
     }
@@ -284,7 +284,7 @@ impl RTCRtpSender {
     /// require negotiation.
     pub async fn replace_track(
         &self,
-        track: Option<Arc<dyn TrackLocal + Send + Sync>>,
+        track: Option<Arc<dyn TrackLocal>>,
     ) -> Result<()> {
         if let Some(t) = &track {
             let tr = self.rtp_transceiver.lock().await;
@@ -391,7 +391,7 @@ impl RTCRtpSender {
                     .await,
                 ssrc: parameters.encodings[0].ssrc,
                 write_stream: Some(
-                    Arc::clone(&write_stream) as Arc<dyn TrackLocalWriter + Send + Sync>
+                    Arc::clone(&write_stream) as Arc<dyn TrackLocalWriter>
                 ),
                 paused: self.paused.clone(),
             };
@@ -415,7 +415,7 @@ impl RTCRtpSender {
             (context, stream_info)
         };
 
-        let srtp_rtp_writer = Arc::clone(&self.srtp_stream) as Arc<dyn RTPWriter + Send + Sync>;
+        let srtp_rtp_writer = Arc::clone(&self.srtp_stream) as Arc<dyn RTPWriter>;
         let rtp_interceptor = self
             .interceptor
             .bind_local_stream(&stream_info, srtp_rtp_writer)
@@ -472,7 +472,7 @@ impl RTCRtpSender {
     /// read_rtcp is a convenience method that wraps Read and unmarshals for you.
     pub async fn read_rtcp(
         &self,
-    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet + Send + Sync>>, Attributes)> {
+    ) -> Result<(Vec<Box<dyn rtcp::packet::Packet>>, Attributes)> {
         self.internal.read_rtcp(self.receive_mtu).await
     }
 

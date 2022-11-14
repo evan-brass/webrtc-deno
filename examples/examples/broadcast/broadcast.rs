@@ -261,7 +261,7 @@ async fn main() -> Result<()> {
             let peer_connection = Arc::new(api.new_peer_connection(config).await?);
 
             let rtp_sender = peer_connection
-                .add_track(Arc::clone(&local_track) as Arc<dyn TrackLocal + Send + Sync>)
+                .add_track(Arc::clone(&local_track) as Arc<dyn TrackLocal>)
                 .await?;
 
             // Read incoming RTCP packets

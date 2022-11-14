@@ -29,19 +29,19 @@ pub struct RTCIceGatherOptions {
 }
 
 pub type OnLocalCandidateHdlrFn = Box<
-    dyn (FnMut(Option<RTCIceCandidate>) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(Option<RTCIceCandidate>) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnICEGathererStateChangeHdlrFn = Box<
-    dyn (FnMut(RTCIceGathererState) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(RTCIceGathererState) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnGatheringCompleteHdlrFn =
-    Box<dyn (FnMut() -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>) + Send + Sync>;
+    Box<dyn (FnMut() -> Pin<Box<dyn Future<Output = ()> + 'static>>)>;
 
 /// ICEGatherer gathers local host, server reflexive and relay
 /// candidates, as well as enabling the retrieval of local Interactive
@@ -167,7 +167,7 @@ impl RTCIceGatherer {
 
             agent
                 .on_candidate(Box::new(
-                    move |candidate: Option<Arc<dyn Candidate + Send + Sync>>| {
+                    move |candidate: Option<Arc<dyn Candidate>>| {
                         let state_clone = Arc::clone(&state);
                         let on_local_candidate_handler_clone =
                             Arc::clone(&on_local_candidate_handler);

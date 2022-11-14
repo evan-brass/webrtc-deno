@@ -220,7 +220,7 @@ async fn test_nack_pair_range() {
     let out = Arc::new(Mutex::new(vec![]));
     let out1 = Arc::clone(&out);
     n.range(Box::new(
-        move |s: u16| -> Pin<Box<dyn Future<Output = bool> + Send + 'static>> {
+        move |s: u16| -> Pin<Box<dyn Future<Output = bool> + 'static>> {
             let out2 = Arc::clone(&out1);
             Box::pin(async move {
                 let mut o = out2.lock().await;
@@ -239,7 +239,7 @@ async fn test_nack_pair_range() {
     let out = Arc::new(Mutex::new(vec![]));
     let out1 = Arc::clone(&out);
     n.range(Box::new(
-        move |s: u16| -> Pin<Box<dyn Future<Output = bool> + Send + 'static>> {
+        move |s: u16| -> Pin<Box<dyn Future<Output = bool> + 'static>> {
             let out2 = Arc::clone(&out1);
             Box::pin(async move {
                 let mut o = out2.lock().await;

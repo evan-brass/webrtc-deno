@@ -362,7 +362,7 @@ pub(crate) async fn gather_and_exchange_candidates(
     let w1 = Arc::new(Mutex::new(Some(wg.worker())));
     a_agent
         .on_candidate(Box::new(
-            move |candidate: Option<Arc<dyn Candidate + Send + Sync>>| {
+            move |candidate: Option<Arc<dyn Candidate>>| {
                 let w3 = Arc::clone(&w1);
                 Box::pin(async move {
                     if candidate.is_none() {
@@ -378,7 +378,7 @@ pub(crate) async fn gather_and_exchange_candidates(
     let w2 = Arc::new(Mutex::new(Some(wg.worker())));
     b_agent
         .on_candidate(Box::new(
-            move |candidate: Option<Arc<dyn Candidate + Send + Sync>>| {
+            move |candidate: Option<Arc<dyn Candidate>>| {
                 let w3 = Arc::clone(&w2);
                 Box::pin(async move {
                     if candidate.is_none() {
@@ -395,14 +395,14 @@ pub(crate) async fn gather_and_exchange_candidates(
 
     let candidates = a_agent.get_local_candidates().await?;
     for c in candidates {
-        let c2: Arc<dyn Candidate + Send + Sync> =
+        let c2: Arc<dyn Candidate> =
             Arc::new(unmarshal_candidate(c.marshal().as_str()).await?);
         b_agent.add_remote_candidate(&c2).await?;
     }
 
     let candidates = b_agent.get_local_candidates().await?;
     for c in candidates {
-        let c2: Arc<dyn Candidate + Send + Sync> =
+        let c2: Arc<dyn Candidate> =
             Arc::new(unmarshal_candidate(c.marshal().as_str()).await?);
         a_agent.add_remote_candidate(&c2).await?;
     }
@@ -770,7 +770,7 @@ async fn test_disconnected_to_connected() -> Result<(), Error> {
 
     let drop_all_data = Arc::new(AtomicU64::new(0));
     let drop_all_data2 = Arc::clone(&drop_all_data);
-    wan.add_chunk_filter(Box::new(move |_c: &(dyn Chunk + Send + Sync)| -> bool {
+    wan.add_chunk_filter(Box::new(move |_c: &(dyn Chunk)| -> bool {
         drop_all_data2.load(Ordering::SeqCst) != 1
     }))
     .await;
@@ -912,7 +912,7 @@ async fn test_write_use_valid_pair() -> Result<(), Error> {
         ..Default::default()
     })?;
 
-    wan.add_chunk_filter(Box::new(move |c: &(dyn Chunk + Send + Sync)| -> bool {
+    wan.add_chunk_filter(Box::new(move |c: &(dyn Chunk)| -> bool {
         let raw = c.user_data();
         if stun::message::is_message(&raw) {
             let mut m = stun::message::Message {
@@ -977,7 +977,7 @@ async fn test_write_use_valid_pair() -> Result<(), Error> {
                 .internal
                 .start_connectivity_checks(true, controlled_ufrag, controlled_pwd)
                 .await?;
-            Arc::clone(&controlling_agent_tx.internal.agent_conn) as Arc<dyn Conn + Send + Sync>
+            Arc::clone(&controlling_agent_tx.internal.agent_conn) as Arc<dyn Conn>
         };
 
         log::debug!("controlling_agent start_connectivity_checks done...");
@@ -998,7 +998,7 @@ async fn test_write_use_valid_pair() -> Result<(), Error> {
             .internal
             .start_connectivity_checks(false, controlling_ufrag, controlling_pwd)
             .await?;
-        Arc::clone(&controlled_agent.internal.agent_conn) as Arc<dyn Conn + Send + Sync>
+        Arc::clone(&controlled_agent.internal.agent_conn) as Arc<dyn Conn>
     };
 
     log::debug!("controlled_agent start_connectivity_checks done...");

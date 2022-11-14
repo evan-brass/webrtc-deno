@@ -6,7 +6,7 @@ use crate::util::*;
 use std::sync::atomic::{AtomicBool, AtomicU64};
 
 pub type ChanCandidateTx =
-    Arc<Mutex<Option<mpsc::Sender<Option<Arc<dyn Candidate + Send + Sync>>>>>>;
+    Arc<Mutex<Option<mpsc::Sender<Option<Arc<dyn Candidate>>>>>>;
 
 #[derive(Default)]
 pub(crate) struct UfragPwd {
@@ -50,9 +50,9 @@ pub struct AgentInternal {
 
     pub(crate) ufrag_pwd: Mutex<UfragPwd>,
 
-    pub(crate) local_candidates: Mutex<HashMap<NetworkType, Vec<Arc<dyn Candidate + Send + Sync>>>>,
+    pub(crate) local_candidates: Mutex<HashMap<NetworkType, Vec<Arc<dyn Candidate>>>>,
     pub(crate) remote_candidates:
-        Mutex<HashMap<NetworkType, Vec<Arc<dyn Candidate + Send + Sync>>>>,
+        Mutex<HashMap<NetworkType, Vec<Arc<dyn Candidate>>>>,
 
     // LRU of outbound Binding request Transaction IDs
     pub(crate) pending_binding_requests: Mutex<Vec<BindingRequest>>,
@@ -364,8 +364,8 @@ impl AgentInternal {
         log::trace!("[{}]: pinging all candidates", self.get_name(),);
 
         let mut pairs: Vec<(
-            Arc<dyn Candidate + Send + Sync>,
-            Arc<dyn Candidate + Send + Sync>,
+            Arc<dyn Candidate>,
+            Arc<dyn Candidate>,
         )> = vec![];
 
         {
@@ -409,8 +409,8 @@ impl AgentInternal {
 
     pub(crate) async fn add_pair(
         &self,
-        local: Arc<dyn Candidate + Send + Sync>,
-        remote: Arc<dyn Candidate + Send + Sync>,
+        local: Arc<dyn Candidate>,
+        remote: Arc<dyn Candidate>,
     ) {
         let p = Arc::new(CandidatePair::new(
             local,
@@ -423,8 +423,8 @@ impl AgentInternal {
 
     pub(crate) async fn find_pair(
         &self,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) -> Option<Arc<CandidatePair>> {
         let checklist = self.agent_conn.checklist.lock().await;
         for p in &*checklist {
@@ -517,7 +517,7 @@ impl AgentInternal {
     }
 
     /// Assumes you are holding the lock (must be execute using a.run).
-    pub(crate) async fn add_remote_candidate(&self, c: &Arc<dyn Candidate + Send + Sync>) {
+    pub(crate) async fn add_remote_candidate(&self, c: &Arc<dyn Candidate>) {
         let network_type = c.network_type();
 
         {
@@ -554,7 +554,7 @@ impl AgentInternal {
 
     pub(crate) async fn add_candidate(
         self: &Arc<Self>,
-        c: &Arc<dyn Candidate + Send + Sync>,
+        c: &Arc<dyn Candidate>,
     ) -> Result<()> {
         let initialized_ch = {
             let started_ch_tx = self.started_ch_tx.lock().await;
@@ -692,7 +692,7 @@ impl AgentInternal {
         &self,
         network_type: NetworkType,
         addr: SocketAddr,
-    ) -> Option<Arc<dyn Candidate + Send + Sync>> {
+    ) -> Option<Arc<dyn Candidate>> {
         let (ip, port) = (addr.ip(), addr.port());
 
         let remote_candidates = self.remote_candidates.lock().await;
@@ -709,8 +709,8 @@ impl AgentInternal {
     pub(crate) async fn send_binding_request(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         log::trace!(
             "[{}]: ping STUN from {} to {}",
@@ -737,8 +737,8 @@ impl AgentInternal {
     pub(crate) async fn send_binding_success(
         &self,
         m: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         let addr = remote.addr().await;
         let (ip, port) = (addr.ip(), addr.port());
@@ -825,7 +825,7 @@ impl AgentInternal {
     pub(crate) async fn handle_inbound(
         &self,
         m: &mut Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
         remote: SocketAddr,
     ) {
         if m.typ.method != METHOD_BINDING
@@ -979,7 +979,7 @@ impl AgentInternal {
     /// remote candidate.
     pub(crate) async fn validate_non_stun_traffic(
         &self,
-        local: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
         remote: SocketAddr,
     ) -> bool {
         self.find_remote_candidate(local.network_type(), remote)
@@ -1011,8 +1011,8 @@ impl AgentInternal {
     pub(crate) async fn send_stun(
         &self,
         msg: &Message,
-        local: &Arc<dyn Candidate + Send + Sync>,
-        remote: &Arc<dyn Candidate + Send + Sync>,
+        local: &Arc<dyn Candidate>,
+        remote: &Arc<dyn Candidate>,
     ) {
         if let Err(err) = local.write_to(&msg.raw, &**remote).await {
             log::trace!(
@@ -1026,7 +1026,7 @@ impl AgentInternal {
     /// Runs the candidate using the provided connection.
     async fn start_candidate(
         self: &Arc<Self>,
-        candidate: &Arc<dyn Candidate + Send + Sync>,
+        candidate: &Arc<dyn Candidate>,
         initialized_ch: Option<broadcast::Receiver<()>>,
     ) {
         let (closed_ch_tx, closed_ch_rx) = broadcast::channel(1);
@@ -1054,7 +1054,7 @@ impl AgentInternal {
     pub(super) async fn start_on_connection_state_change_routine(
         self: &Arc<Self>,
         mut chan_state_rx: mpsc::Receiver<ConnectionState>,
-        mut chan_candidate_rx: mpsc::Receiver<Option<Arc<dyn Candidate + Send + Sync>>>,
+        mut chan_candidate_rx: mpsc::Receiver<Option<Arc<dyn Candidate>>>,
         mut chan_candidate_pair_rx: mpsc::Receiver<()>,
     ) {
         let ai = Arc::clone(self);
@@ -1122,10 +1122,10 @@ impl AgentInternal {
 
     async fn recv_loop(
         self: &Arc<Self>,
-        candidate: Arc<dyn Candidate + Send + Sync>,
+        candidate: Arc<dyn Candidate>,
         mut closed_ch_rx: broadcast::Receiver<()>,
         initialized_ch: Option<broadcast::Receiver<()>>,
-        conn: Arc<dyn util::Conn + Send + Sync>,
+        conn: Arc<dyn util::Conn>,
         addr: SocketAddr,
     ) -> Result<()> {
         if let Some(mut initialized_ch) = initialized_ch {
@@ -1159,7 +1159,7 @@ impl AgentInternal {
 
     async fn handle_inbound_candidate_msg(
         self: &Arc<Self>,
-        c: &Arc<dyn Candidate + Send + Sync>,
+        c: &Arc<dyn Candidate>,
         buf: &[u8],
         src_addr: SocketAddr,
         addr: SocketAddr,

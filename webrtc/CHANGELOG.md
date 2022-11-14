@@ -44,7 +44,7 @@ change for MediaEngine::register_header_extension
 * Transceivers will now not stop when either or both directions are disabled. That is, applying and SDP with `a=inactive` will not stop the transceiver, instead attached senders and receivers will pause. A transceiver can be resurrected by setting direction back to e.g. `a=sendrecv`. The desired direction can be controlled with the newly introduced public method `set_direction` on `RTCRtpTransceiver`.
   * [#201 Handle inactive transceivers more correctly](https://github.com/webrtc-rs/webrtc/pull/201) contributed by [k0nserv](https://github.com/k0nserv)
   * [#210 Rework transceiver direction support further](https://github.com/webrtc-rs/webrtc/pull/210) contributed by [k0nserv](https://github.com/k0nserv)
-  * [#214 set_direction add missing Send + Sync bound](https://github.com/webrtc-rs/webrtc/pull/214) contributed by [algesten](https://github.com/algesten)
+  * [#214 set_direction add missing Send bound](https://github.com/webrtc-rs/webrtc/pull/214) contributed by [algesten](https://github.com/algesten)
   * [#213 set_direction add missing Sync bound](https://github.com/webrtc-rs/webrtc/pull/213) contributed by [algesten](https://github.com/algesten)
   * [#212 Public RTCRtpTransceiver::set_direction](https://github.com/webrtc-rs/webrtc/pull/212) contributed by [algesten](https://github.com/algesten)
   * [#268 Fix current direction update when applying answer](https://github.com/webrtc-rs/webrtc/pull/268) contributed by [k0nserv](https://github.com/k0nserv)

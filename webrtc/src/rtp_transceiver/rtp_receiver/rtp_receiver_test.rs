@@ -70,7 +70,7 @@ async fn test_set_rtp_parameters() -> Result<()> {
 
     let (mut sender, mut receiver, wan) = create_vnet_pair().await?;
 
-    let outgoing_track: Arc<dyn TrackLocal + Send + Sync> = Arc::new(TrackLocalStaticSample::new(
+    let outgoing_track: Arc<dyn TrackLocal> = Arc::new(TrackLocalStaticSample::new(
         RTCRtpCodecCapability {
             mime_type: MIME_TYPE_VP8.to_owned(),
             ..Default::default()
@@ -173,7 +173,7 @@ async fn test_set_rtp_parameters() -> Result<()> {
 async fn test_rtp_receiver_set_read_deadline() -> Result<()> {
     let (mut sender, mut receiver, wan) = create_vnet_pair().await?;
 
-    let track: Arc<dyn TrackLocal + Send + Sync> = Arc::new(TrackLocalStaticSample::new(
+    let track: Arc<dyn TrackLocal> = Arc::new(TrackLocalStaticSample::new(
         RTCRtpCodecCapability {
             mime_type: MIME_TYPE_VP8.to_owned(),
             ..Default::default()

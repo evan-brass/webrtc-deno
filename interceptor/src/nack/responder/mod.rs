@@ -35,7 +35,7 @@ impl ResponderBuilder {
 }
 
 impl InterceptorBuilder for ResponderBuilder {
-    fn build(&self, _id: &str) -> Result<Arc<dyn Interceptor + Send + Sync>> {
+    fn build(&self, _id: &str) -> Result<Arc<dyn Interceptor>> {
         Ok(Arc::new(Responder {
             internal: Arc::new(ResponderInternal {
                 log2_size: if let Some(log2_size) = self.log2_size {
@@ -71,7 +71,7 @@ impl ResponderInternal {
         for n in &nack.nacks {
             let stream2 = Arc::clone(&stream);
             n.range(Box::new(
-                move |seq: u16| -> Pin<Box<dyn Future<Output = bool> + Send + 'static>> {
+                move |seq: u16| -> Pin<Box<dyn Future<Output = bool> + 'static>> {
                     let stream3 = Arc::clone(&stream2);
                     Box::pin(async move {
                         if let Some(p) = stream3.get(seq).await {
@@ -91,7 +91,7 @@ impl ResponderInternal {
 }
 
 pub struct ResponderRtcpReader {
-    parent_rtcp_reader: Arc<dyn RTCPReader + Send + Sync>,
+    parent_rtcp_reader: Arc<dyn RTCPReader>,
     internal: Arc<ResponderInternal>,
 }
 
@@ -134,20 +134,20 @@ impl Interceptor for Responder {
     /// change in the future. The returned method will be called once per packet batch.
     async fn bind_rtcp_reader(
         &self,
-        reader: Arc<dyn RTCPReader + Send + Sync>,
-    ) -> Arc<dyn RTCPReader + Send + Sync> {
+        reader: Arc<dyn RTCPReader>,
+    ) -> Arc<dyn RTCPReader> {
         Arc::new(ResponderRtcpReader {
             internal: Arc::clone(&self.internal),
             parent_rtcp_reader: reader,
-        }) as Arc<dyn RTCPReader + Send + Sync>
+        }) as Arc<dyn RTCPReader>
     }
 
     /// bind_rtcp_writer lets you modify any outgoing RTCP packets. It is called once per PeerConnection. The returned method
     /// will be called once per packet batch.
     async fn bind_rtcp_writer(
         &self,
-        writer: Arc<dyn RTCPWriter + Send + Sync>,
-    ) -> Arc<dyn RTCPWriter + Send + Sync> {
+        writer: Arc<dyn RTCPWriter>,
+    ) -> Arc<dyn RTCPWriter> {
         writer
     }
 
@@ -156,8 +156,8 @@ impl Interceptor for Responder {
     async fn bind_local_stream(
         &self,
         info: &StreamInfo,
-        writer: Arc<dyn RTPWriter + Send + Sync>,
-    ) -> Arc<dyn RTPWriter + Send + Sync> {
+        writer: Arc<dyn RTPWriter>,
+    ) -> Arc<dyn RTPWriter> {
         if !stream_support_nack(info) {
             return writer;
         }
@@ -182,8 +182,8 @@ impl Interceptor for Responder {
     async fn bind_remote_stream(
         &self,
         _info: &StreamInfo,
-        reader: Arc<dyn RTPReader + Send + Sync>,
-    ) -> Arc<dyn RTPReader + Send + Sync> {
+        reader: Arc<dyn RTPReader>,
+    ) -> Arc<dyn RTPReader> {
         reader
     }
 

@@ -11,7 +11,7 @@ struct DummyObserver;
 
 #[async_trait(?Send)]
 impl ConnObserver for DummyObserver {
-    async fn write(&self, _c: Box<dyn Chunk + Send + Sync>) -> Result<()> {
+    async fn write(&self, _c: Box<dyn Chunk>) -> Result<()> {
         Ok(())
     }
 
@@ -26,7 +26,7 @@ impl ConnObserver for DummyObserver {
 async fn test_udp_conn_map_insert_remove() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in = Arc::new(UdpConn::new(
@@ -65,7 +65,7 @@ async fn test_udp_conn_map_insert_remove() -> Result<()> {
 async fn test_udp_conn_map_insert_0_remove() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in = Arc::new(UdpConn::new(
@@ -104,7 +104,7 @@ async fn test_udp_conn_map_insert_0_remove() -> Result<()> {
 async fn test_udp_conn_map_find_0() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in = Arc::new(UdpConn::new(
@@ -133,7 +133,7 @@ async fn test_udp_conn_map_find_0() -> Result<()> {
 async fn test_udp_conn_map_insert_many_ips_with_same_port() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in1 = Arc::new(UdpConn::new(
@@ -180,7 +180,7 @@ async fn test_udp_conn_map_insert_many_ips_with_same_port() -> Result<()> {
 async fn test_udp_conn_map_already_inuse_when_insert_0() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in1 = Arc::new(UdpConn::new(
@@ -205,7 +205,7 @@ async fn test_udp_conn_map_already_inuse_when_insert_0() -> Result<()> {
 async fn test_udp_conn_map_already_inuse_when_insert_a_specified_ip() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in1 = Arc::new(UdpConn::new(
@@ -230,7 +230,7 @@ async fn test_udp_conn_map_already_inuse_when_insert_a_specified_ip() -> Result<
 async fn test_udp_conn_map_already_inuse_when_insert_same_specified_ip() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in1 = Arc::new(UdpConn::new(
@@ -255,7 +255,7 @@ async fn test_udp_conn_map_already_inuse_when_insert_same_specified_ip() -> Resu
 async fn test_udp_conn_map_find_failure_1() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in = Arc::new(UdpConn::new(
@@ -277,7 +277,7 @@ async fn test_udp_conn_map_find_failure_1() -> Result<()> {
 async fn test_udp_conn_map_find_failure_2() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in = Arc::new(UdpConn::new(
@@ -299,7 +299,7 @@ async fn test_udp_conn_map_find_failure_2() -> Result<()> {
 async fn test_udp_conn_map_insert_two_on_same_port_then_remove() -> Result<()> {
     let conn_map = UdpConnMap::new();
 
-    let obs: Arc<Mutex<dyn ConnObserver + Send + Sync>> =
+    let obs: Arc<Mutex<dyn ConnObserver>> =
         Arc::new(Mutex::new(DummyObserver::default()));
 
     let conn_in1 = Arc::new(UdpConn::new(

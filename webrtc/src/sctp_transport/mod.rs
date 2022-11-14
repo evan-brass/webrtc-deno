@@ -35,15 +35,15 @@ use util::Conn;
 const SCTP_MAX_CHANNELS: u16 = u16::MAX;
 
 pub type OnDataChannelHdlrFn = Box<
-    dyn (FnMut(Arc<RTCDataChannel>) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(Arc<RTCDataChannel>) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 pub type OnDataChannelOpenedHdlrFn = Box<
-    dyn (FnMut(Arc<RTCDataChannel>) -> Pin<Box<dyn Future<Output = ()> + Send + 'static>>)
-        + Send
-        + Sync,
+    dyn (FnMut(Arc<RTCDataChannel>) -> Pin<Box<dyn Future<Output = ()> + 'static>>)
+       
+       ,
 >;
 
 struct AcceptDataChannelParams {
@@ -156,7 +156,7 @@ impl RTCSctpTransport {
                         }
                     },
                     association = sctp::association::Association::client(sctp::association::Config {
-                        net_conn: Arc::clone(net_conn) as Arc<dyn Conn + Send + Sync>,
+                        net_conn: Arc::clone(net_conn) as Arc<dyn Conn>,
                         max_receive_buffer_size: 0,
                         max_message_size: 0,
                         name: String::new(),

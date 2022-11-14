@@ -29,7 +29,7 @@ pub struct UDPMuxConnParams {
     /// A `std::sync::Weak` reference to the UDP mux.
     ///
     /// NOTE: a non-owning reference should be used to prevent possible cycles.
-    pub udp_mux: Weak<dyn UDPMuxWriter + Send + Sync>,
+    pub udp_mux: Weak<dyn UDPMuxWriter>,
 }
 
 type ConnResult<T> = Result<T, util::Error>;

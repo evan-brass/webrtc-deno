@@ -12,7 +12,7 @@ use crate::{Interceptor, InterceptorBuilder};
 use receiver::{ReceiverReport, ReceiverReportInternal};
 use sender::{SenderReport, SenderReportInternal};
 
-type FnTimeGen = Arc<dyn Fn() -> SystemTime + Sync + 'static + Send>;
+type FnTimeGen = Arc<dyn Fn() -> SystemTime + 'static>;
 
 /// ReceiverBuilder can be used to configure ReceiverReport Interceptor.
 #[derive(Default)]
@@ -75,7 +75,7 @@ impl ReportBuilder {
 }
 
 impl InterceptorBuilder for ReportBuilder {
-    fn build(&self, _id: &str) -> Result<Arc<dyn Interceptor + Send + Sync>> {
+    fn build(&self, _id: &str) -> Result<Arc<dyn Interceptor>> {
         if self.is_rr {
             Ok(Arc::new(self.build_rr()))
         } else {

@@ -103,7 +103,7 @@ pub trait Chunk: fmt::Display + fmt::Debug {
     fn user_data(&self) -> Vec<u8>;
     fn tag(&self) -> String;
     fn network(&self) -> String; // returns "udp" or "tcp"
-    fn clone_to(&self) -> Box<dyn Chunk + Send + Sync>;
+    fn clone_to(&self) -> Box<dyn Chunk>;
 }
 
 #[derive(PartialEq, Debug)]
@@ -191,7 +191,7 @@ impl Chunk for ChunkUdp {
         self.user_data.clone()
     }
 
-    fn clone_to(&self) -> Box<dyn Chunk + Send + Sync> {
+    fn clone_to(&self) -> Box<dyn Chunk> {
         Box::new(ChunkUdp {
             chunk_ip: ChunkIp {
                 timestamp: self.chunk_ip.timestamp,
@@ -298,7 +298,7 @@ impl Chunk for ChunkTcp {
         self.user_data.clone()
     }
 
-    fn clone_to(&self) -> Box<dyn Chunk + Send + Sync> {
+    fn clone_to(&self) -> Box<dyn Chunk> {
         Box::new(ChunkTcp {
             chunk_ip: ChunkIp {
                 timestamp: self.chunk_ip.timestamp,

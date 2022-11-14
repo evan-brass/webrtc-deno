@@ -24,7 +24,7 @@ pub struct State {
     pub(crate) local_random: HandshakeRandom,
     pub(crate) remote_random: HandshakeRandom,
     pub(crate) master_secret: Vec<u8>,
-    pub(crate) cipher_suite: Arc<Mutex<Option<Box<dyn CipherSuite + Send + Sync>>>>, // nil if a cipher_suite hasn't been chosen
+    pub(crate) cipher_suite: Arc<Mutex<Option<Box<dyn CipherSuite>>>>, // nil if a cipher_suite hasn't been chosen
 
     pub(crate) srtp_protection_profile: SrtpProtectionProfile, // Negotiated srtp_protection_profile
     pub peer_certificates: Vec<Vec<u8>>,
@@ -46,7 +46,7 @@ pub struct State {
     pub(crate) local_verify_data: Vec<u8>,         // cached VerifyData
     pub(crate) local_key_signature: Vec<u8>,       // cached keySignature
     pub(crate) peer_certificates_verified: bool,
-    //pub(crate) replay_detector: Vec<Box<dyn ReplayDetector + Send + Sync>>,
+    //pub(crate) replay_detector: Vec<Box<dyn ReplayDetector>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
