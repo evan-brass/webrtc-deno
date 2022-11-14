@@ -40,7 +40,7 @@ impl<T: 'static + AckTimerObserver> AckTimer<T> {
         let interval = self.interval;
         let timeout_observer = self.timeout_observer.clone();
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let timer = tokio::time::sleep(interval);
             tokio::pin!(timer);
 

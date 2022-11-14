@@ -130,7 +130,7 @@ async fn test_buffer_async() {
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
 
     let buffer2 = buffer.clone();
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut packet: Vec<u8> = vec![0; 4];
 
         let n = assert_ok!(buffer2.read(&mut packet, None).await);

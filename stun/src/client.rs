@@ -46,7 +46,7 @@ impl Collector for TickerCollector {
         let (close_tx, mut close_rx) = mpsc::channel(1);
         self.close_tx = Some(close_tx);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut interval = time::interval(rate);
 
             loop {
@@ -283,7 +283,7 @@ impl Client {
         mut t: HashMap<TransactionId, ClientTransaction>,
         max_attempts: u32,
     ) {
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             while let Some(event) = handler_rx.recv().await {
                 match event.event_type {
                     EventType::Close => {
@@ -409,7 +409,7 @@ impl Client {
         );
 
         let agent = Agent::new(Some(handler_tx));
-        tokio::spawn(async move { Agent::run(agent, client_agent_rx).await });
+        wasm_bindgen_futures::spawn_local(async move { Agent::run(agent, client_agent_rx).await });
 
         if self.settings.collector.is_none() {
             self.settings.collector = Some(Box::new(TickerCollector::default()));
@@ -419,7 +419,7 @@ impl Client {
         }
 
         let conn_rx = Arc::clone(&conn);
-        tokio::spawn(
+        wasm_bindgen_futures::spawn_local(
             async move { Client::read_until_closed(close_rx, conn_rx, client_agent_tx).await },
         );
 

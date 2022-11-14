@@ -87,7 +87,7 @@ async fn main() -> Result<(), Error> {
 
     let listener2 = Arc::clone(&listener);
     let h2 = Arc::clone(&h);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         loop {
             tokio::select! {
                 _ = done_rx.recv() => {

@@ -240,7 +240,7 @@ async fn main() -> Result<()> {
             .init();
     }
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         println!("Open http://localhost:8080 to access this demo");
 
         let addr = SocketAddr::from_str("0.0.0.0:8080").unwrap();

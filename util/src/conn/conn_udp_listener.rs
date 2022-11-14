@@ -118,7 +118,7 @@ impl ListenConfig {
         let accept_filter = self.accept_filter.take();
         let accept_ch_tx = Arc::clone(&l.accept_ch_tx);
         let conns = Arc::clone(&l.conns);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             ListenConfig::read_loop(
                 done_ch_rx,
                 pconn,

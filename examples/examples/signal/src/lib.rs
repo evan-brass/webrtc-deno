@@ -57,7 +57,7 @@ pub async fn http_sdp_server(port: u16) -> mpsc::Receiver<String> {
         *tx = Some(sdp_chan_tx);
     }
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let addr = SocketAddr::from_str(&format!("0.0.0.0:{}", port)).unwrap();
         let service =
             make_service_fn(|_| async { Ok::<_, hyper::Error>(service_fn(remote_handler)) });

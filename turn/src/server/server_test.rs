@@ -284,7 +284,7 @@ async fn test_server_vnet_echo_via_relay() -> Result<()> {
 
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
         let mut n;
         let mut from;

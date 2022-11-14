@@ -69,7 +69,7 @@ async fn test_udp_mux() -> Result<()> {
     let udp_mux_dyn = Arc::clone(&udp_mux) as Arc<dyn UDPMux>;
 
     let udp_mux_dyn_1 = Arc::clone(&udp_mux_dyn);
-    let h1 = tokio::spawn(async move {
+    let h1 = wasm_bindgen_futures::spawn_local(async move {
         timeout(
             TIMEOUT,
             test_mux_connection(Arc::clone(&udp_mux_dyn_1), "ufrag1", addr, Network::Ipv4),
@@ -78,7 +78,7 @@ async fn test_udp_mux() -> Result<()> {
     });
 
     let udp_mux_dyn_2 = Arc::clone(&udp_mux_dyn);
-    let h2 = tokio::spawn(async move {
+    let h2 = wasm_bindgen_futures::spawn_local(async move {
         timeout(
             TIMEOUT,
             test_mux_connection(Arc::clone(&udp_mux_dyn_2), "ufrag2", addr, Network::Ipv4),
@@ -92,7 +92,7 @@ async fn test_udp_mux() -> Result<()> {
     {
         // TODO: Support IPv6 dual stack. This works Linux and macOS, but not Windows.
         let udp_mux_dyn_3 = Arc::clone(&udp_mux_dyn);
-        let h3 = tokio::spawn(async move {
+        let h3 = wasm_bindgen_futures::spawn_local(async move {
             timeout(
                 TIMEOUT,
                 test_mux_connection(Arc::clone(&udp_mux_dyn_3), "ufrag3", addr, Network::Ipv6),
@@ -203,7 +203,7 @@ async fn test_mux_connection(
 
     // Read on the muxed side
     let conn_2 = Arc::clone(&conn);
-    let mux_handle = tokio::spawn(async move {
+    let mux_handle = wasm_bindgen_futures::spawn_local(async move {
         let conn = conn_2;
 
         let mut buffer = vec![0u8; RECEIVE_MTU];
@@ -230,7 +230,7 @@ async fn test_mux_connection(
     });
 
     let remote_connection_2 = Arc::clone(&remote_connection);
-    let remote_handle = tokio::spawn(async move {
+    let remote_handle = wasm_bindgen_futures::spawn_local(async move {
         let remote_connection = remote_connection_2;
         let mut buffer = vec![0u8; RECEIVE_MTU];
         let mut next_sequence = 0;

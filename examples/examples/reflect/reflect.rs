@@ -177,7 +177,7 @@ async fn main() -> Result<()> {
         // Before these packets are returned they are processed by interceptors. For things
         // like NACK this needs to be called.
         let m = s.to_owned();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut rtcp_buf = vec![0u8; 1500];
             while let Ok((_, _)) = rtp_sender.read(&mut rtcp_buf).await {}
             println!("{} rtp_sender.read loop exit", m);
@@ -208,7 +208,7 @@ async fn main() -> Result<()> {
 
                     if track.kind() == RTPCodecType::Video {
                         let pc2 = pc.clone();
-                        tokio::spawn(async move {
+                        wasm_bindgen_futures::spawn_local(async move {
                             let mut result = Result::<usize>::Ok(0);
                             while result.is_ok() {
                                 let timeout = tokio::time::sleep(Duration::from_secs(3));
@@ -243,7 +243,7 @@ async fn main() -> Result<()> {
                     };
 
                     let output_track2 = Arc::clone(&output_track);
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         println!(
                             "Track has started, of type {}: {}",
                             track.payload_type(),

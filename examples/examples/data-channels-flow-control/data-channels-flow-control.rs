@@ -75,7 +75,7 @@ async fn create_requester() -> anyhow::Result<RTCPeerConnection> {
     dc.on_open(Box::new(|| {
         Box::pin(async move {
             // This callback shouldn't be blocked for a long time, so we spawn our handler
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let buf = Bytes::from_static(&[0u8; 1024]);
 
                 loop {
@@ -124,7 +124,7 @@ async fn create_responder() -> anyhow::Result<RTCPeerConnection> {
             dc.on_open(Box::new(move || {
                 Box::pin(async {
                     // This callback shouldn't be blocked for a long time, so we spawn our handler
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let start = SystemTime::now();
 
                         tokio::time::sleep(Duration::from_secs(1)).await;

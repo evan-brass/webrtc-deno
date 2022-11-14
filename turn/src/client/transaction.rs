@@ -170,7 +170,7 @@ impl Transaction {
         self.timer_ch_tx = Some(timer_ch_tx);
         let (n_rtx, interval, key) = (self.n_rtx.clone(), self.interval.clone(), self.key.clone());
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut done = false;
             while !done {
                 let timer = tokio::time::sleep(Duration::from_millis(

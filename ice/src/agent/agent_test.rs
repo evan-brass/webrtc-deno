@@ -476,7 +476,7 @@ async fn test_connectivity_on_startup() -> Result<()> {
         }))
         .await;
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let result = a_agent.accept(a_cancel_rx, b_ufrag, b_pwd).await;
         assert!(result.is_ok(), "agent accept expected OK");
         drop(accepted_tx);
@@ -892,7 +892,7 @@ async fn test_invalid_agent_starts() -> Result<()> {
     }
 
     let (cancel_tx3, cancel_rx3) = mpsc::channel(1);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         tokio::time::sleep(Duration::from_millis(100)).await;
         drop(cancel_tx3);
     });
@@ -1766,7 +1766,7 @@ async fn test_connection_state_connecting_to_failed() -> Result<()> {
         .await;
 
     let agent_a = Arc::clone(&a_agent);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let (_cancel_tx, cancel_rx) = mpsc::channel(1);
         let result = agent_a
             .accept(cancel_rx, "InvalidFrag".to_owned(), "InvalidPwd".to_owned())
@@ -1775,7 +1775,7 @@ async fn test_connection_state_connecting_to_failed() -> Result<()> {
     });
 
     let agent_b = Arc::clone(&b_agent);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let (_cancel_tx, cancel_rx) = mpsc::channel(1);
         let result = agent_b
             .dial(cancel_rx, "InvalidFrag".to_owned(), "InvalidPwd".to_owned())

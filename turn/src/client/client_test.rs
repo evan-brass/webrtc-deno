@@ -82,7 +82,7 @@ async fn test_client_with_stun_send_binding_request_to_parallel() -> Result<()> 
 
     let to = lookup_host(true, "stun1.l.google.com:19302").await?;
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         drop(stared_tx);
         if let Ok(resp) = c2.send_binding_request_to(&to.to_string()).await {
             log::debug!("mapped-addr: {}", resp);

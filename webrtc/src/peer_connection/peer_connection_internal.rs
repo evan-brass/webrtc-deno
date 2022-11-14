@@ -235,7 +235,7 @@ impl PeerConnectionInternal {
         let dtls_transport = Arc::clone(&self.dtls_transport);
         let is_closed = Arc::clone(&self.is_closed);
         let pci = Arc::clone(self);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let simulcast_routine_count = Arc::new(AtomicU64::new(0));
             loop {
                 let srtp_session = match dtls_transport.get_srtp_session().await {
@@ -272,7 +272,7 @@ impl PeerConnectionInternal {
                 let dtls_transport2 = Arc::clone(&dtls_transport);
                 let simulcast_routine_count2 = Arc::clone(&simulcast_routine_count);
                 let pci2 = Arc::clone(&pci);
-                tokio::spawn(async move {
+                wasm_bindgen_futures::spawn_local(async move {
                     let ssrc = stream.get_ssrc();
 
                     dtls_transport2
@@ -293,7 +293,7 @@ impl PeerConnectionInternal {
         });
 
         let dtls_transport = Arc::clone(&self.dtls_transport);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             loop {
                 let srtcp_session = match dtls_transport.get_srtcp_session().await {
                     Some(s) => s,
@@ -1085,7 +1085,7 @@ impl PeerConnectionInternal {
 
             let receiver2 = Arc::clone(&receiver);
             let on_track_handler2 = Arc::clone(&on_track_handler);
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 if let Some(track) = receiver2.track().await {
                     let mut b = vec![0u8; receive_mtu];
                     let n = match track.peek(&mut b).await {

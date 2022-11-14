@@ -78,7 +78,7 @@ async fn main() -> Result<(), Error> {
     stream.set_reliability_params(true, ReliabilityType::Timed, 10);
 
     let stream_tx = Arc::clone(&stream);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut ping_seq_num = 0;
         while ping_seq_num < 10 {
             let ping_msg = format!("ping {}", ping_seq_num);
@@ -94,7 +94,7 @@ async fn main() -> Result<(), Error> {
 
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
     let stream_rx = Arc::clone(&stream);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buff = vec![0u8; 1024];
         while let Ok(n) = stream_rx.read(&mut buff).await {
             let pong_msg = String::from_utf8(buff[..n].to_vec()).unwrap();

@@ -153,12 +153,12 @@ async fn main() -> Result<()> {
 
                         // Handle reading from the data channel
                         let r = Arc::clone(&raw);
-                        tokio::spawn(async move {
+                        wasm_bindgen_futures::spawn_local(async move {
                             let _ = read_loop(r).await;
                         });
 
                         // Handle writing to the data channel
-                        tokio::spawn(async move {
+                        wasm_bindgen_futures::spawn_local(async move {
                             let _ = write_loop(raw).await;
                         });
                     })

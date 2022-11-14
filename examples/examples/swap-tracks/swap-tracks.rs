@@ -117,7 +117,7 @@ async fn main() -> Result<()> {
     // Read incoming RTCP packets
     // Before these packets are returned they are processed by interceptors. For things
     // like NACK this needs to be called.
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut rtcp_buf = vec![0u8; 1500];
         while let Ok((_, _)) = rtp_sender.read(&mut rtcp_buf).await {}
         Result::<()>::Ok(())
@@ -154,7 +154,7 @@ async fn main() -> Result<()> {
                     let curr_track2 = Arc::clone(&curr_track1);
                     let pc2 = pc.clone();
                     let packets_tx2 = Arc::clone(&packets_tx);
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         println!(
                             "Track has started, of type {}: {}",
                             track.payload_type(),
@@ -256,7 +256,7 @@ async fn main() -> Result<()> {
 
     // Asynchronously take all packets in the channel and write them out to our
     // track
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut curr_timestamp = 0;
         let mut i = 0;
         while let Some(mut packet) = packets_rx.recv().await {

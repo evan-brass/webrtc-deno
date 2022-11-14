@@ -26,7 +26,7 @@ async fn create_new_association_pair(
     let mut closed_rx1 = closed_tx.subscribe();
 
     // Setup client
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let client = Association::client(Config {
             net_conn: ca,
             max_receive_buffer_size: recv_buf_size,
@@ -42,7 +42,7 @@ async fn create_new_association_pair(
     });
 
     // Setup server
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let server = Association::server(Config {
             net_conn: cb,
             max_receive_buffer_size: recv_buf_size,
@@ -112,7 +112,7 @@ async fn close_association_pair(br: &Arc<Bridge>, client: Association, server: A
     let mut closed_rx1 = closed_tx.subscribe();
 
     // Close client
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         client.close().await?;
         let _ = handshake0ch_tx.send(()).await;
         let _ = closed_rx0.recv().await;
@@ -121,7 +121,7 @@ async fn close_association_pair(br: &Arc<Bridge>, client: Association, server: A
     });
 
     // Close server
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         server.close().await?;
         let _ = handshake1ch_tx.send(()).await;
         let _ = closed_rx1.recv().await;
@@ -1836,7 +1836,7 @@ async fn test_assoc_reset_close_one_way() -> Result<()> {
     let (done_ch_tx, mut done_ch_rx) = mpsc::channel(1);
     let mut buf = vec![0u8; 32];
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         loop {
             log::debug!("s1.read_sctp begin");
             match s1.read_sctp(&mut buf).await {
@@ -1938,7 +1938,7 @@ async fn test_assoc_reset_close_both_ways() -> Result<()> {
 
     let done_ch_tx1 = Arc::clone(&done_ch_tx);
     let ss1 = Arc::clone(&s1);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 32];
         loop {
             log::debug!("s1.read_sctp begin");
@@ -1989,7 +1989,7 @@ async fn test_assoc_reset_close_both_ways() -> Result<()> {
     s1.shutdown(Shutdown::Both).await?; // send reset
 
     let done_ch_tx0 = Arc::clone(&done_ch_tx);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 32];
         loop {
             log::debug!("s.read_sctp begin");
@@ -2236,7 +2236,7 @@ async fn create_assocs() -> Result<(Association, Association)> {
     let (a1chan_tx, mut a1chan_rx) = mpsc::channel(1);
     let (a2chan_tx, mut a2chan_rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let a = Association::client(Config {
             net_conn: Arc::new(udp1),
             max_receive_buffer_size: 0,
@@ -2250,7 +2250,7 @@ async fn create_assocs() -> Result<(Association, Association)> {
         Result::<()>::Ok(())
     });
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let a = Association::server(Config {
             net_conn: Arc::new(udp2),
             max_receive_buffer_size: 0,
@@ -2377,7 +2377,7 @@ async fn test_association_shutdown_during_write() -> Result<()> {
 
     let (writing_done_tx, mut writing_done_rx) = mpsc::channel::<()>(1);
     let ss21 = Arc::clone(&s21);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut i = 0;
         while ss21.write(&Bytes::from(vec![i])).await.is_ok() {
             if i == 255 {

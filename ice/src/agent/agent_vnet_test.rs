@@ -258,7 +258,7 @@ pub(crate) async fn connect_with_vnet(
     let (_a_cancel_tx, a_cancel_rx) = mpsc::channel(1);
 
     let agent_a = Arc::clone(a_agent);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let a_conn = agent_a.accept(a_cancel_rx, b_ufrag, b_pwd).await?;
 
         let _ = accepted_tx.send(a_conn).await;
@@ -970,7 +970,7 @@ async fn test_write_use_valid_pair() -> Result<(), Error> {
     let (controlled_ufrag, controlled_pwd) = controlled_agent.get_local_user_credentials().await;
 
     let controlling_agent_tx = Arc::clone(&controlling_agent);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let test_message = "Test Message";
         let controlling_agent_conn = {
             controlling_agent_tx

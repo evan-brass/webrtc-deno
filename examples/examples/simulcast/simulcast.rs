@@ -135,7 +135,7 @@ async fn main() -> Result<()> {
         // Read incoming RTCP packets
         // Before these packets are returned they are processed by interceptors. For things
         // like NACK this needs to be called.
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut rtcp_buf = vec![0u8; 1500];
             while let Ok((_, _)) = rtp_sender.read(&mut rtcp_buf).await {}
             Result::<()>::Ok(())
@@ -171,7 +171,7 @@ async fn main() -> Result<()> {
                     // Start reading from all the streams and sending them to the related output track
                     let media_ssrc = track.ssrc();
                     let pc2 = pc.clone();
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let mut result = Result::<usize>::Ok(0);
                         while result.is_ok() {
                             println!(
@@ -197,7 +197,7 @@ async fn main() -> Result<()> {
                         }
                     });
 
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         // Read RTP packets being sent to webrtc-rs
                         println!("enter track loop {}", track.rid());
                         while let Ok((rtp, _)) = track.read_rtp().await {

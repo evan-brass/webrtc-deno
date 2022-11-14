@@ -595,7 +595,7 @@ impl RTCPeerConnection {
         log::debug!("got new track: {:?}", t);
 
         if t.is_some() {
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let mut handler = on_track_handler.lock().await;
                 if let Some(f) = &mut *handler {
                     f(t, r).await;

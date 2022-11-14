@@ -43,7 +43,7 @@ async fn pipe_conn(
     let (c_tx, mut c_rx) = mpsc::channel(1);
 
     // Setup client
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let client = create_test_client(
             ca,
             Config {
@@ -353,7 +353,7 @@ async fn test_handshake_with_alert() -> Result<()> {
         let (client_err_tx, mut client_err_rx) = mpsc::channel(1);
 
         let (ca, cb) = pipe();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let result = create_test_client(Arc::new(ca), config_client, true).await;
             let _ = client_err_tx.send(result).await;
         });
@@ -544,7 +544,7 @@ async fn test_psk() -> Result<()> {
         let (client_res_tx, mut client_res_rx) = mpsc::channel(1);
 
         let (ca, cb) = pipe();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let conf = Config {
                 psk: Some(Arc::new(psk_callback_client)),
                 psk_identity_hint: Some(client_identity.to_vec()),
@@ -610,7 +610,7 @@ async fn test_psk_hint_fail() -> Result<()> {
     let (client_res_tx, mut client_res_rx) = mpsc::channel(1);
 
     let (ca, cb) = pipe();
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let conf = Config {
             psk: Some(Arc::new(psk_callback_hint_fail)),
             psk_identity_hint: Some(vec![]),
@@ -678,7 +678,7 @@ async fn test_client_timeout() -> Result<()> {
     let (client_res_tx, mut client_res_rx) = mpsc::channel(1);
 
     let (ca, _cb) = pipe();
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let conf = Config::default();
         let result = tokio::time::timeout(
             Duration::from_millis(100),
@@ -799,7 +799,7 @@ async fn test_srtp_configuration() -> Result<()> {
     {
         let (client_res_tx, mut client_res_rx) = mpsc::channel(1);
         let (ca, cb) = pipe();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let conf = Config {
                 srtp_protection_profiles: client_srtp,
                 ..Default::default()
@@ -1059,7 +1059,7 @@ async fn test_client_certificate() -> Result<()> {
         let (client_res_tx, mut client_res_rx) = mpsc::channel(1);
         let (ca, cb) = pipe();
         let client_cfg_clone = client_cfg.clone();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let result = DTLSConn::new(Arc::new(ca), client_cfg_clone, true, None).await;
             let _ = client_res_tx.send(result).await;
         });
@@ -1289,7 +1289,7 @@ async fn test_extended_master_secret() -> Result<()> {
         let (client_res_tx, mut client_res_rx) = mpsc::channel(1);
         let (ca, cb) = pipe();
         let client_cfg_clone = client_cfg.clone();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let result = create_test_client(Arc::new(ca), client_cfg_clone, true).await;
             let _ = client_res_tx.send(result).await;
         });
@@ -1501,7 +1501,7 @@ async fn test_server_certificate() -> Result<()> {
         let (res_tx, mut res_rx) = mpsc::channel(1);
         let (ca, cb) = pipe();
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let result = DTLSConn::new(Arc::new(cb), server_cfg, false, None).await;
             let _ = res_tx.send(result).await;
         });
@@ -1615,7 +1615,7 @@ async fn test_cipher_suite_configuration() -> Result<()> {
     {
         let (client_res_tx, mut client_res_rx) = mpsc::channel(1);
         let (ca, cb) = pipe();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let conf = Config {
                 cipher_suites: client_cipher_suites,
                 ..Default::default()
@@ -1770,7 +1770,7 @@ async fn test_psk_configuration() -> Result<()> {
     {
         let (client_res_tx, mut client_res_rx) = mpsc::channel(1);
         let (ca, cb) = pipe();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let conf = Config {
                 psk: if client_psk {
                     Some(Arc::new(psk_callback))
@@ -1940,7 +1940,7 @@ async fn test_server_timeout() -> Result<()> {
     let ca_rx = Arc::new(ca);
     let ca_tx = Arc::clone(&ca_rx);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut data = vec![0; 8192];
         loop {
             if let Ok(n) = ca_rx.recv(&mut data).await {
@@ -1955,7 +1955,7 @@ async fn test_server_timeout() -> Result<()> {
     });
 
     // Start sending ClientHello packets until server responds with first packet
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         loop {
             let timer = tokio::time::sleep(Duration::from_millis(10));
             tokio::pin!(timer);
@@ -2111,7 +2111,7 @@ async fn test_protocol_version_validation() -> Result<()> {
         for (name, records) in server_cases {
             let (ca, cb) = pipe();
 
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let config = Config {
                     cipher_suites: vec![CipherSuiteId::Tls_Ecdhe_Ecdsa_With_Aes_128_Gcm_Sha256],
                     flight_interval: Duration::from_millis(100),
@@ -2251,7 +2251,7 @@ async fn test_protocol_version_validation() -> Result<()> {
         for (name, records) in client_cases {
             let (ca, cb) = pipe();
 
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let config = Config {
                     cipher_suites: vec![CipherSuiteId::Tls_Ecdhe_Ecdsa_With_Aes_128_Gcm_Sha256],
                     flight_interval: Duration::from_millis(100),
@@ -2363,7 +2363,7 @@ async fn test_multiple_hello_verify_request() -> Result<()> {
 
     let (ca, cb) = pipe();
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let conf = Config::default();
         let _ = tokio::time::timeout(
             Duration::from_millis(100),
@@ -2458,7 +2458,7 @@ async fn test_renegotation_info() -> Result<()> {
     for (name, send_renegotiation_info) in tests {
         let (ca, cb) = pipe();
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let conf = Config::default();
             let _ = tokio::time::timeout(
                 Duration::from_millis(100),

@@ -317,7 +317,7 @@ async fn test_get_stats() -> Result<()> {
                     None => return result,
                 };
 
-                tokio::spawn(async move {
+                wasm_bindgen_futures::spawn_local(async move {
                     while let Ok((pkt, _)) = track.read_rtp().await {
                         dbg!(&pkt);
                         let last = pkt.payload[pkt.payload.len() - 1];

@@ -782,7 +782,7 @@ impl RTCRtpReceiver {
 
                 let receive_mtu = self.receive_mtu;
                 let track = t.clone();
-                tokio::spawn(async move {
+                wasm_bindgen_futures::spawn_local(async move {
                     let a = Attributes::new();
                     let mut b = vec![0u8; receive_mtu];
                     while let Some(repair_rtp_interceptor) = &track.repair_stream.rtp_interceptor {

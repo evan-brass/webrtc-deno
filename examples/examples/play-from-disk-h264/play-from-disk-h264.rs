@@ -161,14 +161,14 @@ async fn main() -> Result<()> {
         // Read incoming RTCP packets
         // Before these packets are returned they are processed by interceptors. For things
         // like NACK this needs to be called.
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut rtcp_buf = vec![0u8; 1500];
             while let Ok((_, _)) = rtp_sender.read(&mut rtcp_buf).await {}
             Result::<()>::Ok(())
         });
 
         let video_file_name = video_file.to_owned();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             // Open a H264 file and start reading using our H264Reader
             let file = File::open(&video_file_name)?;
             let reader = BufReader::new(file);
@@ -237,14 +237,14 @@ async fn main() -> Result<()> {
         // Read incoming RTCP packets
         // Before these packets are returned they are processed by interceptors. For things
         // like NACK this needs to be called.
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut rtcp_buf = vec![0u8; 1500];
             while let Ok((_, _)) = rtp_sender.read(&mut rtcp_buf).await {}
             Result::<()>::Ok(())
         });
 
         let audio_file_name = audio_file.to_owned();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             // Open a IVF file and start reading using our IVFReader
             let file = File::open(audio_file_name)?;
             let reader = BufReader::new(file);

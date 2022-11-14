@@ -261,7 +261,7 @@ impl<T: RelayConnObserver> RelayConnInternal<T> {
                             b.set_state(BindingState::Request);
                         }
                     }
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let result = RelayConnInternal::bind(
                             rc_obs,
                             bind_addr,
@@ -325,7 +325,7 @@ impl<T: RelayConnObserver> RelayConnInternal<T> {
                         b.set_state(BindingState::Refresh);
                     }
                 }
-                tokio::spawn(async move {
+                wasm_bindgen_futures::spawn_local(async move {
                     let result =
                         RelayConnInternal::bind(rc_obs, bind_addr, bind_number, nonce, integrity)
                             .await;

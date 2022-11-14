@@ -530,7 +530,7 @@ async fn test_net_virtual_resolver() -> Result<()> {
     }
 
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let (conn, raddr) = {
             let raddr = nw.resolve_addr(true, "test.webrtc.rs:1234").await?;
             (nw.dail(true, "test.webrtc.rs:1234").await?, raddr)
@@ -585,7 +585,7 @@ async fn test_net_virtual_loopback2() -> Result<()> {
     let (close_ch_tx, mut close_ch_rx) = mpsc::channel::<bool>(1);
     let conn_rx = Arc::clone(&conn);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
         loop {
             tokio::select! {
@@ -709,7 +709,7 @@ async fn test_net_virtual_end2end() -> Result<()> {
     let mut close_ch_rx2 = close_ch_tx.subscribe();
 
     // conn1
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
         loop {
             log::debug!("conn1: wait for a message..");
@@ -737,7 +737,7 @@ async fn test_net_virtual_end2end() -> Result<()> {
     });
 
     // conn2
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
         loop {
             log::debug!("conn2: wait for a message..");
@@ -841,7 +841,7 @@ async fn test_net_virtual_two_ips_on_a_nic() -> Result<()> {
     let mut close_ch_rx2 = close_ch_tx.subscribe();
 
     // conn1
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
         loop {
             log::debug!("conn1: wait for a message..");
@@ -869,7 +869,7 @@ async fn test_net_virtual_two_ips_on_a_nic() -> Result<()> {
     });
 
     // conn2
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
         loop {
             log::debug!("conn2: wait for a message..");

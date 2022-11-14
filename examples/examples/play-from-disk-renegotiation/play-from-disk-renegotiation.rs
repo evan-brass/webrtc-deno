@@ -185,7 +185,7 @@ async fn add_video(
     // Read incoming RTCP packets
     // Before these packets are returned they are processed by interceptors. For things
     // like NACK this needs to be called.
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut rtcp_buf = vec![0u8; 1500];
         while let Ok((_, _)) = rtp_sender.read(&mut rtcp_buf).await {}
         Result::<()>::Ok(())
@@ -197,7 +197,7 @@ async fn add_video(
     };
 
     if let Some(video_file) = video_file {
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let _ = write_video_to_track(video_file, video_track).await;
         });
     }
@@ -344,7 +344,7 @@ async fn main() -> Result<()> {
         *pcm = Some(Arc::clone(&peer_connection));
     }
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         println!("Open http://localhost:8080 to access this demo");
 
         let addr = SocketAddr::from_str("0.0.0.0:8080").unwrap();

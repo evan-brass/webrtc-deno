@@ -290,7 +290,7 @@ impl DTLSConn {
         let cipher_suite1 = Arc::clone(&c.state.cipher_suite);
         let sequence_number = Arc::clone(&c.state.local_sequence_number);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             loop {
                 let rx = packet_rx.recv().await;
                 if let Some(r) = rx {
@@ -321,7 +321,7 @@ impl DTLSConn {
         let remote_epoch = Arc::clone(&c.state.remote_epoch);
         let cipher_suite2 = Arc::clone(&c.state.cipher_suite);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut buf = vec![0u8; INBOUND_BUFFER_SIZE];
             let mut ctx = ConnReaderContext {
                 is_client,

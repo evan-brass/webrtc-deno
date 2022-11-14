@@ -98,7 +98,7 @@ impl StatsInterceptor {
     pub fn new(id: String) -> Self {
         let (tx, rx) = mpsc::channel(100);
 
-        tokio::spawn(run_stats_reducer(rx));
+        wasm_bindgen_futures::spawn_local(run_stats_reducer(rx));
 
         Self {
             id,
@@ -114,7 +114,7 @@ impl StatsInterceptor {
         F: Fn() -> SystemTime + 'static,
     {
         let (tx, rx) = mpsc::channel(100);
-        tokio::spawn(run_stats_reducer(rx));
+        wasm_bindgen_futures::spawn_local(run_stats_reducer(rx));
 
         Self {
             id,

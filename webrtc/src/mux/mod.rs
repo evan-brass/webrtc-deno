@@ -50,7 +50,7 @@ impl Mux {
         let buffer_size = m.buffer_size;
         let next_conn = Arc::clone(&m.next_conn);
         let endpoints = Arc::clone(&m.endpoints);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             Mux::read_loop(buffer_size, next_conn, closed_ch_rx, endpoints).await;
         });
 

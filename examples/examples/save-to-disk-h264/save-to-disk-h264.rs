@@ -210,7 +210,7 @@ async fn main() -> Result<()> {
             // Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
             let media_ssrc = track.ssrc();
             let pc2 = pc.clone();
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let mut result = Result::<usize>::Ok(0);
                 while result.is_ok() {
                     let timeout = tokio::time::sleep(Duration::from_secs(3));
@@ -239,12 +239,12 @@ async fn main() -> Result<()> {
                 let mime_type = codec.capability.mime_type.to_lowercase();
                 if mime_type == MIME_TYPE_OPUS.to_lowercase() {
                     println!("Got Opus track, saving to disk as output.opus (48 kHz, 2 channels)");     
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let _ = save_to_disk(ogg_writer2, track, notify_rx2).await;
                     });
                 } else if mime_type == MIME_TYPE_H264.to_lowercase() {
                     println!("Got h264 track, saving to disk as output.h264");
-                     tokio::spawn(async move {
+                     wasm_bindgen_futures::spawn_local(async move {
                          let _ = save_to_disk(h264_writer2, track, notify_rx2).await;
                      });
                 }

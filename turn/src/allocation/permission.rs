@@ -35,7 +35,7 @@ impl Permission {
         let addr = self.addr;
         let timer_expired = Arc::clone(&self.timer_expired);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let timer = tokio::time::sleep(lifetime);
             tokio::pin!(timer);
             let mut done = false;

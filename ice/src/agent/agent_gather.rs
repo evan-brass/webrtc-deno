@@ -102,7 +102,7 @@ impl Agent {
                     };
 
                     let w = wg.worker();
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let _d = w;
 
                         Self::gather_candidates_local(local_params).await;
@@ -124,7 +124,7 @@ impl Agent {
                         agent_internal: Arc::clone(&params.agent_internal),
                     };
                     let w1 = wg.worker();
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let _d = w1;
 
                         Self::gather_candidates_srflx(srflx_params).await;
@@ -140,7 +140,7 @@ impl Agent {
                                 agent_internal: Arc::clone(&params.agent_internal),
                             };
                             let w2 = wg.worker();
-                            tokio::spawn(async move {
+                            wasm_bindgen_futures::spawn_local(async move {
                                 let _d = w2;
 
                                 Self::gather_candidates_srflx_mapped(srflx_mapped_params).await;
@@ -153,7 +153,7 @@ impl Agent {
                     let net = Arc::clone(&params.net);
                     let agent_internal = Arc::clone(&params.agent_internal);
                     let w = wg.worker();
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let _d = w;
 
                         Self::gather_candidates_relay(urls, net, agent_internal).await;
@@ -489,7 +489,7 @@ impl Agent {
             let ext_ip_mapper2 = Arc::clone(&ext_ip_mapper);
 
             let w = wg.worker();
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let _d = w;
 
                 let conn: Arc<dyn Conn> = match listen_udp_in_port_range(
@@ -617,7 +617,7 @@ impl Agent {
                 let agent_internal2 = Arc::clone(&agent_internal);
 
                 let w = wg.worker();
-                tokio::spawn(async move {
+                wasm_bindgen_futures::spawn_local(async move {
                     let _d = w;
 
                     let host_port = format!("{}:{}", url.host, url.port);
@@ -763,7 +763,7 @@ impl Agent {
             let agent_internal2 = Arc::clone(&agent_internal);
 
             let w = wg.worker();
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let _d = w;
 
                 let turn_server_addr = format!("{}:{}", url.host, url.port);

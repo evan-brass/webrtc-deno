@@ -223,7 +223,7 @@ impl UDPMuxConnInner {
 
             // NOTE: Alternatively we could wait on the buffer closing here so that
             // our caller can wait for things to fully settle down
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 cloned_self.buffer.close().await;
             });
         }

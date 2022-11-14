@@ -255,7 +255,7 @@ impl AgentInternal {
             done_and_force_candidate_contact_rx
         {
             let ai = Arc::clone(self);
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 loop {
                     let mut interval = DEFAULT_CHECK_INTERVAL;
 
@@ -1041,7 +1041,7 @@ impl AgentInternal {
             let conn = Arc::clone(conn);
             let addr = candidate.addr().await;
             let ai = Arc::clone(self);
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let _ = ai
                     .recv_loop(cand, closed_ch_rx, initialized_ch, conn, addr)
                     .await;
@@ -1058,7 +1058,7 @@ impl AgentInternal {
         mut chan_candidate_pair_rx: mpsc::Receiver<()>,
     ) {
         let ai = Arc::clone(self);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             // CandidatePair and ConnectionState are usually changed at once.
             // Blocking one by the other one causes deadlock.
             while chan_candidate_pair_rx.recv().await.is_some() {
@@ -1080,7 +1080,7 @@ impl AgentInternal {
         });
 
         let ai = Arc::clone(self);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             loop {
                 tokio::select! {
                     opt_state = chan_state_rx.recv() => {

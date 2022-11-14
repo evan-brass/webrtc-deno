@@ -148,7 +148,7 @@ async fn main() -> Result<(), Error> {
 
         println!("Listening on http://localhost:{}", local_http_port);
         let mut done_http_server = done_rx.clone();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let addr = ([0, 0, 0, 0], local_http_port).into();
             let service =
                 make_service_fn(|_| async { Ok::<_, hyper::Error>(service_fn(remote_handler)) });
@@ -281,7 +281,7 @@ async fn main() -> Result<(), Error> {
 
         let ice_agent2 = Arc::clone(&ice_agent);
         let mut done_cand = done_rx.clone();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut rx = REMOTE_CAND_CHANNEL.1.lock().await;
             loop {
                 tokio::select! {
@@ -326,7 +326,7 @@ async fn main() -> Result<(), Error> {
         // Send messages in a loop to the remote peer
         let conn_tx = Arc::clone(&conn);
         let mut done_send = done_rx.clone();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             const RANDOM_STRING: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             loop {
                 tokio::time::sleep(Duration::from_secs(3)).await;
@@ -356,7 +356,7 @@ async fn main() -> Result<(), Error> {
         });
 
         let mut done_recv = done_rx.clone();
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             // Receive messages in a loop from the remote peer
             let mut buf = vec![0u8; 1500];
             loop {

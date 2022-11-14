@@ -184,7 +184,7 @@ impl RTCSctpTransport {
                 data_channels_accepted: Arc::clone(&self.data_channels_accepted),
                 setting_engine: Arc::clone(&self.setting_engine),
             };
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 RTCSctpTransport::accept_data_channels(param).await;
             });
 

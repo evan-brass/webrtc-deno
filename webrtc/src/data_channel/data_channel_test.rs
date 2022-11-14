@@ -152,7 +152,7 @@ async fn test_data_channel_open() -> Result<()> {
                         .await;
                         d.on_message(Box::new(move |_: DataChannelMessage| {
                             let done_tx3 = Arc::clone(&done_tx2);
-                            tokio::spawn(async move {
+                            wasm_bindgen_futures::spawn_local(async move {
                                 // Wait a little bit to ensure all messages are processed.
                                 tokio::time::sleep(Duration::from_millis(100)).await;
                                 let _ = done_tx3.send(()).await;
@@ -600,7 +600,7 @@ async fn test_data_channel_parameters_negotiated_exchange() -> Result<()> {
         .await;
 
     let done_tx = Arc::new(Mutex::new(Some(done_tx)));
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         loop {
             if seen_answer_message.load(Ordering::SeqCst)
                 && seen_offer_message.load(Ordering::SeqCst)
@@ -717,7 +717,7 @@ async fn test_data_channel_messages_are_ordered() -> Result<()> {
     }))
     .await;
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         for j in 1..=m {
             let buf = j.to_be_bytes().to_vec();
 
@@ -900,7 +900,7 @@ async fn test_data_channel_buffered_amount_set_before_open() -> Result<()> {
                     let n = n_packets_received2.fetch_add(1, Ordering::SeqCst);
                     if n == 9 {
                         let done_tx3 = Arc::clone(&done_tx2);
-                        tokio::spawn(async move {
+                        wasm_bindgen_futures::spawn_local(async move {
                             tokio::time::sleep(Duration::from_millis(10)).await;
                             let mut done = done_tx3.lock().await;
                             done.take();
@@ -995,7 +995,7 @@ async fn test_data_channel_buffered_amount_set_after_open() -> Result<()> {
                     let n = n_packets_received2.fetch_add(1, Ordering::SeqCst);
                     if n == 9 {
                         let done_tx3 = Arc::clone(&done_tx2);
-                        tokio::spawn(async move {
+                        wasm_bindgen_futures::spawn_local(async move {
                             tokio::time::sleep(Duration::from_millis(10)).await;
                             let mut done = done_tx3.lock().await;
                             done.take();
@@ -1107,7 +1107,7 @@ async fn test_eof_detach() -> Result<()> {
     .await;
 
     let w = wg.worker();
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let _d = w;
 
         log::debug!("Waiting for OnDataChannel");
@@ -1149,7 +1149,7 @@ async fn test_eof_detach() -> Result<()> {
     let dc = attached.detach().await?;
 
     let w = wg.worker();
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let _d = w;
         log::debug!("Sending ping...");
         dc.write(&Bytes::from_static(test_data.as_bytes())).await?;
@@ -1459,11 +1459,11 @@ async fn signal_ortc_pair(stack_a: Arc<TestOrtcStack>, stack_b: Arc<TestOrtcStac
     let (a_tx, mut a_rx) = mpsc::channel(1);
     let (b_tx, mut b_rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let _ = a_tx.send(stack_b.set_signal(&sig_a, false).await).await;
     });
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let _ = b_tx.send(stack_a.set_signal(&sig_b, true).await).await;
     });
 

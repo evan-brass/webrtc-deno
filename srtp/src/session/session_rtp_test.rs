@@ -268,7 +268,7 @@ async fn test_session_srtp_replay_protection() -> Result<()> {
     let cloned_received_sequence_number = Arc::clone(&received_sequence_number);
     let count = expected_sequence_number.len();
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut i = 0;
         while i < count {
             match payload_srtp(&read_stream, RTP_HEADER_SIZE, &test_payload).await {

@@ -61,7 +61,7 @@ impl PeriodicTimer {
         let interval = self.interval;
         let id = self.id;
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             loop {
                 let timer = tokio::time::sleep(interval);
                 tokio::pin!(timer);

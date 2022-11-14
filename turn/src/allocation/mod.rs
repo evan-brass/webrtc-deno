@@ -251,7 +251,7 @@ impl Allocation {
         let five_tuple = self.five_tuple;
         let timer_expired = Arc::clone(&self.timer_expired);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let timer = tokio::time::sleep(lifetime);
             tokio::pin!(timer);
             let mut done = false;
@@ -324,7 +324,7 @@ impl Allocation {
         let channel_bindings = Arc::clone(&self.channel_bindings);
         let permissions = Arc::clone(&self.permissions);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut buffer = vec![0u8; RTP_MTU];
 
             loop {

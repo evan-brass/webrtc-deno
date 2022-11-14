@@ -14,14 +14,14 @@ async fn test_twcc_sender_interceptor() -> Result<()> {
     let icpr = builder.build("")?;
 
     let (p_chan_tx, mut p_chan_rx) = mpsc::channel::<Packet>(10 * 5);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         // start some parallel streams using the same interceptor to test for race conditions
         let wg = WaitGroup::new();
         for i in 0..10 {
             let w = wg.worker();
             let p_chan_tx2 = p_chan_tx.clone();
             let icpr2 = Arc::clone(&icpr);
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let _d = w;
                 let stream = MockStream::new(
                     &StreamInfo {

@@ -221,7 +221,7 @@ impl ClientInternal {
         let read_ch_tx = Arc::clone(&self.read_ch_tx);
         let binding_mgr = Arc::clone(&self.binding_mgr);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut buf = vec![0u8; MAX_DATA_BUFFER_SIZE];
             loop {
                 //TODO: gracefully exit loop

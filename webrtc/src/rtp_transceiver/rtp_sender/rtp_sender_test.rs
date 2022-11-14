@@ -96,7 +96,7 @@ async fn test_rtp_sender_replace_track() -> Result<()> {
     signal_pair(&mut sender, &mut receiver).await?;
 
     // Block Until packet with 0xAA has been seen
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         send_video_until_done(
             seen_packet_a_rx,
             vec![track_a],
@@ -113,7 +113,7 @@ async fn test_rtp_sender_replace_track() -> Result<()> {
         .await?;
 
     // Block Until packet with 0xBB has been seen
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         send_video_until_done(
             seen_packet_b_rx,
             vec![track_b],
@@ -246,7 +246,7 @@ async fn test_rtp_sender_replace_track_invalid_track_kind_change() -> Result<()>
         ))
         .await;
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         send_video_until_done(
             seen_packet_rx,
             vec![track_a],
@@ -332,7 +332,7 @@ async fn test_rtp_sender_replace_track_invalid_codec_change() -> Result<()> {
         ))
         .await;
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         send_video_until_done(
             seen_packet_rx,
             vec![track_a],

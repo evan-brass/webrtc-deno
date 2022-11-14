@@ -135,7 +135,7 @@ async fn main() -> Result<()> {
                     // This is a temporary fix until we implement incoming RTCP events, then we would push a PLI only when a viewer requests it
                     let media_ssrc = track.ssrc();
                     let pc2 = pc.clone();
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let mut result = Result::<usize>::Ok(0);
                         while result.is_ok() {
                             let timeout = tokio::time::sleep(Duration::from_secs(3));
@@ -157,7 +157,7 @@ async fn main() -> Result<()> {
                     });
 
                     let local_track_chan_tx2 = Arc::clone(&local_track_chan_tx);
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         // Create Track that we send video back to browser on
                         let local_track = Arc::new(TrackLocalStaticRTP::new(
                             track.codec().await.capability,
@@ -267,7 +267,7 @@ async fn main() -> Result<()> {
             // Read incoming RTCP packets
             // Before these packets are returned they are processed by interceptors. For things
             // like NACK this needs to be called.
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let mut rtcp_buf = vec![0u8; 1500];
                 while let Ok((_, _)) = rtp_sender.read(&mut rtcp_buf).await {}
                 Result::<()>::Ok(())

@@ -289,7 +289,7 @@ impl Agent {
             let ai = Arc::clone(&self.internal);
             let host_candidate = Arc::clone(c);
             let mdns_conn = self.mdns_conn.clone();
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 if let Some(mdns_conn) = mdns_conn {
                     if let Ok(candidate) =
                         Self::resolve_and_add_multicast_candidate(mdns_conn, host_candidate).await
@@ -301,7 +301,7 @@ impl Agent {
         } else {
             let ai = Arc::clone(&self.internal);
             let candidate = Arc::clone(c);
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 ai.add_remote_candidate(&candidate).await;
             });
         }
@@ -470,7 +470,7 @@ impl Agent {
             gathering_state: Arc::clone(&self.gathering_state),
             chan_candidate_tx: Arc::clone(&self.internal.chan_candidate_tx),
         };
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             Self::gather_candidates_internal(params).await;
         });
 

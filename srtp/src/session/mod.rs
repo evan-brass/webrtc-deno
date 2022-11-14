@@ -81,7 +81,7 @@ impl Session {
         let cloned_streams_map = Arc::clone(&streams_map);
         let cloned_close_stream_tx = close_stream_tx.clone();
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut buf = vec![0u8; 8192];
 
             loop {

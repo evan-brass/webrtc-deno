@@ -123,7 +123,7 @@ impl DnsConn {
         let queries = c.queries.clone();
         let socket = Arc::clone(&c.socket);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             DnsConn::start(
                 close_server_rcv,
                 is_server_closed,

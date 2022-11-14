@@ -51,7 +51,7 @@ async fn test_packet_handler() -> Result<()> {
     let src_addr = client_listener.local_addr()?;
     let (data_ch_tx, mut data_ch_rx) = mpsc::channel(1);
     // client listener read data
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buffer = vec![0u8; RTP_MTU];
         loop {
             let n = match client_listener.recv_from(&mut buffer).await {

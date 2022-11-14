@@ -156,7 +156,7 @@ impl Manager {
         let reservations = Arc::clone(&self.reservations);
         let reservation_token2 = reservation_token.clone();
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let sleep = tokio::time::sleep(Duration::from_secs(30));
             tokio::pin!(sleep);
             tokio::select! {

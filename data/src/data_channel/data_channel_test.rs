@@ -32,7 +32,7 @@ async fn create_new_association_pair(
     let mut closed_rx1 = closed_tx.subscribe();
 
     // Setup client
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let client = Association::client(sctp::association::Config {
             net_conn: ca,
             max_receive_buffer_size: 0,
@@ -48,7 +48,7 @@ async fn create_new_association_pair(
     });
 
     // Setup server
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let server = Association::server(sctp::association::Config {
             net_conn: cb,
             max_receive_buffer_size: 0,
@@ -112,7 +112,7 @@ async fn close_association_pair(
     let mut closed_rx1 = closed_tx.subscribe();
 
     // Close client
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         client.close().await?;
         let _ = handshake0ch_tx.send(()).await;
         let _ = closed_rx0.recv().await;
@@ -121,7 +121,7 @@ async fn close_association_pair(
     });
 
     // Close server
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         server.close().await?;
         let _ = handshake1ch_tx.send(()).await;
         let _ = closed_rx1.recv().await;
@@ -490,7 +490,7 @@ async fn test_data_channel_buffered_amount() -> Result<()> {
     }
 
     let dc1_cloned = Arc::clone(&dc1);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         while let Ok(n) = dc1_cloned.read(&mut rbuf[..]).await {
             if n == 0 {
                 break;

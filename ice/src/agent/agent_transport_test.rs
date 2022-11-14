@@ -114,7 +114,7 @@ async fn test_conn_stats() -> Result<()> {
     let wg = WaitGroup::new();
 
     let w = wg.worker();
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let _d = w;
 
         let mut buf = vec![0u8; 10];

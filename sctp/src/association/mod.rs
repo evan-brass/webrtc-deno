@@ -381,7 +381,7 @@ impl Association {
             ));
         }
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             Association::read_loop(
                 name1,
                 bytes_received1,
@@ -392,7 +392,7 @@ impl Association {
             .await;
         });
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             Association::write_loop(
                 name2,
                 bytes_sent2,

@@ -267,7 +267,7 @@ async fn main() -> Result<()> {
         *pcm = Some(Arc::clone(&peer_connection));
     }
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let addr = SocketAddr::from_str(&offer_addr).unwrap();
         let service =
             make_service_fn(|_| async { Ok::<_, hyper::Error>(service_fn(remote_handler)) });

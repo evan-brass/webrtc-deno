@@ -64,7 +64,7 @@ impl Server {
                 relay_addr_generator: p.relay_addr_generator,
             }));
 
-            tokio::spawn(Server::read_loop(
+            wasm_bindgen_futures::spawn_local(Server::read_loop(
                 conn,
                 allocation_manager,
                 nonces,
@@ -152,7 +152,7 @@ impl Server {
 
         let (mut close_tx, mut close_rx) = oneshot::channel::<()>();
 
-        tokio::spawn({
+        wasm_bindgen_futures::spawn_local({
             let allocation_manager = Arc::clone(&allocation_manager);
 
             async move {

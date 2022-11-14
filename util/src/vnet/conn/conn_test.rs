@@ -73,7 +73,7 @@ async fn test_udp_conn_send_to_recv_from() -> Result<()> {
     let (rcvd_ch_tx, mut rcvd_ch_rx) = mpsc::channel(1);
     let (done_ch_tx, mut done_ch_rx) = mpsc::channel::<()>(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
 
         loop {
@@ -167,7 +167,7 @@ async fn test_udp_conn_send_recv() -> Result<()> {
     let (rcvd_ch_tx, mut rcvd_ch_rx) = mpsc::channel(1);
     let (done_ch_tx, mut done_ch_rx) = mpsc::channel::<()>(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
 
         loop {

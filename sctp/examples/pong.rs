@@ -78,7 +78,7 @@ async fn main() -> Result<(), Error> {
 
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
     let stream2 = Arc::clone(&stream);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buff = vec![0u8; 1024];
         while let Ok(n) = stream2.read(&mut buff).await {
             let ping_msg = String::from_utf8(buff[..n].to_vec()).unwrap();

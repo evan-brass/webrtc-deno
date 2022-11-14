@@ -215,7 +215,7 @@ impl RTCDataChannel {
         let on_open_handler = Arc::clone(&self.on_open_handler);
         let detach_data_channels = self.setting_engine.detach.data_channels;
         let detach_called = Arc::clone(&self.detach_called);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut handler = on_open_handler.lock().await;
             if let Some(f) = handler.take() {
                 f().await;
@@ -272,7 +272,7 @@ impl RTCDataChannel {
             let on_close_handler = Arc::clone(&self.on_close_handler);
             let on_error_handler = Arc::clone(&self.on_error_handler);
             let notify_rx = self.notify_tx.clone();
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 RTCDataChannel::read_loop(
                     notify_rx,
                     dc,
@@ -314,7 +314,7 @@ impl RTCDataChannel {
                             ready_state.store(RTCDataChannelState::Closed as u8, Ordering::SeqCst);
 
                             let on_close_handler2 = Arc::clone(&on_close_handler);
-                            tokio::spawn(async move {
+                            wasm_bindgen_futures::spawn_local(async move {
                                 let mut handler = on_close_handler2.lock().await;
                                 if let Some(f) = &mut *handler {
                                     f().await;
@@ -328,7 +328,7 @@ impl RTCDataChannel {
                             ready_state.store(RTCDataChannelState::Closed as u8, Ordering::SeqCst);
 
                             let on_error_handler2 = Arc::clone(&on_error_handler);
-                            tokio::spawn(async move {
+                            wasm_bindgen_futures::spawn_local(async move {
                                 let mut handler = on_error_handler2.lock().await;
                                 if let Some(f) = &mut *handler {
                                     f(err.into()).await;
@@ -336,7 +336,7 @@ impl RTCDataChannel {
                             });
 
                             let on_close_handler2 = Arc::clone(&on_close_handler);
-                            tokio::spawn(async move {
+                            wasm_bindgen_futures::spawn_local(async move {
                                 let mut handler = on_close_handler2.lock().await;
                                 if let Some(f) = &mut *handler {
                                     f().await;

@@ -40,7 +40,7 @@ async fn test_random_generator_collision() -> Result<()> {
                 let w = wg.worker();
                 let rs = Arc::clone(&rands);
 
-                tokio::spawn(async move {
+                wasm_bindgen_futures::spawn_local(async move {
                     let _d = w;
 
                     let s = if test_case == 0 {

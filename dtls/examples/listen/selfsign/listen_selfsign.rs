@@ -72,7 +72,7 @@ async fn main() -> Result<(), Error> {
 
     let listener2 = Arc::clone(&listener);
     let h2 = Arc::clone(&h);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         while let Ok((dtls_conn, _remote_addr)) = listener2.accept().await {
             // Register the connection with the chat hub
             h2.register(dtls_conn).await;

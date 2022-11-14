@@ -190,7 +190,7 @@ async fn main() -> Result<()> {
                     // Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval
                     let media_ssrc = track.ssrc();
                     let pc2 = pc.clone();
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let mut result = Result::<usize>::Ok(0);
                         while result.is_ok() {
                             let timeout = tokio::time::sleep(Duration::from_secs(3));
@@ -211,7 +211,7 @@ async fn main() -> Result<()> {
                         }
                     });
 
-                    tokio::spawn(async move {
+                    wasm_bindgen_futures::spawn_local(async move {
                         let mut b = vec![0u8; 1500];
                         while let Ok((n, _)) = track.read(&mut b).await {
                             // Unmarshal the packet and update the PayloadType

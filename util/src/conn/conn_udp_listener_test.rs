@@ -117,7 +117,7 @@ async fn test_listener_accept_filter() -> Result<()> {
         let (ch_accepted_tx, mut ch_accepted_rx) = mpsc::channel::<()>(1);
         let mut ch_accepted_tx = Some(ch_accepted_tx);
         let listener2 = Arc::clone(&listener);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let (c, _raddr) = match listener2.accept().await {
                 Ok((c, raddr)) => (c, raddr),
                 Err(err) => {
@@ -195,7 +195,7 @@ async fn test_listener_concurrent() -> Result<()> {
     let (done_tx, mut done_rx) = mpsc::channel::<()>(1);
     let mut done_tx = Some(done_tx);
     let listener2 = Arc::clone(&listener);
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         match listener2.accept().await {
             Ok((conn, _raddr)) => {
                 conn.close().await?;

@@ -106,7 +106,7 @@ impl RTCPReader for ResponderRtcpReader {
             if let Some(nack) = p.as_any().downcast_ref::<TransportLayerNack>() {
                 let nack = nack.clone();
                 let streams = Arc::clone(&self.internal.streams);
-                tokio::spawn(async move {
+                wasm_bindgen_futures::spawn_local(async move {
                     ResponderInternal::resend_packets(streams, nack).await;
                 });
             }

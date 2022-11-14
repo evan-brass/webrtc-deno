@@ -137,7 +137,7 @@ async fn do_ping_test(
     let pinger_conn_rx = Arc::clone(&pinger_conn_tx);
 
     // Start read-loop on pingerConn
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
         loop {
             let (n, from) = match pinger_conn_rx.recv_from(&mut buf).await {
@@ -159,7 +159,7 @@ async fn do_ping_test(
     });
 
     // Start read-loop on relay_conn
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 1500];
         loop {
             let (n, from) = match relay_conn.recv_from(&mut buf).await {

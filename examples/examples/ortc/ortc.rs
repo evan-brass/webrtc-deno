@@ -213,7 +213,7 @@ async fn main() -> Result<()> {
 
         // no need to downgrade this to Weak
         let d2 = Arc::clone(&d);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             tokio::select! {
                 _ = done_offer.notified() => {
                     println!("received done_offer signal!");

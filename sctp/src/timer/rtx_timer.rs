@@ -154,7 +154,7 @@ impl<T: 'static + RtxTimerObserver> RtxTimer<T> {
         let close_tx = Arc::clone(&self.close_tx);
         let timeout_observer = self.timeout_observer.clone();
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut n_rtos = 0;
 
             loop {

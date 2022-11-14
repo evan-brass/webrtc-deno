@@ -188,7 +188,7 @@ impl Interceptor for Generator {
         };
         let writer2 = Arc::clone(&writer);
         let internal = Arc::clone(&self.internal);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let _d = w.take();
             if let Err(err) = Generator::run(writer2, internal).await {
                 log::warn!("bind_rtcp_writer NACK Generator::run got error: {}", err);

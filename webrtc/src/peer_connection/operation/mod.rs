@@ -51,7 +51,7 @@ impl Operations {
         let l = Arc::clone(&length);
         let ops_tx = Arc::new(ops_tx);
         let ops_tx2 = Arc::clone(&ops_tx);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             Operations::start(l, ops_tx, ops_rx, close_rx).await;
         });
 

@@ -314,7 +314,7 @@ impl Router {
         let name = self.name.clone();
         let ipv4net = self.ipv4net;
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             while let Ok(d) = Router::process_chunks(
                 &name,
                 ipv4net,

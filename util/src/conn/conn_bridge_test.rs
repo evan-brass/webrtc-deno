@@ -18,7 +18,7 @@ async fn test_bridge_normal() -> Result<()> {
 
     let (tx, mut rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 256];
         let n = conn1.recv(&mut buf).await?;
         let _ = tx.send(n).await;
@@ -44,7 +44,7 @@ async fn test_bridge_drop_1st_packet_from_conn0() -> Result<()> {
 
     let (tx, mut rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 256];
         let n = conn1.recv(&mut buf).await?;
         let _ = tx.send(n).await;
@@ -71,7 +71,7 @@ async fn test_bridge_drop_2nd_packet_from_conn0() -> Result<()> {
 
     let (tx, mut rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 256];
         let n = conn1.recv(&mut buf).await?;
         let _ = tx.send(n).await;
@@ -98,7 +98,7 @@ async fn test_bridge_drop_1st_packet_from_conn1() -> Result<()> {
 
     let (tx, mut rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 256];
         let n = conn0.recv(&mut buf).await?;
         let _ = tx.send(n).await;
@@ -125,7 +125,7 @@ async fn test_bridge_drop_2nd_packet_from_conn1() -> Result<()> {
 
     let (tx, mut rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 256];
         let n = conn0.recv(&mut buf).await?;
         let _ = tx.send(n).await;
@@ -152,7 +152,7 @@ async fn test_bridge_reorder_packets_from_conn0() -> Result<()> {
 
     let (tx, mut rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 256];
         let n = conn1.recv(&mut buf).await?;
         assert_eq!(n, MSG2.len(), "unexpected length");
@@ -183,7 +183,7 @@ async fn test_bridge_reorder_packets_from_conn1() -> Result<()> {
 
     let (tx, mut rx) = mpsc::channel(1);
 
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut buf = vec![0u8; 256];
         let n = conn0.recv(&mut buf).await?;
         assert_eq!(n, MSG2.len(), "unexpected length");
@@ -222,7 +222,7 @@ async fn test_bridge_drop_next_n_packets() -> Result<()> {
 
         let (tx, mut rx) = mpsc::channel(5);
 
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut buf = vec![0u8; 256];
             for _ in 0..2u8 {
                 let n = dst_conn.recv(&mut buf).await?;

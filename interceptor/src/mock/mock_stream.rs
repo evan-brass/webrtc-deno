@@ -84,7 +84,7 @@ impl MockStream {
         let rtcp_reader = interceptor
             .bind_rtcp_reader(Arc::clone(&stream) as Arc<dyn RTCPReader>)
             .await;
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut buf = vec![0u8; 1500];
             let a = Attributes::new();
             loop {
@@ -117,7 +117,7 @@ impl MockStream {
                 Arc::clone(&stream) as Arc<dyn RTPReader>,
             )
             .await;
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut buf = vec![0u8; 1500];
             let a = Attributes::new();
             loop {

@@ -161,7 +161,7 @@ impl UDPMuxDefault {
     }
 
     fn start_conn_worker(self: Arc<Self>, mut closed_watch_rx: watch::Receiver<()>) {
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let mut buffer = [0u8; RECEIVE_MTU];
 
             loop {
@@ -271,7 +271,7 @@ impl UDPMux for UDPMuxDefault {
             let mut close_rx = muxed_conn.close_rx();
             let cloned_self = Arc::clone(&self);
             let cloned_ufrag = ufrag.to_string();
-            tokio::spawn(async move {
+            wasm_bindgen_futures::spawn_local(async move {
                 let _ = close_rx.changed().await;
 
                 // Arc needed

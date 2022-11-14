@@ -37,7 +37,7 @@ impl Hub {
         }
 
         let conns = Arc::clone(&self.conns);
-        tokio::spawn(async move {
+        wasm_bindgen_futures::spawn_local(async move {
             let _ = Hub::read_loop(conns, conn).await;
         });
     }

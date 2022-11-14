@@ -114,7 +114,7 @@ async fn main() -> Result<()> {
     // Read incoming RTCP packets
     // Before these packets are returned they are processed by interceptors. For things
     // like NACK this needs to be called.
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut rtcp_buf = vec![0u8; 1500];
         while let Ok((_, _)) = rtp_sender.read(&mut rtcp_buf).await {}
         Result::<()>::Ok(())
@@ -190,7 +190,7 @@ async fn main() -> Result<()> {
 
     let done_tx3 = done_tx.clone();
     // Read RTP packets forever and send them to the WebRTC Client
-    tokio::spawn(async move {
+    wasm_bindgen_futures::spawn_local(async move {
         let mut inbound_rtp_packet = vec![0u8; 1600]; // UDP MTU
         while let Ok((n, _)) = listener.recv_from(&mut inbound_rtp_packet).await {
             if let Err(err) = video_track.write(&inbound_rtp_packet[..n]).await {
