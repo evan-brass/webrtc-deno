@@ -2131,7 +2131,7 @@ impl AsAny for FakeEchoConn {
 
 type UResult<T> = std::result::Result<T, util::Error>;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for FakeEchoConn {
     async fn connect(&self, _addr: SocketAddr) -> UResult<()> {
         Err(io::Error::new(io::ErrorKind::Other, "Not applicable").into())

@@ -57,7 +57,7 @@ pub(crate) struct Packet {
     pub(crate) reset_local_sequence_number: bool,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 pub(crate) trait Flight: fmt::Display + fmt::Debug {
     fn is_last_send_flight(&self) -> bool {
         false

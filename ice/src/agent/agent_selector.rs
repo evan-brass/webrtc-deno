@@ -12,7 +12,7 @@ use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use tokio::time::{Duration, Instant};
 
-#[async_trait]
+#[async_trait(?Send)]
 trait ControllingSelector {
     async fn start(&self);
     async fn contact_candidates(&self);
@@ -36,7 +36,7 @@ trait ControllingSelector {
     );
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 trait ControlledSelector {
     async fn start(&self);
     async fn contact_candidates(&self);
@@ -210,7 +210,7 @@ impl AgentInternal {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl ControllingSelector for AgentInternal {
     async fn start(&self) {
         {
@@ -405,7 +405,7 @@ impl ControllingSelector for AgentInternal {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl ControlledSelector for AgentInternal {
     async fn start(&self) {}
 

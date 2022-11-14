@@ -15,7 +15,7 @@ use std::sync::Arc;
 const MAX_READ_QUEUE_SIZE: usize = 1024;
 
 /// vNet implements this
-#[async_trait]
+#[async_trait(?Send)]
 pub(crate) trait ConnObserver {
     async fn write(&self, c: Box<dyn Chunk + Send + Sync>) -> Result<()>;
     async fn on_closed(&self, addr: SocketAddr);
@@ -58,7 +58,7 @@ impl UdpConn {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for UdpConn {
     async fn connect(&self, addr: SocketAddr) -> Result<()> {
         let mut rem_addr = self.rem_addr.lock().await;

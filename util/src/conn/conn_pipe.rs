@@ -26,7 +26,7 @@ pub fn pipe() -> (impl Conn, impl Conn) {
     (p1, p2)
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for Pipe {
     async fn connect(&self, _addr: SocketAddr) -> Result<()> {
         Err(Error::new(ErrorKind::Other, "Not applicable").into())

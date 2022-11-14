@@ -19,7 +19,7 @@ struct BridgeConn {
     loss_chance: u8,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for BridgeConn {
     async fn connect(&self, _addr: SocketAddr) -> Result<()> {
         Err(Error::new(ErrorKind::Other, "Not applicable").into())

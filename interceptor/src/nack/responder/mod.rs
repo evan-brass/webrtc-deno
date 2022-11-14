@@ -95,7 +95,7 @@ pub struct ResponderRtcpReader {
     internal: Arc<ResponderInternal>,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTCPReader for ResponderRtcpReader {
     async fn read(&self, buf: &mut [u8], a: &Attributes) -> Result<(usize, Attributes)> {
         let (n, attr) = { self.parent_rtcp_reader.read(buf, a).await? };
@@ -128,7 +128,7 @@ impl Responder {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Interceptor for Responder {
     /// bind_rtcp_reader lets you modify any incoming RTCP packets. It is called once per sender/receiver, however this might
     /// change in the future. The returned method will be called once per packet batch.

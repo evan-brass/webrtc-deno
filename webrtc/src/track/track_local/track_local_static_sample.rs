@@ -158,7 +158,7 @@ impl TrackLocalStaticSample {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl TrackLocal for TrackLocalStaticSample {
     /// Bind is called by the PeerConnection after negotiation is complete
     /// This asserts that the code requested is supported by the remote peer.

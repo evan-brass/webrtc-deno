@@ -36,7 +36,7 @@ pub(crate) struct InboundData {
 }
 
 // UDPConnObserver is an interface to UDPConn observer
-#[async_trait]
+#[async_trait(?Send)]
 pub trait RelayConnObserver {
     fn turn_server_addr(&self) -> String;
     fn username(&self) -> Username;
@@ -106,7 +106,7 @@ impl<T: 'static + RelayConnObserver + Send + Sync> RelayConn<T> {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl<T: RelayConnObserver + Send + Sync> Conn for RelayConn<T> {
     async fn connect(&self, _addr: SocketAddr) -> Result<(), util::Error> {
         Err(io::Error::new(io::ErrorKind::Other, "Not applicable").into())
@@ -580,7 +580,7 @@ impl<T: RelayConnObserver + Send + Sync> RelayConnInternal<T> {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl<T: RelayConnObserver + Send + Sync> PeriodicTimerTimeoutHandler for RelayConnInternal<T> {
     async fn on_timeout(&mut self, id: TimerIdRefresh) {
         log::debug!("refresh timer {:?} expired", id);

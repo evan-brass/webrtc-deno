@@ -32,7 +32,7 @@ impl fmt::Display for Flight1 {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Flight for Flight1 {
     async fn parse(
         &self,

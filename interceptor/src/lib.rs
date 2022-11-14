@@ -34,7 +34,7 @@ pub trait InterceptorBuilder {
 
 /// Interceptor can be used to add functionality to you PeerConnections by modifying any incoming/outgoing rtp/rtcp
 /// packets, or sending your own packets as needed.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Interceptor {
     /// bind_rtcp_reader lets you modify any incoming RTCP packets. It is called once per sender/receiver, however this might
     /// change in the future. The returned method will be called once per packet batch.
@@ -76,7 +76,7 @@ pub trait Interceptor {
 }
 
 /// RTPWriter is used by Interceptor.bind_local_stream.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait RTPWriter {
     /// write a rtp packet
     async fn write(&self, pkt: &rtp::packet::Packet, attributes: &Attributes) -> Result<usize>;
@@ -92,7 +92,7 @@ pub type RTPWriterBoxFn = Box<
 >;
 pub struct RTPWriterFn(pub RTPWriterBoxFn);
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPWriter for RTPWriterFn {
     /// write a rtp packet
     async fn write(&self, pkt: &rtp::packet::Packet, attributes: &Attributes) -> Result<usize> {
@@ -101,7 +101,7 @@ impl RTPWriter for RTPWriterFn {
 }
 
 /// RTPReader is used by Interceptor.bind_remote_stream.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait RTPReader {
     /// read a rtp packet
     async fn read(&self, buf: &mut [u8], attributes: &Attributes) -> Result<(usize, Attributes)>;
@@ -117,7 +117,7 @@ pub type RTPReaderBoxFn = Box<
 >;
 pub struct RTPReaderFn(pub RTPReaderBoxFn);
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPReader for RTPReaderFn {
     /// read a rtp packet
     async fn read(&self, buf: &mut [u8], attributes: &Attributes) -> Result<(usize, Attributes)> {
@@ -126,7 +126,7 @@ impl RTPReader for RTPReaderFn {
 }
 
 /// RTCPWriter is used by Interceptor.bind_rtcpwriter.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait RTCPWriter {
     /// write a batch of rtcp packets
     async fn write(
@@ -147,7 +147,7 @@ pub type RTCPWriterBoxFn = Box<
 
 pub struct RTCPWriterFn(pub RTCPWriterBoxFn);
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTCPWriter for RTCPWriterFn {
     /// write a batch of rtcp packets
     async fn write(
@@ -160,7 +160,7 @@ impl RTCPWriter for RTCPWriterFn {
 }
 
 /// RTCPReader is used by Interceptor.bind_rtcpreader.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait RTCPReader {
     /// read a batch of rtcp packets
     async fn read(&self, buf: &mut [u8], attributes: &Attributes) -> Result<(usize, Attributes)>;
@@ -177,7 +177,7 @@ pub type RTCPReaderBoxFn = Box<
 
 pub struct RTCPReaderFn(pub RTCPReaderBoxFn);
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTCPReader for RTCPReaderFn {
     /// read a batch of rtcp packets
     async fn read(&self, buf: &mut [u8], attributes: &Attributes) -> Result<(usize, Attributes)> {

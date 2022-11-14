@@ -161,7 +161,7 @@ impl AgentConn {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for AgentConn {
     async fn connect(&self, _addr: SocketAddr) -> std::result::Result<(), util::Error> {
         Err(io::Error::new(io::ErrorKind::Other, "Not applicable").into())

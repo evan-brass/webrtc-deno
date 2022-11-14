@@ -12,7 +12,7 @@ impl From<Error> for util::Error {
 
 struct DumbConn;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for DumbConn {
     async fn connect(&self, _addr: SocketAddr) -> Result<()> {
         Err(io::Error::new(io::ErrorKind::Other, "Not applicable").into())

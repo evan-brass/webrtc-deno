@@ -19,7 +19,7 @@ mod test_ack_timer {
         ncbs: Arc<AtomicU32>,
     }
 
-    #[async_trait]
+    #[async_trait(?Send)]
     impl AckTimerObserver for TestAckTimerObserver {
         async fn on_ack_timeout(&mut self) {
             log::trace!("ack timed out");
@@ -184,7 +184,7 @@ mod test_rtx_timer {
         }
     }
 
-    #[async_trait]
+    #[async_trait(?Send)]
     impl RtxTimerObserver for TestTimerObserver {
         async fn on_retransmission_timeout(&mut self, timer_id: RtxTimerId, n_rtos: usize) {
             self.ncbs.fetch_add(1, Ordering::SeqCst);

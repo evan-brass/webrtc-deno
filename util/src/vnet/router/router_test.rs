@@ -26,7 +26,7 @@ impl Default for DummyNic {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Nic for DummyNic {
     async fn get_interface(&self, ifc_name: &str) -> Option<Interface> {
         self.net.get_interface(ifc_name).await

@@ -26,7 +26,7 @@ impl Clone for Box<dyn Payloader + Send + Sync> {
 }
 
 /// Packetizer packetizes a payload
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Packetizer: fmt::Debug {
     fn enable_abs_send_time(&mut self, value: u8);
     async fn packetize(&mut self, payload: &Bytes, samples: u32) -> Result<Vec<Packet>>;
@@ -107,7 +107,7 @@ pub fn new_packetizer(
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Packetizer for PacketizerImpl {
     fn enable_abs_send_time(&mut self, value: u8) {
         self.abs_send_time = value

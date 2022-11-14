@@ -98,7 +98,7 @@ pub(crate) fn calculate_next_timeout(rto: u64, n_rtos: usize) -> u64 {
 /// rtxTimerObserver is the inteface to a timer observer.
 /// NOTE: Observers MUST NOT call start() or stop() method on rtxTimer
 /// from within these callbacks.
-#[async_trait]
+#[async_trait(?Send)]
 pub(crate) trait RtxTimerObserver {
     async fn on_retransmission_timeout(&mut self, timer_id: RtxTimerId, n: usize);
     async fn on_retransmission_failure(&mut self, timer_id: RtxTimerId);

@@ -18,7 +18,7 @@ impl fmt::Display for Flight6 {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Flight for Flight6 {
     fn is_last_send_flight(&self) -> bool {
         true

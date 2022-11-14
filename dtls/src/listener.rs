@@ -65,7 +65,7 @@ impl DTLSListener {
 
 type UtilResult<T> = std::result::Result<T, util::Error>;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Listener for DTLSListener {
     /// Accept waits for and returns the next connection to the listener.
     /// You have to either close or read on all connection that are created.

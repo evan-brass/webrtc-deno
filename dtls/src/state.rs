@@ -249,7 +249,7 @@ impl State {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl KeyingMaterialExporter for State {
     /// export_keying_material returns length bytes of exported key material in a new
     /// slice as defined in RFC 5705.

@@ -3,7 +3,7 @@ use crate::error::Result;
 
 struct DummyPeriodicTimerTimeoutHandler;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl PeriodicTimerTimeoutHandler for DummyPeriodicTimerTimeoutHandler {
     async fn on_timeout(&mut self, id: TimerIdRefresh) {
         assert_eq!(id, TimerIdRefresh::Perms);

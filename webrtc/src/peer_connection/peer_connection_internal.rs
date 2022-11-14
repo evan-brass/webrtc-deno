@@ -1488,7 +1488,7 @@ impl PeerConnectionInternal {
 
 type IResult<T> = std::result::Result<T, interceptor::Error>;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTCPWriter for PeerConnectionInternal {
     async fn write(
         &self,

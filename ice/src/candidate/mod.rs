@@ -36,7 +36,7 @@ pub(crate) const COMPONENT_RTP: u16 = 1;
 pub(crate) const COMPONENT_RTCP: u16 = 0;
 
 /// Candidate represents an ICE candidate
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Candidate: fmt::Display {
     /// An arbitrary string used in the freezing algorithm to
     /// group similar candidates.  It is the same for two candidates that

@@ -21,7 +21,7 @@ pub mod replay_detector;
 ///
 /// This trait sits here to avoid getting a direct dependency between
 /// the dtls and srtp crates.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait KeyingMaterialExporter {
     async fn export_keying_material(
         &self,

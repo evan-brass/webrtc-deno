@@ -2281,7 +2281,7 @@ impl AssociationInternal {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl AckTimerObserver for AssociationInternal {
     async fn on_ack_timeout(&mut self) {
         log::trace!(
@@ -2295,7 +2295,7 @@ impl AckTimerObserver for AssociationInternal {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RtxTimerObserver for AssociationInternal {
     async fn on_retransmission_timeout(&mut self, id: RtxTimerId, n_rtos: usize) {
         match id {

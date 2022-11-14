@@ -171,14 +171,14 @@ impl SrtpWriterFuture {
 
 type IResult<T> = std::result::Result<T, interceptor::Error>;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTCPReader for SrtpWriterFuture {
     async fn read(&self, buf: &mut [u8], a: &Attributes) -> IResult<(usize, Attributes)> {
         Ok((self.read(buf).await?, a.clone()))
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPWriter for SrtpWriterFuture {
     async fn write(&self, pkt: &rtp::packet::Packet, _a: &Attributes) -> IResult<usize> {
         Ok(self.write_rtp(pkt).await?)

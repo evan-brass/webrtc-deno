@@ -244,7 +244,7 @@ impl MockStream {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTCPWriter for MockStream {
     async fn write(
         &self,
@@ -257,7 +257,7 @@ impl RTCPWriter for MockStream {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTCPReader for MockStream {
     async fn read(&self, buf: &mut [u8], a: &Attributes) -> Result<(usize, Attributes)> {
         let pkts = {
@@ -276,7 +276,7 @@ impl RTCPReader for MockStream {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPWriter for MockStream {
     async fn write(&self, pkt: &rtp::packet::Packet, _a: &Attributes) -> Result<usize> {
         let _ = self.rtp_out_modified_tx.send(pkt.clone()).await;
@@ -284,7 +284,7 @@ impl RTPWriter for MockStream {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPReader for MockStream {
     async fn read(&self, buf: &mut [u8], a: &Attributes) -> Result<(usize, Attributes)> {
         let pkt = {

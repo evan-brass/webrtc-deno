@@ -18,7 +18,7 @@ use tokio::sync::Mutex;
 use util::Unmarshal;
 
 /// TrackLocalWriter is the Writer for outbound RTP Packets
-#[async_trait]
+#[async_trait(?Send)]
 pub trait TrackLocalWriter: fmt::Debug {
     /// write_rtp encrypts a RTP packet and writes to the connection
     async fn write_rtp(&self, p: &rtp::packet::Packet) -> Result<usize>;
@@ -71,7 +71,7 @@ impl TrackLocalContext {
 /// TrackLocal is an interface that controls how the user can send media
 /// The user can provide their own TrackLocal implementatiosn, or use
 /// the implementations in pkg/media
-#[async_trait]
+#[async_trait(?Send)]
 pub trait TrackLocal {
     /// bind should implement the way how the media data flows from the Track to the PeerConnection
     /// This will be called internally after signaling is complete and the list of available
@@ -139,7 +139,7 @@ impl std::fmt::Debug for InterceptorToTrackLocalWriter {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl TrackLocalWriter for InterceptorToTrackLocalWriter {
     async fn write_rtp(&self, pkt: &rtp::packet::Packet) -> Result<usize> {
         if self.is_sender_paused() {

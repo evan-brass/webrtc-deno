@@ -8,7 +8,7 @@ struct DummyObserver {
     read_ch_tx: Arc<Mutex<Option<mpsc::Sender<Box<dyn Chunk + Send + Sync>>>>>,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl ConnObserver for DummyObserver {
     async fn write(&self, c: Box<dyn Chunk + Send + Sync>) -> Result<()> {
         let mut chunk = ChunkUdp::new(c.destination_addr(), c.source_addr());

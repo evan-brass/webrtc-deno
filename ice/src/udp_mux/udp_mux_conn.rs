@@ -10,7 +10,7 @@ use super::socket_addr_ext::{SocketAddrExt, MAX_ADDR_SIZE};
 use super::{normalize_socket_addr, RECEIVE_MTU};
 
 /// A trait for a [`UDPMuxConn`] to communicate with an UDP mux.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait UDPMuxWriter {
     /// Registers an address for the given connection.
     async fn register_conn_for_address(&self, conn: &UDPMuxConn, addr: SocketAddr);
@@ -261,7 +261,7 @@ impl UDPMuxConnInner {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for UDPMuxConn {
     async fn connect(&self, _addr: SocketAddr) -> ConnResult<()> {
         Err(io::Error::new(io::ErrorKind::Other, "Not applicable").into())

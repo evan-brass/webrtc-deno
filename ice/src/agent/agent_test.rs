@@ -576,7 +576,7 @@ async fn test_connectivity_lite() -> Result<()> {
 
 struct MockPacketConn;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for MockPacketConn {
     async fn connect(&self, _addr: SocketAddr) -> std::result::Result<(), util::Error> {
         Ok(())

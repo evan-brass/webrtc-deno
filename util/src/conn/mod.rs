@@ -23,7 +23,7 @@ use tokio::net::ToSocketAddrs;
 
 use crate::error::Result;
 
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Conn {
     async fn connect(&self, addr: SocketAddr) -> Result<()>;
     async fn recv(&self, buf: &mut [u8]) -> Result<usize>;
@@ -37,7 +37,7 @@ pub trait Conn {
 
 /// A Listener is a generic network listener for connection-oriented protocols.
 /// Multiple connections may invoke methods on a Listener simultaneously.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Listener {
     /// accept waits for and returns the next connection to the listener.
     async fn accept(&self) -> Result<(Arc<dyn Conn + Send + Sync>, SocketAddr)>;

@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 // RelayAddressGenerator is used to generate a RelayAddress when creating an allocation.
 // You can use one of the provided ones or provide your own.
-#[async_trait]
+#[async_trait(?Send)]
 pub trait RelayAddressGenerator {
     // validate confirms that the RelayAddressGenerator is properly initialized
     fn validate(&self) -> Result<()>;

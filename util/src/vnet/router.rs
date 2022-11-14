@@ -60,7 +60,7 @@ pub struct RouterConfig {
 }
 
 // NIC is a network interface controller that interfaces Router
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Nic {
     async fn get_interface(&self, ifc_name: &str) -> Option<Interface>;
     async fn add_addrs_to_interface(&mut self, ifc_name: &str, addrs: &[IpNet]) -> Result<()>;
@@ -102,7 +102,7 @@ pub struct Router {
     router_internal: Arc<Mutex<RouterInternal>>,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Nic for Router {
     async fn get_interface(&self, ifc_name: &str) -> Option<Interface> {
         for ifc in &self.interfaces {

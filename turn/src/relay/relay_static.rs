@@ -17,7 +17,7 @@ pub struct RelayAddressGeneratorStatic {
     pub net: Arc<Net>,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RelayAddressGenerator for RelayAddressGeneratorStatic {
     // validate confirms that the RelayAddressGenerator is properly initialized
     fn validate(&self) -> Result<()> {

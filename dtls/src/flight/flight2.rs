@@ -19,7 +19,7 @@ impl fmt::Display for Flight2 {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Flight for Flight2 {
     fn has_retransmit(&self) -> bool {
         false

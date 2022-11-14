@@ -105,7 +105,7 @@ pub struct DTLSConn {
 
 type UtilResult<T> = std::result::Result<T, util::Error>;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for DTLSConn {
     async fn connect(&self, _addr: SocketAddr) -> UtilResult<()> {
         Err(util::Error::Other("Not applicable".to_owned()))

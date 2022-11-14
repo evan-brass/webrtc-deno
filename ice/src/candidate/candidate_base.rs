@@ -113,7 +113,7 @@ impl fmt::Display for CandidateBase {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Candidate for CandidateBase {
     fn foundation(&self) -> String {
         if !self.foundation_override.is_empty() {

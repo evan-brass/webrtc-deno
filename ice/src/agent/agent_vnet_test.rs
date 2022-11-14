@@ -12,7 +12,7 @@ use waitgroup::WaitGroup;
 
 pub(crate) struct MockConn;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for MockConn {
     async fn connect(&self, _addr: SocketAddr) -> Result<(), util::Error> {
         Ok(())

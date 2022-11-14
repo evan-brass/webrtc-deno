@@ -297,7 +297,7 @@ fn handle_stats_update(ssrc_stats: &mut StatsContainer, ssrc: u32, update: Stats
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Interceptor for StatsInterceptor {
     /// bind_remote_stream lets you modify any incoming RTP packets. It is called once for per RemoteStream. The returned method
     /// will be called once per rtp packet.
@@ -386,7 +386,7 @@ pub struct RTCPReadInterceptor<F> {
     now_gen: F,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl<F> RTCPReader for RTCPReadInterceptor<F>
 where
     F: Fn() -> SystemTime + Send + Sync,
@@ -609,7 +609,7 @@ pub struct RTCPWriteInterceptor<F> {
     now_gen: F,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl<F> RTCPWriter for RTCPWriteInterceptor<F>
 where
     F: Fn() -> SystemTime + Send + Sync,
@@ -716,7 +716,7 @@ impl fmt::Debug for RTPReadRecorder {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPReader for RTPReadRecorder {
     async fn read(&self, buf: &mut [u8], attributes: &Attributes) -> Result<(usize, Attributes)> {
         let (bytes_read, attributes) = self.rtp_reader.read(buf, attributes).await?;
@@ -759,7 +759,7 @@ impl fmt::Debug for RTPWriteRecorder {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPWriter for RTPWriteRecorder {
     /// write a rtp packet
     async fn write(&self, pkt: &rtp::packet::Packet, attributes: &Attributes) -> Result<usize> {

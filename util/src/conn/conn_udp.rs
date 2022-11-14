@@ -2,7 +2,7 @@ use super::*;
 
 use tokio::net::UdpSocket;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for UdpSocket {
     async fn connect(&self, addr: SocketAddr) -> Result<()> {
         Ok(self.connect(addr).await?)

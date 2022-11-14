@@ -40,7 +40,7 @@ impl fmt::Display for Flight4 {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Flight for Flight4 {
     async fn parse(
         &self,

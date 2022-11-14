@@ -31,7 +31,7 @@ impl Endpoint {
 
 type Result<T> = std::result::Result<T, util::Error>;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for Endpoint {
     async fn connect(&self, _addr: SocketAddr) -> Result<()> {
         Err(io::Error::new(io::ErrorKind::Other, "Not applicable").into())

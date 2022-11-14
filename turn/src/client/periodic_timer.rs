@@ -21,7 +21,7 @@ impl Default for TimerIdRefresh {
 }
 
 // PeriodicTimerTimeoutHandler is a handler called on timeout
-#[async_trait]
+#[async_trait(?Send)]
 pub trait PeriodicTimerTimeoutHandler {
     async fn on_timeout(&mut self, id: TimerIdRefresh);
 }

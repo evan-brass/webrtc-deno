@@ -25,7 +25,7 @@ pub struct RelayAddressGeneratorRanges {
     pub net: Arc<Net>,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RelayAddressGenerator for RelayAddressGeneratorRanges {
     // validate confirms that the RelayAddressGenerator is properly initialized
     fn validate(&self) -> Result<()> {

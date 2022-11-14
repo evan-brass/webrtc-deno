@@ -133,7 +133,7 @@ impl TrackLocalStaticRTP {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl TrackLocal for TrackLocalStaticRTP {
     /// bind is called by the PeerConnection after negotiation is complete
     /// This asserts that the code requested is supported by the remote peer.
@@ -211,7 +211,7 @@ impl TrackLocal for TrackLocalStaticRTP {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl TrackLocalWriter for TrackLocalStaticRTP {
     /// write_rtp writes a RTP Packet to the TrackLocalStaticRTP
     /// If one PeerConnection fails the packets will still be sent to

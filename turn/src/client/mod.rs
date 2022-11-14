@@ -73,7 +73,7 @@ struct ClientInternal {
     read_ch_tx: Arc<Mutex<Option<mpsc::Sender<InboundData>>>>,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RelayConnObserver for ClientInternal {
     // turn_server_addr return the TURN server address
     fn turn_server_addr(&self) -> String {

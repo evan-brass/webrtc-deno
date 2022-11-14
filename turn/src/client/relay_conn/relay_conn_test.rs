@@ -9,7 +9,7 @@ struct DummyRelayConnObserver {
     realm: Realm,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RelayConnObserver for DummyRelayConnObserver {
     fn turn_server_addr(&self) -> String {
         self.turn_server_addr.clone()

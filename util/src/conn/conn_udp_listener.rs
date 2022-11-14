@@ -30,7 +30,7 @@ struct ListenerImpl {
     conns: Arc<Mutex<HashMap<String, Arc<UdpConn>>>>,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Listener for ListenerImpl {
     /// accept waits for and returns the next connection to the listener.
     async fn accept(&self) -> Result<(Arc<dyn Conn + Send + Sync>, SocketAddr)> {
@@ -254,7 +254,7 @@ impl UdpConn {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for UdpConn {
     async fn connect(&self, addr: SocketAddr) -> Result<()> {
         self.pconn.connect(addr).await

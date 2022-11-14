@@ -21,7 +21,7 @@ impl DisconnectedPacketConn {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Conn for DisconnectedPacketConn {
     async fn connect(&self, addr: SocketAddr) -> Result<()> {
         self.pconn.connect(addr).await

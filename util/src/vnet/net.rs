@@ -48,7 +48,7 @@ impl VNetInternal {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl ConnObserver for VNetInternal {
     async fn write(&self, c: Box<dyn Chunk + Send + Sync>) -> Result<()> {
         if c.network() == UDP_STR && c.get_destination_ip().is_loopback() {
@@ -114,7 +114,7 @@ pub struct VNet {
     pub(crate) vi: Arc<Mutex<VNetInternal>>,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Nic for VNet {
     async fn get_interface(&self, ifc_name: &str) -> Option<Interface> {
         for ifc in &self.interfaces {

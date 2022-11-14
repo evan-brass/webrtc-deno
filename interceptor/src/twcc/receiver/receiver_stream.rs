@@ -27,7 +27,7 @@ impl ReceiverStream {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPReader for ReceiverStream {
     /// read a rtp packet
     async fn read(&self, buf: &mut [u8], attributes: &Attributes) -> Result<(usize, Attributes)> {

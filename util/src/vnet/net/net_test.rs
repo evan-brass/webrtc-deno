@@ -8,7 +8,7 @@ const DEMO_IP: &str = "1.2.3.4";
 #[derive(Default)]
 struct DummyObserver;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl ConnObserver for DummyObserver {
     async fn write(&self, _c: Box<dyn Chunk + Send + Sync>) -> Result<()> {
         Ok(())

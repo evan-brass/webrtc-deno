@@ -52,7 +52,7 @@ impl Sender {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Interceptor for Sender {
     /// bind_rtcp_reader lets you modify any incoming RTCP packets. It is called once per sender/receiver, however this might
     /// change in the future. The returned method will be called once per packet batch.

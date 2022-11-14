@@ -6,7 +6,7 @@ use super::*;
 /// possible to implement only a subset of the methods.
 pub struct NoOp;
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Interceptor for NoOp {
     /// bind_rtcp_reader lets you modify any incoming RTCP packets. It is called once per sender/receiver, however this might
     /// change in the future. The returned method will be called once per packet batch.
@@ -58,14 +58,14 @@ impl Interceptor for NoOp {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPReader for NoOp {
     async fn read(&self, _buf: &mut [u8], a: &Attributes) -> Result<(usize, Attributes)> {
         Ok((0, a.clone()))
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl RTCPReader for NoOp {
     async fn read(&self, _buf: &mut [u8], a: &Attributes) -> Result<(usize, Attributes)> {
         Ok((0, a.clone()))

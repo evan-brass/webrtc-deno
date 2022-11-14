@@ -36,7 +36,7 @@ fn normalize_socket_addr(target: &SocketAddr, socket_addr: &SocketAddr) -> Socke
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 pub trait UDPMux {
     /// Close the muxing.
     async fn close(&self) -> Result<(), Error>;
@@ -218,7 +218,7 @@ impl UDPMuxDefault {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl UDPMux for UDPMuxDefault {
     async fn close(&self) -> Result<(), Error> {
         if self.is_closed().await {
@@ -303,7 +303,7 @@ impl UDPMux for UDPMuxDefault {
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl UDPMuxWriter for UDPMuxDefault {
     async fn register_conn_for_address(&self, conn: &UDPMuxConn, addr: SocketAddr) {
         if self.is_closed().await {

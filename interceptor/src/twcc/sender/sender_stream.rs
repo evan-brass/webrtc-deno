@@ -21,7 +21,7 @@ impl SenderStream {
 }
 
 /// RTPWriter is used by Interceptor.bind_local_stream.
-#[async_trait]
+#[async_trait(?Send)]
 impl RTPWriter for SenderStream {
     /// write a rtp packet
     async fn write(&self, pkt: &rtp::packet::Packet, a: &Attributes) -> Result<usize> {
