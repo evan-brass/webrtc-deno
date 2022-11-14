@@ -22,6 +22,8 @@ async-trait = "0.1.56"
 log = "0.4.16"
 base64 = "0.13.0"
 rand = "0.8.5"
+getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }
+getrandom2 = { package = "getrandom", version = "0.2.8", features = ["js"] }
 ring = "0.16.20"
 md-5 = "0.10.1"
 thiserror = "1.0"

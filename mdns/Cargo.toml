@@ -23,6 +23,8 @@ tokio = { version = "1.19" }
 socket2 = { version = "0.4.4", features = ["all"] }
 log = "0.4.16"
 thiserror = "1.0"
+getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }
+getrandom2 = { package = "getrandom", version = "0.2.8", features = ["js"] }
 
 [dev-dependencies]
 env_logger = "0.9.0"

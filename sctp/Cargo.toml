@@ -18,6 +18,8 @@ util = { version = "0.6.0", path = "../util", package = "webrtc-util", default-f
 tokio = { version = "1.19" }
 bytes = "1"
 rand = "0.8.5"
+getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }
+getrandom2 = { package = "getrandom", version = "0.2.8", features = ["js"] }
 crc = "3.0"
 async-trait = "0.1.56"
 log = "0.4.16"

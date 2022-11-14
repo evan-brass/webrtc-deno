@@ -25,6 +25,8 @@ curve25519-dalek = "3.2"
 p256 = { version = "0.11.1", features = ["default", "ecdh", "ecdsa"] }
 p384 = "0.11.2"
 rand = "0.8.5"
+getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }
+getrandom2 = { package = "getrandom", version = "0.2.8", features = ["js"] }
 hmac = "0.10.1"
 sec1 = { version = "0.3.0", features = [ "std" ] }
 sha-1 = "0.9.1"

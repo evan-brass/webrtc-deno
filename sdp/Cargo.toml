@@ -13,6 +13,8 @@ rust-version = "1.60.0"
 [dependencies]
 url = "2.2"
 rand = "0.8.5"
+getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }
+getrandom2 = { package = "getrandom", version = "0.2.8", features = ["js"] }
 thiserror = "~1.0.10"
 substring = "1.4"
 

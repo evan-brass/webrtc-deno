@@ -28,6 +28,8 @@ async-trait = "0.1.56"
 ipnet = "2.5"
 log = "0.4.16"
 rand = "0.8.5"
+getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }
+getrandom2 = { package = "getrandom", version = "0.2.8", features = ["js"] }
 bytes = "1"
 thiserror = "~1.0.2"
 parking_lot = "0.12.1"
