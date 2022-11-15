@@ -5,7 +5,7 @@ use crate::agent::agent_vnet_test::{connect_with_vnet, on_connected};
 use crate::agent::Agent;
 use crate::url::{SchemeType, Url};
 use std::time::Duration;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 
 //use std::io::Write;
 

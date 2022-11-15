@@ -8,7 +8,7 @@ use crate::relay::relay_static::*;
 use crate::relay::relay_none::RelayAddressGeneratorNone;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::str::FromStr;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use tokio::sync::mpsc;
 use util::{vnet::router::Nic, vnet::*};
 

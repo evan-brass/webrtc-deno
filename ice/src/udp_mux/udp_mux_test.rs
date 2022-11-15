@@ -6,7 +6,7 @@ use super::*;
 use crate::error::Result;
 use stun::message::{Message, BINDING_REQUEST};
 
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use tokio::time::{sleep, timeout};
 
 use rand::{thread_rng, Rng};

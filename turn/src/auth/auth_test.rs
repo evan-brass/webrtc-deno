@@ -45,7 +45,7 @@ async fn test_new_long_term_auth_handler() -> Result<()> {
     use std::net::IpAddr;
     use std::str::FromStr;
     use std::sync::Arc;
-    use tokio::net::UdpSocket;
+    use deno_net::DatagramConn as UdpSocket;
     use util::vnet::net::*;
 
     //env_logger::init();

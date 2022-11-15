@@ -5,7 +5,7 @@ use crate::util::*;
 
 use ipnet::IpNet;
 use std::str::FromStr;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use util::vnet::*;
 
 #[tokio::test]

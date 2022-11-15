@@ -1,6 +1,6 @@
 use super::*;
 
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 
 #[async_trait(?Send)]
 impl Conn for UdpSocket {

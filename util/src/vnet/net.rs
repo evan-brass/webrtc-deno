@@ -16,7 +16,7 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::str::FromStr;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use tokio::sync::Mutex;
 
 pub(crate) const LO0_STR: &str = "lo0";

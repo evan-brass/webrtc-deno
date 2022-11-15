@@ -2,7 +2,7 @@ use clap::{App, AppSettings, Arg};
 use std::fs::File;
 use std::io::{BufReader, Write};
 use std::sync::Arc;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use util::Conn;
 use webrtc_dtls::Error;
 use webrtc_dtls::{config::*, conn::DTLSConn};

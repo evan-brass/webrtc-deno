@@ -1,7 +1,7 @@
 use clap::{App, AppSettings, Arg};
 use std::io::Write;
 use std::sync::Arc;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use util::Conn;
 use webrtc_dtls::Error;
 use webrtc_dtls::{config::*, conn::DTLSConn, crypto::Certificate};

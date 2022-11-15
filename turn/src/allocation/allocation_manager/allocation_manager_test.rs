@@ -17,7 +17,7 @@ use std::{
     str::FromStr,
 };
 use stun::{attributes::ATTR_USERNAME, textattrs::TextAttribute};
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use util::vnet::net::*;
 
 fn new_test_manager() -> Manager {

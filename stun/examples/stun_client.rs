@@ -6,7 +6,7 @@ use stun::Error;
 
 use clap::{App, Arg};
 use std::sync::Arc;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {

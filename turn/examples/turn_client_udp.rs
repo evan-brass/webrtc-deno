@@ -3,7 +3,7 @@ use turn::Error;
 
 use clap::{App, AppSettings, Arg};
 use std::sync::Arc;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use tokio::time::Duration;
 use util::Conn;
 

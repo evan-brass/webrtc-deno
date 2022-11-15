@@ -7,7 +7,7 @@ use clap::{App, AppSettings, Arg};
 use std::net::Shutdown;
 use std::sync::Arc;
 use std::time::Duration;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use tokio::signal;
 use tokio::sync::mpsc;
 use util::{conn::conn_disconnected_packet::DisconnectedPacketConn, Conn};

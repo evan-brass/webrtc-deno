@@ -4,7 +4,7 @@ use crate::relay::relay_static::*;
 use crate::server::{config::*, *};
 
 use std::net::IpAddr;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use tokio::time::Duration;
 
 use util::vnet::net::*;

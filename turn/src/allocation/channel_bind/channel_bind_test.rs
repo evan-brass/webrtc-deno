@@ -2,7 +2,7 @@ use super::*;
 
 use crate::{allocation::*, error::Result};
 
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 
 use std::net::Ipv4Addr;
 use stun::{attributes::ATTR_USERNAME, textattrs::TextAttribute};

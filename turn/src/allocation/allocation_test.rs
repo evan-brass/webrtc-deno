@@ -3,7 +3,7 @@ use super::*;
 use crate::proto::lifetime::DEFAULT_LIFETIME;
 use std::str::FromStr;
 use stun::{attributes::ATTR_USERNAME, textattrs::TextAttribute};
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 
 #[tokio::test]
 async fn test_has_permission() -> Result<()> {

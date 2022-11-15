@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::AtomicBool;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use tokio::sync::{mpsc, watch, Mutex};
 
 const RECEIVE_MTU: usize = 8192;

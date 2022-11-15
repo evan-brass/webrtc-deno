@@ -16,6 +16,7 @@ members = [
     "turn",
     "util",
     "webrtc",
+	"deno-net",
 ]
 
 [profile.dev]

@@ -1,4 +1,4 @@
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use webrtc_ice as ice;
 
 use ice::agent::agent_config::AgentConfig;

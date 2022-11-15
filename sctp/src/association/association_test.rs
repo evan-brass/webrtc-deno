@@ -8,7 +8,7 @@ use std::net::Shutdown;
 use std::net::SocketAddr;
 use std::str::FromStr;
 use std::time::Duration;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use util::conn::conn_bridge::*;
 use util::conn::conn_pipe::pipe;
 use util::conn::*;

@@ -8,7 +8,7 @@ use crate::url::{ProtoType, SchemeType, Url};
 
 use std::result::Result;
 use std::time::Duration;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use turn::auth::AuthHandler;
 
 pub(crate) struct OptimisticAuthHandler;

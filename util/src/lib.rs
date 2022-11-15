@@ -65,9 +65,6 @@ pub mod buffer;
 #[cfg(feature = "conn")]
 pub mod conn;
 
-#[cfg(feature = "ifaces")]
-pub mod ifaces;
-
 #[cfg(feature = "vnet")]
 pub mod vnet;
 

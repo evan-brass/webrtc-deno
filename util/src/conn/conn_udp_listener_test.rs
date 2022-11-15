@@ -4,7 +4,7 @@ use crate::error::{Error, Result};
 
 use std::future::Future;
 use std::pin::Pin;
-use tokio::net::UdpSocket;
+use deno_net::DatagramConn as UdpSocket;
 use tokio::sync::mpsc;
 use tokio::time::Duration;
 
