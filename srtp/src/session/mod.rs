@@ -16,7 +16,6 @@ use bytes::Bytes;
 use std::collections::HashSet;
 use std::{
     collections::HashMap,
-    marker::{Send, Sync},
     sync::Arc,
 };
 use tokio::sync::{mpsc, Mutex};
