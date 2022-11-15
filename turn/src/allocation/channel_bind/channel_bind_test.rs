@@ -43,7 +43,7 @@ async fn test_channel_bind() -> Result<()> {
 
 async fn test_channel_bind_start() -> Result<()> {
     let a = create_channel_bind(Duration::from_millis(20)).await?;
-    tokio::time::sleep(Duration::from_millis(30)).await;
+    deno_net::sleep(Duration::from_millis(30)).await;
 
     assert!(a
         .get_channel_addr(&ChannelNumber(MIN_CHANNEL_NUMBER))
@@ -56,14 +56,14 @@ async fn test_channel_bind_start() -> Result<()> {
 async fn test_channel_bind_reset() -> Result<()> {
     let a = create_channel_bind(Duration::from_millis(30)).await?;
 
-    tokio::time::sleep(Duration::from_millis(20)).await;
+    deno_net::sleep(Duration::from_millis(20)).await;
     {
         let channel_bindings = a.channel_bindings.lock().await;
         if let Some(c) = channel_bindings.get(&ChannelNumber(MIN_CHANNEL_NUMBER)) {
             c.refresh(Duration::from_millis(30)).await;
         }
     }
-    tokio::time::sleep(Duration::from_millis(20)).await;
+    deno_net::sleep(Duration::from_millis(20)).await;
 
     assert!(a
         .get_channel_addr(&ChannelNumber(MIN_CHANNEL_NUMBER))

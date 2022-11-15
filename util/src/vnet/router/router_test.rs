@@ -344,7 +344,7 @@ async fn test_router_standalone_add_chunk_filter() -> Result<()> {
         }
     }
 
-    tokio::time::sleep(Duration::from_millis(50)).await;
+    deno_net::sleep(Duration::from_millis(50)).await;
 
     {
         let mut r = wan.lock().await;
@@ -423,7 +423,7 @@ async fn delay_sub_test(title: String, min_delay: Duration, max_jitter: Duration
         for _ in 0..npkts {
             let c = Box::new(ChunkUdp::new(ips[0], ips[1]));
             r.push(c).await;
-            tokio::time::sleep(Duration::from_millis(50)).await;
+            deno_net::sleep(Duration::from_millis(50)).await;
         }
     }
 

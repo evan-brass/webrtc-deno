@@ -48,7 +48,7 @@ async fn test_twcc_sender_interceptor() -> Result<()> {
                         .await
                         .unwrap();
 
-                    let timeout = tokio::time::sleep(Duration::from_millis(10));
+                    let timeout = deno_net::sleep(Duration::from_millis(10));
                     tokio::pin!(timeout);
 
                     tokio::select! {

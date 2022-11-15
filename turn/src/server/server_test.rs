@@ -322,10 +322,10 @@ async fn test_server_vnet_echo_via_relay() -> Result<()> {
         // verify the message was received from the relay address
         assert_eq!(echo_addr.to_string(), from.to_string(), "should match");
 
-        tokio::time::sleep(Duration::from_millis(100)).await;
+        deno_net::sleep(Duration::from_millis(100)).await;
     }
 
-    tokio::time::sleep(Duration::from_millis(100)).await;
+    deno_net::sleep(Duration::from_millis(100)).await;
 
     client.close().await?;
     drop(done_tx);

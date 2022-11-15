@@ -331,7 +331,7 @@ impl Router {
                      _ = done_rx.recv() => break,
                     }
                 } else {
-                    let t = tokio::time::sleep(d);
+                    let t = deno_net::sleep(d);
                     tokio::pin!(t);
 
                     tokio::select! {
@@ -436,7 +436,7 @@ impl Router {
         let mj = max_jitter.as_nanos() as u64;
         if mj > 0 {
             let jitter = Duration::from_nanos(rand::random::<u64>() % mj);
-            tokio::time::sleep(jitter).await;
+            deno_net::sleep(jitter).await;
         }
 
         //      cut_off

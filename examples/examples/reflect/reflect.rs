@@ -211,7 +211,7 @@ async fn main() -> Result<()> {
                         wasm_bindgen_futures::spawn_local(async move {
                             let mut result = Result::<usize>::Ok(0);
                             while result.is_ok() {
-                                let timeout = tokio::time::sleep(Duration::from_secs(3));
+                                let timeout = deno_net::sleep(Duration::from_secs(3));
                                 tokio::pin!(timeout);
 
                                 tokio::select! {
@@ -313,7 +313,7 @@ async fn main() -> Result<()> {
     }
 
     println!("Press ctrl-c to stop");
-    //let timeout = tokio::time::sleep(Duration::from_secs(20));
+    //let timeout = deno_net::sleep(Duration::from_secs(20));
     //tokio::pin!(timeout);
 
     tokio::select! {

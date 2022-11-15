@@ -41,7 +41,7 @@ impl<T: 'static + AckTimerObserver> AckTimer<T> {
         let timeout_observer = self.timeout_observer.clone();
 
         wasm_bindgen_futures::spawn_local(async move {
-            let timer = tokio::time::sleep(interval);
+            let timer = deno_net::sleep(interval);
             tokio::pin!(timer);
 
             tokio::select! {

@@ -389,7 +389,7 @@ async fn test_nat_mapping_timeout_refresh_on_outbound() -> Result<()> {
     // record mapped addr
     let mapped = oec.source_addr().to_string();
 
-    tokio::time::sleep(Duration::from_millis(5)).await;
+    deno_net::sleep(Duration::from_millis(5)).await;
 
     // refresh
     let oec = nat.translate_outbound(&oic).await?.unwrap();
@@ -406,7 +406,7 @@ async fn test_nat_mapping_timeout_refresh_on_outbound() -> Result<()> {
     );
 
     // sleep long enough for the mapping to expire
-    tokio::time::sleep(Duration::from_millis(225)).await;
+    deno_net::sleep(Duration::from_millis(225)).await;
 
     // refresh after expiration
     let oec = nat.translate_outbound(&oic).await?.unwrap();
@@ -452,7 +452,7 @@ async fn test_nat_mapping_timeout_outbound_detects_timeout() -> Result<()> {
     log::debug!("o-translated: {}", oec);
 
     // sleep long enough for the mapping to expire
-    tokio::time::sleep(Duration::from_millis(125)).await;
+    deno_net::sleep(Duration::from_millis(125)).await;
 
     let iec = ChunkUdp::new(
         SocketAddr::new(dst.ip(), dst.port()),

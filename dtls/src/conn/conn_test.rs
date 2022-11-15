@@ -160,7 +160,7 @@ async fn test_routine_leak_on_close() -> Result<()> {
         drop(cb);
     }
 
-    tokio::time::sleep(Duration::from_millis(1)).await;
+    deno_net::sleep(Duration::from_millis(1)).await;
 
     Ok(())
 }
@@ -224,7 +224,7 @@ async fn test_sequence_number_overflow_on_application_data() -> Result<()> {
         drop(cb);
     }
 
-    tokio::time::sleep(Duration::from_millis(1)).await;
+    deno_net::sleep(Duration::from_millis(1)).await;
 
     Ok(())
 }
@@ -292,7 +292,7 @@ async fn test_sequence_number_overflow_on_handshake() -> Result<()> {
         drop(cb);
     }
 
-    tokio::time::sleep(Duration::from_millis(1)).await;
+    deno_net::sleep(Duration::from_millis(1)).await;
 
     Ok(())
 }
@@ -680,7 +680,7 @@ async fn test_client_timeout() -> Result<()> {
     let (ca, _cb) = pipe();
     wasm_bindgen_futures::spawn_local(async move {
         let conf = Config::default();
-        let result = tokio::time::timeout(
+        let result = deno_net::timeout(
             Duration::from_millis(100),
             create_test_client(Arc::new(ca), conf, true),
         )
@@ -1957,7 +1957,7 @@ async fn test_server_timeout() -> Result<()> {
     // Start sending ClientHello packets until server responds with first packet
     wasm_bindgen_futures::spawn_local(async move {
         loop {
-            let timer = tokio::time::sleep(Duration::from_millis(10));
+            let timer = deno_net::sleep(Duration::from_millis(10));
             tokio::pin!(timer);
 
             tokio::select! {
@@ -1978,7 +1978,7 @@ async fn test_server_timeout() -> Result<()> {
         ..Default::default()
     };
 
-    let result = tokio::time::timeout(
+    let result = deno_net::timeout(
         Duration::from_millis(50),
         create_test_server(Arc::new(cb), config, true),
     )
@@ -1994,7 +1994,7 @@ async fn test_server_timeout() -> Result<()> {
     }
 
     // Wait a little longer to ensure no additional messages have been sent by the server
-    //tokio::time::sleep(Duration::from_millis(300)).await;
+    //deno_net::sleep(Duration::from_millis(300)).await;
 
     /*tokio::select! {
     case msg := <-caReadChan:
@@ -2117,7 +2117,7 @@ async fn test_protocol_version_validation() -> Result<()> {
                     flight_interval: Duration::from_millis(100),
                     ..Default::default()
                 };
-                let timeout_result = tokio::time::timeout(
+                let timeout_result = deno_net::timeout(
                     Duration::from_millis(1000),
                     create_test_server(Arc::new(cb), config, true),
                 )
@@ -2143,7 +2143,7 @@ async fn test_protocol_version_validation() -> Result<()> {
                 };
             });
 
-            tokio::time::sleep(Duration::from_millis(50)).await;
+            deno_net::sleep(Duration::from_millis(50)).await;
 
             let mut resp = vec![0; 1024];
             let mut n = 0;
@@ -2257,7 +2257,7 @@ async fn test_protocol_version_validation() -> Result<()> {
                     flight_interval: Duration::from_millis(100),
                     ..Default::default()
                 };
-                let timeout_result = tokio::time::timeout(
+                let timeout_result = deno_net::timeout(
                     Duration::from_millis(1000),
                     create_test_client(Arc::new(cb), config, true),
                 )
@@ -2283,7 +2283,7 @@ async fn test_protocol_version_validation() -> Result<()> {
                 };
             });
 
-            tokio::time::sleep(Duration::from_millis(50)).await;
+            deno_net::sleep(Duration::from_millis(50)).await;
 
             let mut resp = vec![0; 1024];
             for record in records {
@@ -2365,7 +2365,7 @@ async fn test_multiple_hello_verify_request() -> Result<()> {
 
     wasm_bindgen_futures::spawn_local(async move {
         let conf = Config::default();
-        let _ = tokio::time::timeout(
+        let _ = deno_net::timeout(
             Duration::from_millis(100),
             create_test_client(Arc::new(ca), conf, true),
         )
@@ -2460,14 +2460,14 @@ async fn test_renegotation_info() -> Result<()> {
 
         wasm_bindgen_futures::spawn_local(async move {
             let conf = Config::default();
-            let _ = tokio::time::timeout(
+            let _ = deno_net::timeout(
                 Duration::from_millis(100),
                 create_test_server(Arc::new(cb), conf, true),
             )
             .await;
         });
 
-        tokio::time::sleep(Duration::from_millis(5)).await;
+        deno_net::sleep(Duration::from_millis(5)).await;
 
         let ca: Arc<dyn Conn> = Arc::new(ca);
         send_client_hello(vec![], &ca, 0, send_renegotiation_info).await?;

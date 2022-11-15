@@ -81,7 +81,7 @@ async fn test_listener_close_unaccepted() -> Result<()> {
     }
 
     // Wait all packets being processed by readLoop
-    tokio::time::sleep(Duration::from_millis(100)).await;
+    deno_net::sleep(Duration::from_millis(100)).await;
 
     // Unaccepted connections must be closed by listener.Close()
     listener.close().await?;
@@ -134,7 +134,7 @@ async fn test_listener_accept_filter() -> Result<()> {
 
         let mut accepted = false;
         let mut timeout = false;
-        let timer = tokio::time::sleep(Duration::from_millis(10));
+        let timer = deno_net::sleep(Duration::from_millis(10));
         tokio::pin!(timer);
         tokio::select! {
             _= ch_accepted_rx.recv()=>{
@@ -175,7 +175,7 @@ async fn test_listener_concurrent() -> Result<()> {
     }
 
     // Wait all packets being processed by readLoop
-    tokio::time::sleep(Duration::from_millis(100)).await;
+    deno_net::sleep(Duration::from_millis(100)).await;
 
     let mut b = vec![0u8; 1];
     for i in 0..BACKLOG as u8 {
@@ -210,7 +210,7 @@ async fn test_listener_concurrent() -> Result<()> {
         Result::<()>::Ok(())
     });
 
-    tokio::time::sleep(Duration::from_millis(100)).await;
+    deno_net::sleep(Duration::from_millis(100)).await;
 
     listener.close().await?;
 

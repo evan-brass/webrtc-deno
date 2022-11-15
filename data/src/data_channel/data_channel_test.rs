@@ -13,7 +13,7 @@ use std::time::Duration;
 async fn bridge_process_at_least_one(br: &Arc<Bridge>) {
     let mut n_sum = 0;
     loop {
-        tokio::time::sleep(Duration::from_millis(10)).await;
+        deno_net::sleep(Duration::from_millis(10)).await;
         n_sum += br.tick().await;
         if br.len(0).await == 0 && br.len(1).await == 0 && n_sum > 0 {
             break;
@@ -71,7 +71,7 @@ async fn create_new_association_pair(
     while (!a0handshake_done || !a1handshake_done) && i < 100 {
         br.tick().await;
 
-        let timer = tokio::time::sleep(Duration::from_millis(10));
+        let timer = deno_net::sleep(Duration::from_millis(10));
         tokio::pin!(timer);
 
         tokio::select! {
@@ -135,7 +135,7 @@ async fn close_association_pair(
     while (!a0handshake_done || !a1handshake_done) && i < 100 {
         br.tick().await;
 
-        let timer = tokio::time::sleep(Duration::from_millis(10));
+        let timer = deno_net::sleep(Duration::from_millis(10));
         tokio::pin!(timer);
 
         tokio::select! {
@@ -218,12 +218,12 @@ async fn pr_ordered_unordered_test(channel_type: ChannelType, is_ordered: bool) 
         assert_eq!(sbuf.len(), n, "data length should match");
     }
 
-    tokio::time::sleep(Duration::from_millis(100)).await;
+    deno_net::sleep(Duration::from_millis(100)).await;
     br.drop_offset(0, 0, 1).await; // drop the first packet on the wire
     if !is_ordered {
         br.reorder(0).await;
     } else {
-        tokio::time::sleep(Duration::from_millis(100)).await;
+        deno_net::sleep(Duration::from_millis(100)).await;
     }
     bridge_process_at_least_one(&br).await;
 
@@ -360,7 +360,7 @@ async fn test_data_channel_channel_type_reliable_unordered() -> Result<()> {
         .await?;
     assert_eq!(sbuf.len(), n, "data length should match");
 
-    tokio::time::sleep(Duration::from_millis(100)).await;
+    deno_net::sleep(Duration::from_millis(100)).await;
     br.reorder(0).await; // reordering on the wire
     bridge_process_at_least_one(&br).await;
 
@@ -502,7 +502,7 @@ async fn test_data_channel_buffered_amount() -> Result<()> {
     let since = tokio::time::Instant::now();
     loop {
         br.tick().await;
-        tokio::time::sleep(Duration::from_millis(10)).await;
+        deno_net::sleep(Duration::from_millis(10)).await;
         if tokio::time::Instant::now().duration_since(since) > Duration::from_millis(500) {
             break;
         }

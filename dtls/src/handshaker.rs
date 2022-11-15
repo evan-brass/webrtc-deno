@@ -302,7 +302,7 @@ impl DTLSConn {
         }
     }
     async fn wait(&mut self) -> Result<HandshakeState> {
-        let retransmit_timer = tokio::time::sleep(self.cfg.retransmit_interval);
+        let retransmit_timer = deno_net::sleep(self.cfg.retransmit_interval);
         tokio::pin!(retransmit_timer);
 
         loop {
@@ -364,7 +364,7 @@ impl DTLSConn {
         }
     }
     async fn finish(&mut self) -> Result<HandshakeState> {
-        let retransmit_timer = tokio::time::sleep(self.cfg.retransmit_interval);
+        let retransmit_timer = deno_net::sleep(self.cfg.retransmit_interval);
 
         tokio::select! {
             done = self.handshake_rx.recv() =>{

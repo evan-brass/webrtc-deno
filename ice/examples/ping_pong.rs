@@ -329,7 +329,7 @@ async fn main() -> Result<(), Error> {
         wasm_bindgen_futures::spawn_local(async move {
             const RANDOM_STRING: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             loop {
-                tokio::time::sleep(Duration::from_secs(3)).await;
+                deno_net::sleep(Duration::from_secs(3)).await;
 
                 let val: String = (0..15)
                     .map(|_| {
@@ -386,7 +386,7 @@ async fn main() -> Result<(), Error> {
         } else {
             Duration::from_secs(5)
         };
-        let timeout = tokio::time::sleep(d);
+        let timeout = deno_net::sleep(d);
         tokio::pin!(timeout);*/
 
         tokio::select! {

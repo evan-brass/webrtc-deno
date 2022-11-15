@@ -56,7 +56,7 @@ async fn test_responder_interceptor() -> Result<()> {
 
     // seq number 13 was never sent, so it can't be resent
     for seq_num in [11, 12, 15] {
-        if let Ok(r) = tokio::time::timeout(Duration::from_millis(50), stream.written_rtp()).await {
+        if let Ok(r) = deno_net::timeout(Duration::from_millis(50), stream.written_rtp()).await {
             if let Some(p) = r {
                 assert_eq!(seq_num, p.header.sequence_number);
             } else {
@@ -71,7 +71,7 @@ async fn test_responder_interceptor() -> Result<()> {
         }
     }
 
-    let result = tokio::time::timeout(Duration::from_millis(10), stream.written_rtp()).await;
+    let result = deno_net::timeout(Duration::from_millis(10), stream.written_rtp()).await;
     assert!(result.is_err(), "no more rtp packets expected");
 
     stream.close().await?;

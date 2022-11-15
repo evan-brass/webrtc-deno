@@ -142,7 +142,7 @@ async fn test_agent_stop() -> Result<()> {
     a.start(id, deadline)?;
     a.stop(id)?;
 
-    let timeout = tokio::time::sleep(Duration::from_millis(400));
+    let timeout = deno_net::sleep(Duration::from_millis(400));
     tokio::pin!(timeout);
 
     tokio::select! {

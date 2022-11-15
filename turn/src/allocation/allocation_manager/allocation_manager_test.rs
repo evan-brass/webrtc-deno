@@ -271,7 +271,7 @@ async fn test_allocation_timeout() -> Result<()> {
             assert!(false, "Allocations didn't timeout");
         }
 
-        tokio::time::sleep(lifetime + Duration::from_millis(100)).await;
+        deno_net::sleep(lifetime + Duration::from_millis(100)).await;
 
         let any_outstanding = false;
 
@@ -320,7 +320,7 @@ async fn test_manager_close() -> Result<()> {
         .await?;
     allocations.push(a2);
 
-    tokio::time::sleep(Duration::from_millis(150)).await;
+    deno_net::sleep(Duration::from_millis(150)).await;
 
     log::trace!("Mgr is going to be closed...");
 
@@ -471,7 +471,7 @@ async fn test_get_allocations_info() -> Result<()> {
     user2.send_to(b"12", addr2).await?;
     user3.send_to(b"123", addr3).await?;
 
-    tokio::time::sleep(Duration::from_millis(100)).await;
+    deno_net::sleep(Duration::from_millis(100)).await;
 
     server
         .get_allocations_info(None)
@@ -519,10 +519,10 @@ async fn test_get_allocations_info_bytes_count() -> Result<()> {
     for _ in 0..10 {
         conn.send_to(b"Hello", addr).await?;
 
-        tokio::time::sleep(Duration::from_millis(100)).await;
+        deno_net::sleep(Duration::from_millis(100)).await;
     }
 
-    tokio::time::sleep(Duration::from_millis(1000)).await;
+    deno_net::sleep(Duration::from_millis(1000)).await;
 
     assert_eq!(
         server
@@ -538,10 +538,10 @@ async fn test_get_allocations_info_bytes_count() -> Result<()> {
     for _ in 0..10 {
         conn.send_to(b"Hello", addr).await?;
 
-        tokio::time::sleep(Duration::from_millis(100)).await;
+        deno_net::sleep(Duration::from_millis(100)).await;
     }
 
-    tokio::time::sleep(Duration::from_millis(1000)).await;
+    deno_net::sleep(Duration::from_millis(1000)).await;
 
     assert_eq!(
         server

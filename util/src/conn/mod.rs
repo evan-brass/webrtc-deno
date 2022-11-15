@@ -11,6 +11,8 @@ mod conn_pipe_test;
 #[cfg(test)]
 mod conn_test;
 
+mod conn_udp_listener;
+
 //TODO: remove this conditional test
 #[cfg(not(target_os = "windows"))]
 #[cfg(test)]
@@ -19,7 +21,7 @@ mod conn_udp_listener_test;
 use async_trait::async_trait;
 use std::net::SocketAddr;
 use std::sync::Arc;
-use tokio::net::ToSocketAddrs;
+use deno_net::ToSocketAddrs;
 
 use crate::error::Result;
 
@@ -54,7 +56,7 @@ pub async fn lookup_host<T>(use_ipv4: bool, host: T) -> Result<SocketAddr>
 where
     T: ToSocketAddrs,
 {
-    for remote_addr in tokio::net::lookup_host(host).await? {
+    for remote_addr in deno_net::lookup_host(host).await? {
         if (use_ipv4 && remote_addr.is_ipv4()) || (!use_ipv4 && remote_addr.is_ipv6()) {
             return Ok(remote_addr);
         }

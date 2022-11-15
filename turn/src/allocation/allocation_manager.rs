@@ -157,7 +157,7 @@ impl Manager {
         let reservation_token2 = reservation_token.clone();
 
         wasm_bindgen_futures::spawn_local(async move {
-            let sleep = tokio::time::sleep(Duration::from_secs(30));
+            let sleep = deno_net::sleep(Duration::from_secs(30));
             tokio::pin!(sleep);
             tokio::select! {
                 _ = &mut sleep => {

@@ -88,7 +88,7 @@ async fn main() -> Result<(), Error> {
             println!("sent: {}", pong_msg);
             stream2.write(&Bytes::from(pong_msg)).await?;
 
-            tokio::time::sleep(Duration::from_secs(1)).await;
+            deno_net::sleep(Duration::from_secs(1)).await;
         }
         println!("finished ping-pong");
         drop(done_tx);

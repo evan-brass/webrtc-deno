@@ -87,7 +87,7 @@ async fn test_invalid_fingerprint_causes_failed() -> Result<()> {
     let offer = pc_offer.create_offer(None).await?;
     pc_offer.set_local_description(offer).await?;
 
-    let timeout = tokio::time::sleep(Duration::from_secs(1));
+    let timeout = deno_net::sleep(Duration::from_secs(1));
     tokio::pin!(timeout);
 
     tokio::select! {

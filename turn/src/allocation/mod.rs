@@ -252,7 +252,7 @@ impl Allocation {
         let timer_expired = Arc::clone(&self.timer_expired);
 
         wasm_bindgen_futures::spawn_local(async move {
-            let timer = tokio::time::sleep(lifetime);
+            let timer = deno_net::sleep(lifetime);
             tokio::pin!(timer);
             let mut done = false;
 

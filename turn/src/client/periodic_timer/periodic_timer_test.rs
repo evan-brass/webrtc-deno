@@ -23,12 +23,12 @@ async fn test_periodic_timer() -> Result<()> {
     assert!(ok, "should be true");
     assert!(rt.is_running().await, "should be running");
 
-    tokio::time::sleep(Duration::from_millis(100)).await;
+    deno_net::sleep(Duration::from_millis(100)).await;
 
     let ok = rt.start(dummy2).await;
     assert!(!ok, "start again is noop");
 
-    tokio::time::sleep(Duration::from_millis(120)).await;
+    deno_net::sleep(Duration::from_millis(120)).await;
     rt.stop().await;
 
     assert!(!rt.is_running().await, "should not be running");

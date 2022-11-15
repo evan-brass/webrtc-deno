@@ -63,7 +63,7 @@ impl PeriodicTimer {
 
         wasm_bindgen_futures::spawn_local(async move {
             loop {
-                let timer = tokio::time::sleep(interval);
+                let timer = deno_net::sleep(interval);
                 tokio::pin!(timer);
 
                 tokio::select! {

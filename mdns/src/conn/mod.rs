@@ -9,7 +9,7 @@ use std::time::Duration;
 
 use core::sync::atomic;
 use socket2::SockAddr;
-use tokio::net::{ToSocketAddrs, UdpSocket};
+use deno_net::{ToSocketAddrs, UdpSocket};
 use tokio::sync::mpsc;
 use tokio::sync::Mutex;
 
@@ -185,7 +185,7 @@ impl DnsConn {
 
         loop {
             tokio::select! {
-                _ = tokio::time::sleep(self.query_interval) => {
+                _ = deno_net::sleep(self.query_interval) => {
                     log::trace!("Sending query");
                     self.send_question(&name_with_suffix).await
                 },

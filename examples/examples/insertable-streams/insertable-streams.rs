@@ -178,7 +178,7 @@ async fn main() -> Result<()> {
                 *b ^= CIPHER_KEY;
             }
 
-            tokio::time::sleep(sleep_time).await;
+            deno_net::sleep(sleep_time).await;
 
             video_track
                 .write_sample(&Sample {

@@ -154,7 +154,7 @@ async fn test_data_channel_open() -> Result<()> {
                             let done_tx3 = Arc::clone(&done_tx2);
                             wasm_bindgen_futures::spawn_local(async move {
                                 // Wait a little bit to ensure all messages are processed.
-                                tokio::time::sleep(Duration::from_millis(100)).await;
+                                deno_net::sleep(Duration::from_millis(100)).await;
                                 let _ = done_tx3.send(()).await;
                             });
                             Box::pin(async {})
@@ -619,7 +619,7 @@ async fn test_data_channel_parameters_negotiated_exchange() -> Result<()> {
                     .await?;
             }
 
-            tokio::time::sleep(Duration::from_millis(50)).await;
+            deno_net::sleep(Duration::from_millis(50)).await;
         }
 
         let mut done = done_tx.lock().await;
@@ -704,7 +704,7 @@ async fn test_data_channel_messages_are_ordered() -> Result<()> {
         Box::pin(async move {
             // randomly sleep
             let r = rand::random::<u64>() % m;
-            tokio::time::sleep(Duration::from_millis(r)).await;
+            deno_net::sleep(Duration::from_millis(r)).await;
 
             let mut buf = [0u8; 8];
             for i in 0..8 {
@@ -736,7 +736,7 @@ async fn test_data_channel_messages_are_ordered() -> Result<()> {
                     Box::pin(async move {
                         // randomly sleep
                         let r = rand::random::<u64>() % m;
-                        tokio::time::sleep(Duration::from_millis(r)).await;
+                        deno_net::sleep(Duration::from_millis(r)).await;
 
                         let mut buf = [0u8; 8];
                         for i in 0..8 {
@@ -901,7 +901,7 @@ async fn test_data_channel_buffered_amount_set_before_open() -> Result<()> {
                     if n == 9 {
                         let done_tx3 = Arc::clone(&done_tx2);
                         wasm_bindgen_futures::spawn_local(async move {
-                            tokio::time::sleep(Duration::from_millis(10)).await;
+                            deno_net::sleep(Duration::from_millis(10)).await;
                             let mut done = done_tx3.lock().await;
                             done.take();
                         });
@@ -996,7 +996,7 @@ async fn test_data_channel_buffered_amount_set_after_open() -> Result<()> {
                     if n == 9 {
                         let done_tx3 = Arc::clone(&done_tx2);
                         wasm_bindgen_futures::spawn_local(async move {
-                            tokio::time::sleep(Duration::from_millis(10)).await;
+                            deno_net::sleep(Duration::from_millis(10)).await;
                             let mut done = done_tx3.lock().await;
                             done.take();
                         });

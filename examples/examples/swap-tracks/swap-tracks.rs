@@ -284,7 +284,7 @@ async fn main() -> Result<()> {
         _ = connected_rx.recv() =>{
             loop {
                 println!("Press ctrl-c to stop, or waiting 5 seconds then changing...");
-                let timeout = tokio::time::sleep(Duration::from_secs(5));
+                let timeout = deno_net::sleep(Duration::from_secs(5));
                 tokio::pin!(timeout);
 
                 tokio::select! {

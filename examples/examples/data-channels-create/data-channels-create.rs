@@ -126,7 +126,7 @@ async fn main() -> Result<()> {
         Box::pin(async move {
             let mut result = Result::<usize>::Ok(0);
             while result.is_ok() {
-                let timeout = tokio::time::sleep(Duration::from_secs(5));
+                let timeout = deno_net::sleep(Duration::from_secs(5));
                 tokio::pin!(timeout);
 
                 tokio::select! {

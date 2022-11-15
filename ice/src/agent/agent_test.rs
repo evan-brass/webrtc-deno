@@ -893,7 +893,7 @@ async fn test_invalid_agent_starts() -> Result<()> {
 
     let (cancel_tx3, cancel_rx3) = mpsc::channel(1);
     wasm_bindgen_futures::spawn_local(async move {
-        tokio::time::sleep(Duration::from_millis(100)).await;
+        deno_net::sleep(Duration::from_millis(100)).await;
         drop(cancel_tx3);
     });
 

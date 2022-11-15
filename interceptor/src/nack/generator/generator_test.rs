@@ -45,7 +45,7 @@ async fn test_generator_interceptor() -> Result<()> {
         assert_eq!(seq_num, r.header.sequence_number);
     }
 
-    tokio::time::sleep(INTERVAL * 2).await; // wait for at least 2 nack packets
+    deno_net::sleep(INTERVAL * 2).await; // wait for at least 2 nack packets
 
     // ignore the first nack, it might only contain the sequence id 13 as missing
     let _ = stream.written_rtcp().await;

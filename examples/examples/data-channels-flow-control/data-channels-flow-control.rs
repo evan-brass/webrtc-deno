@@ -127,7 +127,7 @@ async fn create_responder() -> anyhow::Result<RTCPeerConnection> {
                     wasm_bindgen_futures::spawn_local(async move {
                         let start = SystemTime::now();
 
-                        tokio::time::sleep(Duration::from_secs(1)).await;
+                        deno_net::sleep(Duration::from_secs(1)).await;
                         println!("");
 
                         loop {
@@ -142,7 +142,7 @@ async fn create_responder() -> anyhow::Result<RTCPeerConnection> {
                                 "Throughput is about {:.03} Mbps",
                                 bps / (1024 * 1024) as f64
                             );
-                            tokio::time::sleep(Duration::from_secs(1)).await;
+                            deno_net::sleep(Duration::from_secs(1)).await;
                         }
                     });
                 })

@@ -176,7 +176,7 @@ async fn do_ping_test(
         }
     });
 
-    tokio::time::sleep(Duration::from_millis(500)).await;
+    deno_net::sleep(Duration::from_millis(500)).await;
 
     /*println!(
         "pinger_conn_tx send 10 packets to relay addr {}...",
@@ -190,7 +190,7 @@ async fn do_ping_test(
 
         // For simplicity, this example does not wait for the pong (reply).
         // Instead, sleep 1 second.
-        tokio::time::sleep(Duration::from_secs(1)).await;
+        deno_net::sleep(Duration::from_secs(1)).await;
     }
 
     Ok(())

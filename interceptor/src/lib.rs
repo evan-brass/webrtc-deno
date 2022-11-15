@@ -195,7 +195,7 @@ mod test {
     where
         T: Future,
     {
-        match tokio::time::timeout(duration, future).await {
+        match deno_net::timeout(duration, future).await {
             Ok(v) => v,
             Err(_) => {
                 assert!(false, "timed out");

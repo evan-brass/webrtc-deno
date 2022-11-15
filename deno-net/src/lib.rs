@@ -1,10 +1,17 @@
-use std::{net::{SocketAddr, IpAddr}, cell::Ref, time::Duration};
+use std::future::Future;
+use std::{cell::Ref, time::Duration};
+use std::net::{
+	SocketAddr,
+	SocketAddrV4,
+	SocketAddrV6,
+	IpAddr,
+	Ipv4Addr,
+	Ipv6Addr,
+};
 
 use wasm_bindgen::prelude::*;
 use js_sys::{Array, Uint8Array, Object, Reflect};
 use wasm_bindgen::JsCast;
-
-pub mod conn_udp_listener;
 
 #[wasm_bindgen]
 extern "C" {
@@ -48,120 +55,112 @@ extern "C" {
 
 	#[wasm_bindgen(js_namespace = Deno)]
 	pub fn listenDatagram(options: JsValue) -> DatagramConn;
-
+	
 	fn setTimeout(cb: Function, millis: u32);
-}
 
-pub fn timeout(dur: Duration) -> wasm_bindgen_futures::JsFuture {
+	// #[wasm_bindgen(catch, js_namespace = Deno)]
+	// async fn resolveDns(query: &str, record_type: &str) -> Result<JsValue, JsValue>;
+}
+pub fn sleep(dur: Duration) -> wasm_bindgen_futures::JsFuture {
 	wasm_bindgen_futures::JsFuture::from(Promise::new(&mut move |res, _rej| {
-		setTimeout(res, millis);
+		unsafe { setTimeout(res, dur.as_millis() as u32) };
 	}))
 }
-
-#[async_trait::async_trait(?Send)]
-impl ConnTrait for Conn {
-	async fn connect(&self, _addr: SocketAddr) -> webrtc_util::Result<()> { unimplemented!() }
-	async fn recv(&self, buf: &mut [u8]) -> webrtc_util::Result<usize> {
-		// de-frame the TCP stream
-		let mut len = [0u8; 2];
-		let mut total = 0usize;
-		while total < len.len() {
-			let Ok(ret) = self.read(&mut len[total..]).await else {
-				return Err(NetErr::Other("Failed while reading length".into()));
-			};
-			if ret.is_null() {
-				return Err(NetErr::ErrBufferClosed)
-			}
-			let read = ret.as_f64().unwrap() as usize;
-			total += read;
-		}
-		let len = u16::from_be_bytes(len) as usize;
-		if len > buf.len() {
-			return Err(NetErr::ErrBufferShort);
-		}
-
-		let mut total = 0usize;
-		while total < len {
-			let Ok(ret) = self.read(&mut buf[total..]).await else {
-				return Err(NetErr::Other("Failed while reading the packet.".into()))
-			};
-			if ret.is_null() {
-				break;
-			}
-			let read = ret.as_f64().unwrap() as usize;
-			total += read;
-		}
-		Ok(total)
-	}
-	async fn recv_from(&self, buf: &mut [u8]) -> webrtc_util::Result<(usize, SocketAddr)> {
-		let ret = self.recv(buf).await?;
-		let sa = self.remoteAddr().await?;
-		Ok((ret, sa))
-	}
-	async fn send(&self, buf: &[u8]) -> webrtc_util::Result<usize> {
-		// Send the packet's length:
-		let len = (buf.len() as u16).to_be_bytes();
-		if let Err(_e) = self.write(&len).await {
-			return Err(NetErr::Other("Failed to send the packet len.".into()));
-		}
-		if let Err(_e) = self.write(buf).await {
-			return Err(NetErr::Other("Failed to write the packet data".into()));
-		}
-		Ok(buf.len())
-	}
-	async fn send_to(&self, _buf: &[u8], _target: SocketAddr) -> webrtc_util::Result<usize> { unimplemented!() }
-	async fn local_addr(&self) -> webrtc_util::Result<SocketAddr> {
-		let addr = self.localAddr();
-		if let Ok(ip) = addr.hostname().parse::<IpAddr>() {
-			Ok(SocketAddr::new(ip, addr.port()))
-		} else {
-			Err(webrtc_util::Error::ErrLocAddr)
-		}
-	}
-	async fn remote_addr(&self) -> Option<SocketAddr> {
-		let addr = self.remoteAddr();
-		let ip: IpAddr = addr.hostname().parse().ok()?;
-		Some(SocketAddr::new(ip, addr.port()))
-	}
-	async fn close(&self) -> webrtc_util::Result<()> {
-		Conn::close(self);
-		Ok(())
+pub struct Elapsed();
+pub fn timeout<F: Future>(d: Duration, f: F) -> impl Future<Output = Result<F::Output, Elapsed>> {
+	tokio::select! {
+		_ = sleep(d) => Err(Elapsed),
+		v = f => Ok(v)
 	}
 }
 
-#[async_trait::async_trait(?Send)]
-impl ConnTrait for DatagramConn {
-	async fn connect(&self, _addr: SocketAddr) -> webrtc_util::Result<()> { unimplemented!() }
-	async fn recv(&self, buf: &mut [u8]) -> webrtc_util::Result<usize> {
-		let (ret, _addr) = self.recv_from(buf).await?;
-		Ok(ret)
+pub trait ToSocketAddrs {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)>;
+}
+impl<T: ?Sized + ToSocketAddrs> ToSocketAddrs for &T {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		T::to_addrs(self)
 	}
-	async fn recv_from(&self, buf: &mut [u8]) -> webrtc_util::Result<(usize, SocketAddr)> {
-		let ret = self.receive(Some(buf)).await
-			.map_err(|_| webrtc_util::Error::Other("sadge".into()))?;
-		let ret = ret.unchecked_into::<Array>();
-		let u8a = ret.get(0).unchecked_into::<Uint8Array>();
-		let addr = ret.get(1).unchecked_into::<Addr>();
-		let ip = addr.hostname().parse::<IpAddr>()
-			.map_err(|_| webrtc_util::Error::Other("Failed to parse hostname".into()))?;
-		Ok((u8a.byte_length() as usize, SocketAddr::new(ip, addr.port())))
+}
+impl ToSocketAddrs for SocketAddr {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Ok(vec![*self])
 	}
-	async fn send(&self, buf: &[u8]) -> webrtc_util::Result<usize> { unimplemented!() }
-	async fn send_to(&self, buf: &[u8], target: SocketAddr) -> webrtc_util::Result<usize> {
-		let addr = Object::new();
-		let _ = Reflect::set(&addr, &JsValue::from_str("hostname"), &JsValue::from(target.ip().to_string()));
-		let _ = Reflect::set(&addr, &JsValue::from_str("ip"), &JsValue::from(target.port()));
-		let ret = DatagramConn::send(&self, buf, addr).await
-			.map_err(|_| webrtc_util::Error::Other("Failed to send".into()))?;
-		let ret = ret.unchecked_into_f64() as usize;
-		Ok(ret)
+}
+impl ToSocketAddrs for SocketAddrV4 {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Ok(vec![SocketAddr::V4(*self)])
 	}
-	async fn local_addr(&self) -> webrtc_util::Result<SocketAddr> {
-		let addr = self.localAddr();
+}
+impl ToSocketAddrs for SocketAddrV6 {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Ok(vec![SocketAddr::V6(*self)])
 	}
-	async fn remote_addr(&self) -> Option<SocketAddr> { unimplemented!() }
-	async fn close(&self) -> webrtc_util::Result<()> {
-		DatagramConn::close(self);
-		Ok(())
+}
+impl ToSocketAddrs for (IpAddr, u16) {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Ok(vec![SocketAddr::new(self.0, self.1)])
+	}
+}
+impl ToSocketAddrs for (Ipv4Addr, u16) {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Ok(vec![SocketAddr::new(IpAddr::V4(self.0), self.1)])
+	}
+}
+impl ToSocketAddrs for (Ipv6Addr, u16) {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Ok(vec![SocketAddr::new(IpAddr::V6(self.0), self.1)])
+	}
+}
+impl ToSocketAddrs for &[SocketAddr] {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Ok(self.into_iter().cloned().collect())
+	}
+}
+impl ToSocketAddrs for str {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		let (ip, port) = self.rsplit_once(':').unwrap();
+		let ip = ip.to_owned();
+		let port = port.parse().unwrap();
+		Err((ip, port))
+	}
+}
+impl ToSocketAddrs for (&str, u16) {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Err((self.0.to_owned(), self.1))
+	}
+}
+impl ToSocketAddrs for (String, u16) {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		Err(self.clone())
+	}
+}
+impl ToSocketAddrs for String {
+	fn to_addrs(&self) -> Result<Vec<SocketAddr>, (String, u16)> {
+		self.as_str().to_addrs()
+	}
+}
+
+pub async fn lookup_host<T>(host: T) -> std::io::Result<impl Iterator<Item = SocketAddr>>
+where
+	T: ToSocketAddrs,
+{
+	match host.to_addrs() {
+		Ok(v) => Ok(v.into_iter()),
+		Err((query, port)) => {
+			match tokio::try_join!(
+				resolveDns(&query, "A"),
+				resolveDns(&query, "AAAA")
+			) {
+				Err(e) => {
+					Err(std::io::Error::new(std::io::ErrorKind::Other, "Deno's resolveDns failed."))
+				},
+				Ok((v4, v6)) => {
+					let v4 = v4.unchecked_into::<Array>();
+					let v6 = v6.unchecked_into::<Array>();
+					Ok(v4.iter().chain(v6.iter()).flat_map(|v| -> Option<IpAddr> { v.as_string().unwrap().parse().ok() }).map(|ip| SocketAddr::new(ip, port)))
+				}
+			}
+		}
 	}
 }

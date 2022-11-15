@@ -279,7 +279,7 @@ impl AgentInternal {
                     update_interval(disconnected_timeout);
                     update_interval(failed_timeout);
 
-                    let t = tokio::time::sleep(interval);
+                    let t = deno_net::sleep(interval);
                     tokio::pin!(t);
 
                     tokio::select! {

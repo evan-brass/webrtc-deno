@@ -69,7 +69,7 @@ pub async fn stun_request(
     conn.send_to(&request.raw, server_addr).await?;
     let mut bs = vec![0_u8; MAX_MESSAGE_SIZE];
     let (n, _) = if deadline > Duration::from_secs(0) {
-        match tokio::time::timeout(deadline, conn.recv_from(&mut bs)).await {
+        match deno_net::timeout(deadline, conn.recv_from(&mut bs)).await {
             Ok(result) => match result {
                 Ok((n, addr)) => (n, addr),
                 Err(err) => return Err(Error::Other(err.to_string())),

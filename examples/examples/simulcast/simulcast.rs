@@ -179,7 +179,7 @@ async fn main() -> Result<()> {
                                 rid, media_ssrc
                             );
 
-                            let timeout = tokio::time::sleep(Duration::from_secs(3));
+                            let timeout = deno_net::sleep(Duration::from_secs(3));
                             tokio::pin!(timeout);
 
                             tokio::select! {

@@ -65,7 +65,7 @@ async fn create_new_association_pair(
     while (!a0handshake_done || !a1handshake_done) && i < 100 {
         br.tick().await;
 
-        let timer = tokio::time::sleep(Duration::from_millis(10));
+        let timer = deno_net::sleep(Duration::from_millis(10));
         tokio::pin!(timer);
 
         tokio::select! {
@@ -135,7 +135,7 @@ async fn close_association_pair(br: &Arc<Bridge>, client: Association, server: A
     while (!a0handshake_done || !a1handshake_done) && i < 100 {
         br.tick().await;
 
-        let timer = tokio::time::sleep(Duration::from_millis(10));
+        let timer = deno_net::sleep(Duration::from_millis(10));
         tokio::pin!(timer);
 
         tokio::select! {
@@ -171,7 +171,7 @@ async fn flush_buffers(br: &Arc<Bridge>, client: &Association, server: &Associat
                 break;
             }
         }
-        tokio::time::sleep(Duration::from_millis(10)).await;
+        deno_net::sleep(Duration::from_millis(10)).await;
     }
 }
 
@@ -346,7 +346,7 @@ async fn test_assoc_reliable_ordered_reordered() -> Result<()> {
         .await?;
     assert_eq!(sbuf.len(), n, "unexpected length of received data");
 
-    tokio::time::sleep(Duration::from_millis(10)).await;
+    deno_net::sleep(Duration::from_millis(10)).await;
     br.reorder(0).await;
     br.process().await;
 
@@ -656,14 +656,14 @@ async fn test_assoc_reliable_retransmission() -> Result<()> {
         .await?;
     assert_eq!(MSG2.len(), n, "unexpected length of received data");
 
-    tokio::time::sleep(Duration::from_millis(10)).await;
+    deno_net::sleep(Duration::from_millis(10)).await;
     log::debug!("dropping packet");
     br.drop_offset(0, 0, 1).await; // drop the first packet (second one should be sacked)
 
     // process packets for 200 msec
     for _ in 0..20 {
         br.tick().await;
-        tokio::time::sleep(Duration::from_millis(10)).await;
+        deno_net::sleep(Duration::from_millis(10)).await;
     }
 
     let mut buf = vec![0u8; 32];
@@ -1080,7 +1080,7 @@ async fn test_assoc_unreliable_rexmit_unordered_fragment() -> Result<()> {
     assert_eq!(sbuf.len(), n, "unexpected length of received data");
 
     //log::debug!("flush_buffers");
-    tokio::time::sleep(Duration::from_millis(10)).await;
+    deno_net::sleep(Duration::from_millis(10)).await;
     br.drop_offset(0, 0, 2).await; // drop the second fragment of the first chunk (second chunk should be sacked)
     flush_buffers(&br, &a0, &a1).await;
 
@@ -1356,7 +1356,7 @@ async fn test_assoc_congestion_control_fast_retransmission() -> Result<()> {
     // should complete within 500 msec.
     for _ in 0..50 {
         br.tick().await;
-        tokio::time::sleep(Duration::from_millis(10)).await;
+        deno_net::sleep(Duration::from_millis(10)).await;
     }
 
     let mut buf = vec![0u8; 3000];
@@ -1641,7 +1641,7 @@ async fn test_assoc_congestion_control_slow_reader() -> Result<()> {
             n_packets_received += 1;
         }
 
-        tokio::time::sleep(Duration::from_millis(4)).await;
+        deno_net::sleep(Duration::from_millis(4)).await;
     }
 
     br.process().await;
@@ -1863,7 +1863,7 @@ async fn test_assoc_reset_close_one_way() -> Result<()> {
     loop {
         br.process().await;
 
-        let timer = tokio::time::sleep(Duration::from_millis(10));
+        let timer = deno_net::sleep(Duration::from_millis(10));
         tokio::pin!(timer);
 
         tokio::select! {
@@ -1966,7 +1966,7 @@ async fn test_assoc_reset_close_both_ways() -> Result<()> {
     loop {
         br.process().await;
 
-        let timer = tokio::time::sleep(Duration::from_millis(10));
+        let timer = deno_net::sleep(Duration::from_millis(10));
         tokio::pin!(timer);
 
         tokio::select! {
@@ -2014,7 +2014,7 @@ async fn test_assoc_reset_close_both_ways() -> Result<()> {
     loop {
         br.process().await;
 
-        let timer = tokio::time::sleep(Duration::from_millis(10));
+        let timer = deno_net::sleep(Duration::from_millis(10));
         tokio::pin!(timer);
 
         tokio::select! {
@@ -2089,7 +2089,7 @@ async fn test_assoc_abort() -> Result<()> {
     flush_buffers(&br, &a0, &a1).await;
 
     // There is a little delay before changing the state to closed
-    tokio::time::sleep(Duration::from_millis(10)).await;
+    deno_net::sleep(Duration::from_millis(10)).await;
 
     // The receiving association should be closed because it got an ABORT
     assert_eq!(AssociationState::Established, a0.get_state());
@@ -2264,7 +2264,7 @@ async fn create_assocs() -> Result<(Association, Association)> {
         Result::<()>::Ok(())
     });
 
-    let timer1 = tokio::time::sleep(Duration::from_secs(1));
+    let timer1 = deno_net::sleep(Duration::from_secs(1));
     tokio::pin!(timer1);
     let a1 = tokio::select! {
         _ = timer1.as_mut() =>{
@@ -2276,7 +2276,7 @@ async fn create_assocs() -> Result<(Association, Association)> {
         }
     };
 
-    let timer2 = tokio::time::sleep(Duration::from_secs(1));
+    let timer2 = deno_net::sleep(Duration::from_secs(1));
     tokio::pin!(timer2);
     let a2 = tokio::select! {
         _ = timer2.as_mut() =>{
@@ -2326,7 +2326,7 @@ async fn test_association_shutdown() -> Result<()> {
     assert_eq!(test_data.len(), n);
     assert_eq!(&test_data, &buf[0..n]);
 
-    if let Ok(result) = tokio::time::timeout(Duration::from_secs(1), a1.shutdown()).await {
+    if let Ok(result) = deno_net::timeout(Duration::from_secs(1), a1.shutdown()).await {
         assert!(result.is_ok(), "shutdown should be ok");
     } else {
         assert!(false, "shutdown timeout");
@@ -2336,7 +2336,7 @@ async fn test_association_shutdown() -> Result<()> {
         let mut close_loop_ch_rx = a2.close_loop_ch_rx.lock().await;
 
         // Wait for close read loop channels to prevent flaky tests.
-        let timer2 = tokio::time::sleep(Duration::from_secs(1));
+        let timer2 = deno_net::sleep(Duration::from_secs(1));
         tokio::pin!(timer2);
         tokio::select! {
             _ = timer2.as_mut() =>{
@@ -2387,7 +2387,7 @@ async fn test_association_shutdown_during_write() -> Result<()> {
             }
 
             if i % 100 == 0 {
-                tokio::time::sleep(Duration::from_millis(20)).await;
+                deno_net::sleep(Duration::from_millis(20)).await;
             }
         }
 
@@ -2407,7 +2407,7 @@ async fn test_association_shutdown_during_write() -> Result<()> {
     {
         let mut close_loop_ch_rx = a1.close_loop_ch_rx.lock().await;
         tokio::select! {
-            res = tokio::time::timeout(Duration::from_secs(1), a1.shutdown()) => {
+            res = deno_net::timeout(Duration::from_secs(1), a1.shutdown()) => {
                 if let Ok(result) = res {
                     assert!(result.is_ok(), "shutdown should be ok");
                 } else {
@@ -2425,7 +2425,7 @@ async fn test_association_shutdown_during_write() -> Result<()> {
     {
         let mut close_loop_ch_rx = a2.close_loop_ch_rx.lock().await;
         // Wait for close read loop channels to prevent flaky tests.
-        let timer2 = tokio::time::sleep(Duration::from_secs(1));
+        let timer2 = deno_net::sleep(Duration::from_secs(1));
         tokio::pin!(timer2);
         tokio::select! {
             _ = timer2.as_mut() =>{
@@ -2613,7 +2613,7 @@ async fn test_association_handle_packet_before_init() -> Result<()> {
         assert!(result.is_ok(), "{} charlie_conn.send should be ok", name);
 
         // Should not panic.
-        tokio::time::sleep(Duration::from_millis(100)).await;
+        deno_net::sleep(Duration::from_millis(100)).await;
 
         a.close().await.unwrap();
     }

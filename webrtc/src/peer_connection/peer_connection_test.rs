@@ -171,7 +171,7 @@ pub(crate) async fn close_pair(
     pc2: &RTCPeerConnection,
     mut done_rx: mpsc::Receiver<()>,
 ) {
-    let timeout = tokio::time::sleep(Duration::from_secs(10));
+    let timeout = deno_net::sleep(Duration::from_secs(10));
     tokio::pin!(timeout);
 
     tokio::select! {
@@ -209,7 +209,7 @@ pub(crate) async fn send_video_until_done(
     let mut sends = 0;
 
     loop {
-        let timeout = tokio::time::sleep(Duration::from_millis(20));
+        let timeout = deno_net::sleep(Duration::from_millis(20));
         tokio::pin!(timeout);
 
         tokio::select! {
@@ -274,7 +274,7 @@ async fn test_get_stats() -> Result<()> {
             let ice_complete_tx2 = Arc::clone(&ice_complete_tx);
             Box::pin(async move {
                 if ice_state == RTCIceConnectionState::Connected {
-                    tokio::time::sleep(Duration::from_secs(1)).await;
+                    deno_net::sleep(Duration::from_secs(1)).await;
                     let mut done = ice_complete_tx2.lock().await;
                     done.take();
                 }

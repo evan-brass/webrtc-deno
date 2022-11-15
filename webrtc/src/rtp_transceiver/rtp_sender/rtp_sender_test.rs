@@ -189,7 +189,7 @@ async fn test_rtp_sender_set_read_deadline() -> Result<()> {
 
     peer_connections_connected.wait().await;
 
-    let result = tokio::time::timeout(Duration::from_secs(1), rtp_sender.read_rtcp()).await;
+    let result = deno_net::timeout(Duration::from_secs(1), rtp_sender.read_rtcp()).await;
     assert!(result.is_err());
 
     {

@@ -194,20 +194,20 @@ async fn test_rtp_receiver_set_read_deadline() -> Result<()> {
                     // First call will not error because we cache for probing
                     if let Some(track) = &track_remote {
                         let result =
-                            tokio::time::timeout(Duration::from_secs(1), track.read_rtp()).await;
+                            deno_net::timeout(Duration::from_secs(1), track.read_rtp()).await;
                         assert!(
                             result.is_ok(),
                             " First call will not error because we cache for probing"
                         );
 
                         let result =
-                            tokio::time::timeout(Duration::from_secs(1), track.read_rtp()).await;
+                            deno_net::timeout(Duration::from_secs(1), track.read_rtp()).await;
                         assert!(result.is_err());
                     }
 
                     if let Some(r) = &receiver {
                         let result =
-                            tokio::time::timeout(Duration::from_secs(1), r.read_rtcp()).await;
+                            deno_net::timeout(Duration::from_secs(1), r.read_rtcp()).await;
                         assert!(result.is_err());
                     }
 

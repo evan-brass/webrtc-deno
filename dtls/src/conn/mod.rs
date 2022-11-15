@@ -394,7 +394,7 @@ impl DTLSConn {
         let rx = {
             let mut decrypted_rx = self.decrypted_rx.lock().await;
             if let Some(d) = duration {
-                let timer = tokio::time::sleep(d);
+                let timer = deno_net::sleep(d);
                 tokio::pin!(timer);
 
                 tokio::select! {
@@ -444,7 +444,7 @@ impl DTLSConn {
         }];
 
         if let Some(d) = duration {
-            let timer = tokio::time::sleep(d);
+            let timer = deno_net::sleep(d);
             tokio::pin!(timer);
 
             tokio::select! {

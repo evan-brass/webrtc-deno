@@ -128,7 +128,7 @@ async fn do_signaling(req: Request<Body>) -> Result<Response<Body>, hyper::Error
                                 .await
                                 .is_ok()
                             {
-                                tokio::time::sleep(Duration::from_secs(3)).await;
+                                deno_net::sleep(Duration::from_secs(3)).await;
                             }
                         })
                     }))

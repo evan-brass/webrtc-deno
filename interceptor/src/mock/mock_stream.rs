@@ -318,7 +318,7 @@ mod test {
         s.write_rtcp(&[Box::new(PictureLossIndication::default())])
             .await?;
         timeout_or_fail(Duration::from_millis(10), s.written_rtcp()).await;
-        let result = tokio::time::timeout(Duration::from_millis(10), s.written_rtcp()).await;
+        let result = deno_net::timeout(Duration::from_millis(10), s.written_rtcp()).await;
         assert!(
             result.is_err(),
             "single rtcp packet written, but multiple found"
@@ -326,7 +326,7 @@ mod test {
 
         s.write_rtp(&rtp::packet::Packet::default()).await?;
         timeout_or_fail(Duration::from_millis(10), s.written_rtp()).await;
-        let result = tokio::time::timeout(Duration::from_millis(10), s.written_rtp()).await;
+        let result = deno_net::timeout(Duration::from_millis(10), s.written_rtp()).await;
         assert!(
             result.is_err(),
             "single rtp packet written, but multiple found"
@@ -340,7 +340,7 @@ mod test {
                 .is_some(),
             "read rtcp returned error",
         );
-        let result = tokio::time::timeout(Duration::from_millis(10), s.read_rtcp()).await;
+        let result = deno_net::timeout(Duration::from_millis(10), s.read_rtcp()).await;
         assert!(
             result.is_err(),
             "single rtcp packet written, but multiple found"
@@ -353,7 +353,7 @@ mod test {
                 .is_some(),
             "read rtp returned error",
         );
-        let result = tokio::time::timeout(Duration::from_millis(10), s.read_rtp()).await;
+        let result = deno_net::timeout(Duration::from_millis(10), s.read_rtp()).await;
         assert!(
             result.is_err(),
             "single rtp packet written, but multiple found"

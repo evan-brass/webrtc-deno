@@ -121,7 +121,7 @@ impl Bridge {
     pub async fn push(&self, b: &[u8], id: usize) -> Result<usize> {
         // Push rate should be limited as same as Tick rate.
         // Otherwise, queue grows too fast on free running Write.
-        tokio::time::sleep(TICK_WAIT).await;
+        crate::sleep(TICK_WAIT).await;
 
         let d = Bytes::from(b.to_vec());
         if self.drop_nwrites[id].load(Ordering::SeqCst) > 0 {
@@ -205,7 +205,7 @@ impl Bridge {
     /// Process repeats tick() calls until no more outstanding packet in the queues.
     pub async fn process(&self) {
         loop {
-            tokio::time::sleep(TICK_WAIT).await;
+            crate::sleep(TICK_WAIT).await;
             self.tick().await;
             if self.len(0).await == 0 && self.len(1).await == 0 {
                 break;

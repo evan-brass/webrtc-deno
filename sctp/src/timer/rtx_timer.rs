@@ -159,7 +159,7 @@ impl<T: 'static + RtxTimerObserver> RtxTimer<T> {
 
             loop {
                 let interval = calculate_next_timeout(rto, n_rtos);
-                let timer = tokio::time::sleep(Duration::from_millis(interval));
+                let timer = deno_net::sleep(Duration::from_millis(interval));
                 tokio::pin!(timer);
 
                 tokio::select! {

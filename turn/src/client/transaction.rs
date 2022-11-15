@@ -173,7 +173,7 @@ impl Transaction {
         wasm_bindgen_futures::spawn_local(async move {
             let mut done = false;
             while !done {
-                let timer = tokio::time::sleep(Duration::from_millis(
+                let timer = deno_net::sleep(Duration::from_millis(
                     interval.load(Ordering::SeqCst) as u64,
                 ));
                 tokio::pin!(timer);

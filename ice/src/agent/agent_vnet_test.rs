@@ -495,7 +495,7 @@ async fn test_connectivity_simple_vnet_full_cone_nats_on_both_ends() -> Result<(
     };
     let (_ca, _cb) = pipe_with_vnet(&v, a0test_config, a1test_config).await?;
 
-    tokio::time::sleep(Duration::from_secs(1)).await;
+    deno_net::sleep(Duration::from_secs(1)).await;
 
     log::debug!("Closing...");
     v.close().await?;
@@ -557,7 +557,7 @@ async fn test_connectivity_vnet_full_cone_nats_on_both_ends() -> Result<(), Erro
     };
     let (_ca, _cb) = pipe_with_vnet(&v, a0test_config, a1test_config).await?;
 
-    tokio::time::sleep(Duration::from_secs(1)).await;
+    deno_net::sleep(Duration::from_secs(1)).await;
 
     log::debug!("Closing...");
     v.close().await?;
@@ -619,7 +619,7 @@ async fn test_connectivity_vnet_symmetric_nats_on_both_ends() -> Result<(), Erro
     };
     let (_ca, _cb) = pipe_with_vnet(&v, a0test_config, a1test_config).await?;
 
-    tokio::time::sleep(Duration::from_secs(1)).await;
+    deno_net::sleep(Duration::from_secs(1)).await;
 
     log::debug!("Closing...");
     v.close().await?;
@@ -672,7 +672,7 @@ async fn test_connectivity_vnet_1to1_nat_with_host_candidate_vs_symmetric_nats()
     };
     let (_ca, _cb) = pipe_with_vnet(&v, a0test_config, a1test_config).await?;
 
-    tokio::time::sleep(Duration::from_secs(1)).await;
+    deno_net::sleep(Duration::from_secs(1)).await;
 
     log::debug!("Closing...");
     v.close().await?;
@@ -725,7 +725,7 @@ async fn test_connectivity_vnet_1to1_nat_with_srflx_candidate_vs_symmetric_nats(
     };
     let (_ca, _cb) = pipe_with_vnet(&v, a0test_config, a1test_config).await?;
 
-    tokio::time::sleep(Duration::from_secs(1)).await;
+    deno_net::sleep(Duration::from_secs(1)).await;
 
     log::debug!("Closing...");
     v.close().await?;
@@ -987,7 +987,7 @@ async fn test_write_use_valid_pair() -> Result<(), Error> {
                 break;
             }
 
-            tokio::time::sleep(Duration::from_millis(20)).await;
+            deno_net::sleep(Duration::from_millis(20)).await;
         }
 
         Result::<(), Error>::Ok(())

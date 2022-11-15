@@ -30,7 +30,7 @@ async fn test_twcc_receiver_interceptor_before_any_packets() -> Result<()> {
         pkts = stream.written_rtcp() => {
             assert!(pkts.map(|p| p.is_empty()).unwrap_or(true), "Should not have sent an RTCP packet before receiving the first RTP packets")
         }
-        _ = tokio::time::sleep(Duration::from_millis(300)) => {
+        _ = deno_net::sleep(Duration::from_millis(300)) => {
             // All good
         }
     }
