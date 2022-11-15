@@ -9,7 +9,6 @@ use util::Conn;
 
 use std::collections::HashMap;
 use std::io::BufReader;
-use std::marker::{Send, Sync};
 use std::ops::Add;
 use std::sync::Arc;
 use tokio::sync::mpsc;
