@@ -1,5 +1,5 @@
 use std::future::Future;
-use std::{cell::Ref, time::Duration};
+use std::time::Duration;
 use std::net::{
 	SocketAddr,
 	SocketAddrV4,
@@ -10,7 +10,7 @@ use std::net::{
 };
 
 use wasm_bindgen::prelude::*;
-use js_sys::{Array, Uint8Array, Object, Reflect};
+use js_sys::{Function, Promise, Array, Object, Reflect};
 use wasm_bindgen::JsCast;
 
 #[wasm_bindgen]
@@ -23,6 +23,8 @@ extern "C" {
 	pub async fn accept(this: &Listener) -> JsValue; // Returns a Conn
 
 	pub type DatagramConn;
+	#[wasm_bindgen(method)]
+	pub fn addr(this: &DatagramConn) -> Addr;
 	#[wasm_bindgen(method, catch)]
 	pub async fn receive(this: &DatagramConn, p: Option<&mut [u8]>) -> Result<JsValue, JsValue>; // Promise<[Uint8Array, Addr]>
 	#[wasm_bindgen(method, catch)]
@@ -61,16 +63,26 @@ extern "C" {
 	// #[wasm_bindgen(catch, js_namespace = Deno)]
 	// async fn resolveDns(query: &str, record_type: &str) -> Result<JsValue, JsValue>;
 }
-pub fn sleep(dur: Duration) -> wasm_bindgen_futures::JsFuture {
-	wasm_bindgen_futures::JsFuture::from(Promise::new(&mut move |res, _rej| {
-		unsafe { setTimeout(res, dur.as_millis() as u32) };
-	}))
+pub async fn sleep(dur: Duration) {
+	let _ = wasm_bindgen_futures::JsFuture::from(Promise::new(&mut move |res, _rej| {
+		setTimeout(res, dur.as_millis() as u32);
+	})).await;
 }
-pub struct Elapsed();
-pub fn timeout<F: Future>(d: Duration, f: F) -> impl Future<Output = Result<F::Output, Elapsed>> {
+pub struct Elapsed;
+pub async fn timeout<F: Future>(d: Duration, f: F) -> Result<F::Output, Elapsed> {
 	tokio::select! {
 		_ = sleep(d) => Err(Elapsed),
 		v = f => Ok(v)
+	}
+}
+
+impl DatagramConn {
+	pub async fn bind<A: ToSocketAddrs>(addr: A) -> std::io::Result<Self> {
+		let sa = lookup_host(addr).await?.next().ok_or(std::io::Error::new(std::io::ErrorKind::Other, "No address found during bind"))?;
+		let options = Object::new();
+		let _ = Reflect::set(&options, &JsValue::from_str("hostname"), &JsValue::from_str(&sa.ip().to_string()));
+		let _ = Reflect::set(&options, &JsValue::from_str("port"), &JsValue::from(sa.port()));
+		Ok(listenDatagram(JsValue::from(options)))
 	}
 }
 
@@ -152,13 +164,13 @@ where
 				resolveDns(&query, "A"),
 				resolveDns(&query, "AAAA")
 			) {
-				Err(e) => {
+				Err(_e) => {
 					Err(std::io::Error::new(std::io::ErrorKind::Other, "Deno's resolveDns failed."))
 				},
 				Ok((v4, v6)) => {
 					let v4 = v4.unchecked_into::<Array>();
 					let v6 = v6.unchecked_into::<Array>();
-					Ok(v4.iter().chain(v6.iter()).flat_map(|v| -> Option<IpAddr> { v.as_string().unwrap().parse().ok() }).map(|ip| SocketAddr::new(ip, port)))
+					Ok(v4.iter().chain(v6.iter()).flat_map(|v| -> Option<IpAddr> { v.as_string().unwrap().parse().ok() }).map(|ip| SocketAddr::new(ip, port)).collect::<Vec<_>>().into_iter())
 				}
 			}
 		}

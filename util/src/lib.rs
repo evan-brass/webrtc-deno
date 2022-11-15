@@ -1,14 +1,10 @@
 #![warn(rust_2018_idioms)]
 #![allow(dead_code)]
 
-use wasm_bindgen::prelude::*;
-use js_sys::{Promise, Function};
-
 use async_trait::async_trait;
 use thiserror::Error;
 
 use std::io;
-use std::time::Duration;
 
 #[cfg(feature = "vnet")]
 #[macro_use]
