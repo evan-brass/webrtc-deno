@@ -2,7 +2,7 @@ pub mod conn_bridge;
 pub mod conn_disconnected_packet;
 pub mod conn_pipe;
 pub mod conn_udp;
-// pub mod conn_udp_listener;
+pub mod conn_udp_listener;
 
 #[cfg(test)]
 mod conn_bridge_test;
@@ -10,8 +10,6 @@ mod conn_bridge_test;
 mod conn_pipe_test;
 #[cfg(test)]
 mod conn_test;
-
-mod conn_udp_listener;
 
 //TODO: remove this conditional test
 #[cfg(not(target_os = "windows"))]
