@@ -34,7 +34,7 @@ use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicU16, Ordering};
 use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex};
-use tokio::time::Duration;
+use std::time::Duration;
 
 pub(crate) const INITIAL_TICKER_INTERVAL: Duration = Duration::from_secs(1);
 pub(crate) const COOKIE_LENGTH: usize = 20;

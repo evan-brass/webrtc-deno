@@ -3,7 +3,7 @@ use crate::mock::mock_stream::MockStream;
 use crate::stream_info::RTPHeaderExtension;
 use rtp::packet::Packet;
 use tokio::sync::mpsc;
-use tokio::time::Duration;
+use std::time::Duration;
 use util::Unmarshal;
 use waitgroup::WaitGroup;
 

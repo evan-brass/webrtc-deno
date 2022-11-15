@@ -21,7 +21,7 @@ use crate::peer_connection::configuration::RTCConfiguration;
 use crate::sctp_transport::sctp_transport_capabilities::SCTPTransportCapabilities;
 use regex::Regex;
 use tokio::sync::mpsc;
-use tokio::time::Duration;
+use std::time::Duration;
 use waitgroup::WaitGroup;
 
 // EXPECTED_LABEL represents the label of the data channel we are trying to test.

@@ -5,7 +5,7 @@ use crate::server::{config::*, *};
 
 use std::net::IpAddr;
 use deno_net::DatagramConn as UdpSocket;
-use tokio::time::Duration;
+use std::time::Duration;
 
 use util::vnet::net::*;
 

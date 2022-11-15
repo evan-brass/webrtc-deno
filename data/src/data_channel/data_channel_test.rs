@@ -8,7 +8,7 @@ use util::conn::*;
 use tokio::io::AsyncReadExt;
 use tokio::io::AsyncWriteExt;
 use tokio::sync::{broadcast, mpsc};
-use tokio::time::Duration;
+use std::time::Duration;
 
 async fn bridge_process_at_least_one(br: &Arc<Bridge>) {
     let mut n_sum = 0;

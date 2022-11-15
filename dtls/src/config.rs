@@ -6,7 +6,7 @@ use crate::handshaker::VerifyPeerCertificateFn;
 use crate::signature_hash_algorithm::SignatureScheme;
 
 use std::sync::Arc;
-use tokio::time::Duration;
+use std::time::Duration;
 
 /// Config is used to configure a DTLS client or server.
 /// After a Config is passed to a DTLS function it must not be modified.

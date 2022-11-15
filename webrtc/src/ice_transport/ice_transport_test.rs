@@ -8,7 +8,7 @@ use crate::peer_connection::peer_connection_test::{
     close_pair_now, new_pair, signal_pair, until_connection_state,
 };
 use std::sync::atomic::AtomicU32;
-use tokio::time::Duration;
+use std::time::Duration;
 use waitgroup::WaitGroup;
 
 #[tokio::test]

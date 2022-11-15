@@ -309,7 +309,7 @@ mod test {
     use crate::noop::NoOp;
     use crate::test::timeout_or_fail;
     use rtcp::payload_feedbacks::picture_loss_indication::PictureLossIndication;
-    use tokio::time::Duration;
+    use std::time::Duration;
 
     #[tokio::test]
     async fn test_mock_stream() -> Result<()> {

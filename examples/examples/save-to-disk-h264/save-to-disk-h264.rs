@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::Write;
 use std::sync::Arc;
 use tokio::sync::{Mutex, Notify};
-use tokio::time::Duration;
+use std::time::Duration;
 use webrtc::api::interceptor_registry::register_default_interceptors;
 use webrtc::api::media_engine::{MediaEngine, MIME_TYPE_H264, MIME_TYPE_OPUS};
 use webrtc::api::APIBuilder;

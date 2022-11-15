@@ -13,7 +13,7 @@ use crate::error::{Error, Result};
 
 use crate::RECEIVE_MTU;
 use std::sync::Arc;
-use tokio::time::Duration;
+use std::time::Duration;
 use util::vnet::net::*;
 
 #[derive(Default, Clone)]

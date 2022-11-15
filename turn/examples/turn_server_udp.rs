@@ -10,7 +10,7 @@ use std::str::FromStr;
 use std::sync::Arc;
 use deno_net::DatagramConn as UdpSocket;
 use tokio::signal;
-use tokio::time::Duration;
+use std::time::Duration;
 use util::vnet::net::*;
 
 struct MyAuthHandler {

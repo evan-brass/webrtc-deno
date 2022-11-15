@@ -12,7 +12,7 @@ use std::sync::atomic::{AtomicU16, Ordering};
 use std::sync::Arc;
 use std::time::SystemTime;
 use tokio::sync::Mutex;
-use tokio::time::Duration;
+use std::time::Duration;
 
 const DEFAULT_NAT_MAPPING_LIFE_TIME: Duration = Duration::from_secs(30);
 

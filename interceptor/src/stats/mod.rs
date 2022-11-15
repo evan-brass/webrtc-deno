@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::SystemTime;
 
-use tokio::time::Duration;
+use std::time::Duration;
 
 mod interceptor;
 

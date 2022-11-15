@@ -14,7 +14,7 @@ use crate::track::track_local::track_local_static_sample::TrackLocalStaticSample
 use crate::track::track_remote::TrackRemote;
 use bytes::Bytes;
 use std::sync::atomic::AtomicU64;
-use tokio::time::Duration;
+use std::time::Duration;
 use waitgroup::WaitGroup;
 
 #[tokio::test]

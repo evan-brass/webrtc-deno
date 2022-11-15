@@ -8,7 +8,7 @@ use std::str::FromStr;
 use std::sync::atomic::{AtomicU16, Ordering};
 use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex};
-use tokio::time::Duration;
+use std::time::Duration;
 use util::Conn;
 
 const MAX_RTX_INTERVAL_IN_MS: u16 = 1600;

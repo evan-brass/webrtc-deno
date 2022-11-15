@@ -2,7 +2,7 @@ use super::*;
 use crate::mock::mock_stream::MockStream;
 use crate::stream_info::RTCPFeedback;
 use crate::test::timeout_or_fail;
-use tokio::time::Duration;
+use std::time::Duration;
 
 use rtcp::transport_feedbacks::transport_layer_nack::{NackPair, TransportLayerNack};
 

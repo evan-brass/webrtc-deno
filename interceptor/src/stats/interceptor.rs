@@ -13,7 +13,7 @@ use rtcp::sender_report::SenderReport;
 use rtcp::transport_feedbacks::transport_layer_nack::TransportLayerNack;
 use rtp::extension::abs_send_time_extension::unix2ntp;
 use tokio::sync::{mpsc, oneshot};
-use tokio::time::Duration;
+use std::time::Duration;
 
 use util::sync::Mutex;
 use util::{MarshalSize, Unmarshal};

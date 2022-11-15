@@ -7,7 +7,7 @@ use std::net::SocketAddr;
 use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use tokio::time::Duration;
+use std::time::Duration;
 use tokio_util::codec::{BytesCodec, FramedRead};
 use webrtc::api::interceptor_registry::register_default_interceptors;
 use webrtc::api::media_engine::MediaEngine;

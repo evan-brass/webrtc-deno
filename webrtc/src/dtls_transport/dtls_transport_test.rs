@@ -11,7 +11,7 @@ use crate::peer_connection::peer_connection_test::{
 use ice::mdns::MulticastDnsMode;
 use ice::network_type::NetworkType;
 use regex::Regex;
-use tokio::time::Duration;
+use std::time::Duration;
 use waitgroup::WaitGroup;
 
 //use log::LevelFilter;

@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::io::Write;
 use std::sync::Arc;
 use tokio::sync::Notify;
-use tokio::time::Duration;
+use std::time::Duration;
 use webrtc::api::APIBuilder;
 use webrtc::data_channel::data_channel_message::DataChannelMessage;
 use webrtc::data_channel::data_channel_parameters::DataChannelParameters;

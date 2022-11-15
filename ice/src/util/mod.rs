@@ -9,7 +9,7 @@ use std::collections::HashSet;
 use std::net::{IpAddr, SocketAddr};
 use std::sync::Arc;
 use stun::{agent::*, attributes::*, integrity::*, message::*, textattrs::*, xoraddr::*};
-use tokio::time::Duration;
+use std::time::Duration;
 use util::{vnet::net::*, Conn};
 
 pub fn create_addr(_network: NetworkType, ip: IpAddr, port: u16) -> SocketAddr {

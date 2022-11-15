@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use std::sync::Weak;
 use tokio::sync::{mpsc, Mutex};
-use tokio::time::Duration;
+use std::time::Duration;
 
 pub(crate) const ACK_INTERVAL: Duration = Duration::from_millis(200);
 

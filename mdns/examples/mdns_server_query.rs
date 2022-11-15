@@ -31,7 +31,7 @@ async fn main() {
     let (a, b) = mpsc::channel(1);
 
     wasm_bindgen_futures::spawn_local(async move {
-        tokio::time::sleep(tokio::time::Duration::from_secs(20)).await;
+        tokio::time::sleep(std::time::Duration::from_secs(20)).await;
         a.send(()).await
     });
 
@@ -41,7 +41,7 @@ async fn main() {
     let (a, b) = mpsc::channel(1);
 
     wasm_bindgen_futures::spawn_local(async move {
-        tokio::time::sleep(tokio::time::Duration::from_secs(20)).await;
+        tokio::time::sleep(std::time::Duration::from_secs(20)).await;
         a.send(()).await
     });
 

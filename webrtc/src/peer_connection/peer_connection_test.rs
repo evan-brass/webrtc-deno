@@ -8,7 +8,7 @@ use crate::stats::StatsReportType;
 use bytes::Bytes;
 use media::Sample;
 use std::sync::atomic::AtomicU32;
-use tokio::time::Duration;
+use std::time::Duration;
 use util::vnet::net::{Net, NetConfig};
 use util::vnet::router::{Router, RouterConfig};
 use waitgroup::WaitGroup;

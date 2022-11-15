@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::{AppSettings, Arg, Command};
 use std::io::Write;
 use std::sync::Arc;
-use tokio::time::Duration;
+use std::time::Duration;
 use webrtc::api::interceptor_registry::register_default_interceptors;
 use webrtc::api::media_engine::MediaEngine;
 use webrtc::api::APIBuilder;

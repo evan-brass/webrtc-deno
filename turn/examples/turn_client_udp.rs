@@ -4,7 +4,7 @@ use turn::Error;
 use clap::{App, AppSettings, Arg};
 use std::sync::Arc;
 use deno_net::DatagramConn as UdpSocket;
-use tokio::time::Duration;
+use std::time::Duration;
 use util::Conn;
 
 // RUST_LOG=trace cargo run --color=always --package turn --example turn_client_udp -- --host 0.0.0.0 --user user=pass --ping

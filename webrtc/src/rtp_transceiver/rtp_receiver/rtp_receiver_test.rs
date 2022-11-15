@@ -12,7 +12,7 @@ use crate::track::track_local::TrackLocal;
 use bytes::Bytes;
 use media::Sample;
 use tokio::sync::mpsc;
-use tokio::time::Duration;
+use std::time::Duration;
 use waitgroup::WaitGroup;
 
 lazy_static! {

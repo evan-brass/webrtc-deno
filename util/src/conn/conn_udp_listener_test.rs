@@ -6,7 +6,7 @@ use std::future::Future;
 use std::pin::Pin;
 use deno_net::DatagramConn as UdpSocket;
 use tokio::sync::mpsc;
-use tokio::time::Duration;
+use std::time::Duration;
 
 async fn pipe() -> Result<(
     Arc<dyn Listener>,

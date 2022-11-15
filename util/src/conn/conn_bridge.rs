@@ -7,7 +7,7 @@ use std::str::FromStr;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex};
-use tokio::time::Duration;
+use std::time::Duration;
 
 const TICK_WAIT: Duration = Duration::from_micros(10);
 

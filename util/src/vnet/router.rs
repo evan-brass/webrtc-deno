@@ -21,7 +21,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::SystemTime;
 use tokio::sync::{mpsc, Mutex};
-use tokio::time::Duration;
+use std::time::Duration;
 
 const DEFAULT_ROUTER_QUEUE_SIZE: usize = 0; // unlimited
 

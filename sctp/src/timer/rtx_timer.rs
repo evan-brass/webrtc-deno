@@ -2,7 +2,7 @@ use crate::association::RtxTimerId;
 use async_trait::async_trait;
 use std::sync::{Arc, Weak};
 use tokio::sync::{mpsc, Mutex};
-use tokio::time::Duration;
+use std::time::Duration;
 
 pub(crate) const RTO_INITIAL: u64 = 3000; // msec
 pub(crate) const RTO_MIN: u64 = 1000; // msec
