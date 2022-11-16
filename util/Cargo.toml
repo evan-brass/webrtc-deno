@@ -1,6 +1,6 @@
 [package]
 name = "webrtc-util"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Rain Liu <yliu@webrtc.rs>"]
 edition = "2018"
 description = "Utilities for WebRTC.rs stack"
@@ -15,7 +15,7 @@ rust-version = "1.60.0"
 [features]
 default = ["buffer", "conn", "ifaces", "vnet", "marshal", "sync"]
 buffer = []
-conn = ["buffer"]
+conn = ["buffer", "sync"]
 ifaces = []
 vnet = ["ifaces"]
 marshal = []
@@ -36,7 +36,6 @@ getrandom = { version = "0.1.16", features = ["wasm-bindgen"] }
 getrandom2 = { package = "getrandom", version = "0.2.8", features = ["js"] }
 bytes = "1"
 thiserror = "~1.0.2"
-parking_lot = "0.12.1"
 js-sys = "0.3.60"
 
 [target.'cfg(not(windows))'.dependencies]
