@@ -50,7 +50,7 @@ impl ConnTrait for Conn {
 	}
 	async fn recv_from(&self, buf: &mut [u8]) -> super::Result<(usize, SocketAddr)> {
 		let ret = self.recv(buf).await?;
-		let sa = self.remote_addr().await.ok_or(NetErr::ErrAddrNotUdpAddr)?;
+		let sa = self.remote_addr().ok_or(NetErr::ErrAddrNotUdpAddr)?;
 		Ok((ret, sa))
 	}
 	async fn send(&self, buf: &[u8]) -> super::Result<usize> {
@@ -65,7 +65,7 @@ impl ConnTrait for Conn {
 		Ok(buf.len())
 	}
 	async fn send_to(&self, _buf: &[u8], _target: SocketAddr) -> super::Result<usize> { unimplemented!() }
-	async fn local_addr(&self) -> super::Result<SocketAddr> {
+	fn local_addr(&self) -> super::Result<SocketAddr> {
 		let addr = self.localAddr();
 		if let Ok(ip) = addr.hostname().parse::<IpAddr>() {
 			Ok(SocketAddr::new(ip, addr.port()))
@@ -73,7 +73,7 @@ impl ConnTrait for Conn {
 			Err(NetErr::ErrLocAddr)
 		}
 	}
-	async fn remote_addr(&self) -> Option<SocketAddr> {
+	fn remote_addr(&self) -> Option<SocketAddr> {
 		let addr = self.remoteAddr();
 		let ip: IpAddr = addr.hostname().parse().ok()?;
 		Some(SocketAddr::new(ip, addr.port()))
@@ -111,13 +111,13 @@ impl ConnTrait for DatagramConn {
 		let ret = ret.unchecked_into_f64() as usize;
 		Ok(ret)
 	}
-	async fn local_addr(&self) -> super::Result<SocketAddr> {
+	fn local_addr(&self) -> super::Result<SocketAddr> {
 		let addr = self.addr();
 		let ip = addr.hostname().parse::<IpAddr>()
 			.map_err(|_| NetErr::ErrAddrNotUdpAddr)?;
 		Ok(SocketAddr::new(ip, addr.port()))
 	}
-	async fn remote_addr(&self) -> Option<SocketAddr> { unimplemented!() }
+	fn remote_addr(&self) -> Option<SocketAddr> { unimplemented!() }
 	async fn close(&self) -> super::Result<()> {
 		DatagramConn::close(self);
 		Ok(())
