@@ -36,7 +36,7 @@ use std::net::SocketAddr;
 #[cfg(feature = "metrics")]
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 use tokio::sync::Mutex;
 use tokio::time::{Duration, Instant};
 

@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
+use deno_net::SystemTime;
 use tokio::sync::{mpsc, Mutex};
 use waitgroup::WaitGroup;
 

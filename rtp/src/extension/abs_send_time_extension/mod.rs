@@ -5,7 +5,8 @@ use crate::error::Error;
 use util::marshal::{Marshal, MarshalSize, Unmarshal};
 
 use bytes::{Buf, BufMut};
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::Duration;
+use deno_net::{SystemTime, SystemTime::UNIX_EPOCH};
 
 pub const ABS_SEND_TIME_EXTENSION_SIZE: usize = 3;
 

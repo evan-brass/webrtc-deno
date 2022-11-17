@@ -20,7 +20,7 @@ use crate::signature_hash_algorithm::*;
 
 use crate::extension::renegotiation_info::ExtensionRenegotiationInfo;
 use rand::Rng;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 use util::conn::conn_pipe::*;
 use util::KeyingMaterialExporter;
 

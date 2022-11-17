@@ -21,7 +21,7 @@ use sdp::description::session::SessionDescription;
 use std::collections::HashMap;
 use std::ops::Range;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::time::{SystemTime, UNIX_EPOCH};
+use deno_net::{SystemTime, SystemTime::UNIX_EPOCH};
 use tokio::sync::Mutex;
 
 /// MIME_TYPE_H264 H264 MIME type.

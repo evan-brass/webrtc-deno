@@ -2,7 +2,7 @@ use super::*;
 use crate::{Attributes, RTPReader};
 
 use async_trait::async_trait;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 use util::sync::Mutex;
 use util::Unmarshal;
 

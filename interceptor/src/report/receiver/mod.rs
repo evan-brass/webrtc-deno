@@ -8,7 +8,8 @@ use crate::*;
 use receiver_stream::ReceiverStream;
 
 use std::collections::HashMap;
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
+use deno_net::SystemTime;
 use tokio::sync::{mpsc, Mutex};
 use waitgroup::WaitGroup;
 

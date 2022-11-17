@@ -163,7 +163,7 @@ mod test_rtx_timer {
     use crate::association::RtxTimerId;
     use crate::error::Result;
 
-    use std::time::SystemTime;
+	use deno_net::SystemTime;
     use tokio::sync::mpsc;
 
     struct TestTimerObserver {

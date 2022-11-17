@@ -19,7 +19,7 @@ use std::pin::Pin;
 use std::str::FromStr;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 use tokio::sync::{mpsc, Mutex};
 use std::time::Duration;
 

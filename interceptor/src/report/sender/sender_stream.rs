@@ -5,7 +5,8 @@ use async_trait::async_trait;
 use rtp::extension::abs_send_time_extension::unix2ntp;
 use std::convert::TryInto;
 use std::sync::Arc;
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
+use deno_net::SystemTime;
 use tokio::sync::Mutex;
 
 struct SenderStreamInternal {

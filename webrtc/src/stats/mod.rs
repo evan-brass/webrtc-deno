@@ -15,7 +15,7 @@ use stats_collector::StatsCollector;
 use serde::{Serialize, Serializer};
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 use tokio::time::Instant;
 
 mod serialize;

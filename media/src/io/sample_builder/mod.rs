@@ -5,7 +5,8 @@ mod sample_sequence_location_test;
 
 pub mod sample_sequence_location;
 
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
+use deno_net::SystemTime;
 
 use bytes::Bytes;
 use rtp::{packet::Packet, packetizer::Depacketizer};

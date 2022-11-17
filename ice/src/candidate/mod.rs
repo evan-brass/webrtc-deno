@@ -24,7 +24,7 @@ use std::fmt;
 use std::net::{IpAddr, SocketAddr};
 use std::sync::atomic::{AtomicBool, AtomicU16, AtomicU8, Ordering};
 use std::sync::Arc;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 use tokio::sync::{broadcast, Mutex};
 
 pub(crate) const RECEIVE_MTU: usize = 8192;

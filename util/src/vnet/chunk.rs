@@ -9,7 +9,7 @@ use std::net::{IpAddr, SocketAddr};
 use std::ops::{BitAnd, BitOr};
 use std::str::FromStr;
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::SystemTime;
+use deno_net::SystemTime;
 
 lazy_static! {
     static ref TAG_CTR: AtomicU64 = AtomicU64::new(0);

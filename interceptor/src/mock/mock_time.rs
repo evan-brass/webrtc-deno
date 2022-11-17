@@ -1,4 +1,5 @@
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
+use deno_net::SystemTime;
 
 use util::sync::Mutex;
 

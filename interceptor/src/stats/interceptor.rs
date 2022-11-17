@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fmt;
 use std::sync::Arc;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 
 use super::{inbound, outbound, StatsContainer};
 use async_trait::async_trait;
@@ -843,7 +843,8 @@ mod test {
     use rtcp::transport_feedbacks::transport_layer_nack::{NackPair, TransportLayerNack};
 
     use std::sync::Arc;
-    use std::time::{Duration, SystemTime};
+    use std::time::Duration;
+	use deno_net::SystemTime;
 
     use crate::error::Result;
     use crate::mock::mock_stream::MockStream;

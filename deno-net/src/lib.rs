@@ -13,6 +13,25 @@ use wasm_bindgen::prelude::*;
 use js_sys::{Function, Promise, Array, Object, Reflect};
 use wasm_bindgen::JsCast;
 
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct SystemTime(u64);
+impl SystemTime {
+	const UNIX_EPOCH: Self = Self(0);
+	pub fn new() -> Self {
+		Self(js_sys::Date::now() as u64)
+	}
+}
+impl std::ops::Add<Duration> for SystemTime {
+	fn add(self, rhs: Duration) -> Self::Output {
+		SystemTime(self.0 + rhs.as_millis())
+	}
+}
+impl std::ops::AddAssign<Duration> for SystemTime {
+	fn add_assign(&mut self, rhs: Duration) {
+		self.0 += rhs.as_millis();
+	}
+}
+
 #[wasm_bindgen]
 extern "C" {
 	#[wasm_bindgen(catch, js_namespace = Deno)]

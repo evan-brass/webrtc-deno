@@ -10,7 +10,7 @@ use std::net::IpAddr;
 use std::ops::Add;
 use std::sync::atomic::{AtomicU16, Ordering};
 use std::sync::Arc;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 use tokio::sync::Mutex;
 use std::time::Duration;
 

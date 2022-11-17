@@ -28,7 +28,7 @@ use interceptor::{registry::Registry, Interceptor};
 
 use rcgen::KeyPair;
 use std::sync::Arc;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 
 /// API bundles the global functions of the WebRTC and ORTC API.
 /// Some of these functions are also exported globally using the

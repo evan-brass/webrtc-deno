@@ -10,7 +10,8 @@ pub mod video;
 pub use error::Error;
 
 use bytes::Bytes;
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
+use deno_net::SystemTime;
 
 /// A Sample contains encoded media and timing information
 #[derive(Debug)]

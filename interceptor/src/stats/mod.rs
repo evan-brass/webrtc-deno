@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::SystemTime;
+use deno_net::SystemTime;
 
 use std::time::Duration;
 
@@ -14,7 +14,7 @@ pub fn make_stats_interceptor(id: &str) -> Arc<StatsInterceptor> {
 
 /// Types related to inbound RTP streams.
 mod inbound {
-    use std::time::SystemTime;
+	use deno_net::SystemTime;
 
     use tokio::time::{Duration, Instant};
 
@@ -202,7 +202,7 @@ mod inbound {
 
 /// Types related to outbound RTP streams.
 mod outbound {
-    use std::time::SystemTime;
+	use deno_net::SystemTime;
 
     use tokio::time::{Duration, Instant};
 

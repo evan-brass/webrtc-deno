@@ -1,7 +1,8 @@
 use super::*;
 
 use std::io::{BufReader, BufWriter};
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
+use deno_net::SystemTime;
 
 #[test]
 fn test_handshake_message_server_hello() -> Result<()> {

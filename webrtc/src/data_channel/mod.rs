@@ -18,8 +18,8 @@ use std::{
         atomic::{AtomicBool, AtomicU16, AtomicU8, AtomicUsize, Ordering},
         Arc, Weak,
     },
-    time::SystemTime,
 };
+use deno_net::SystemTime;
 
 use data::message::message_channel_open::ChannelType;
 use sctp::stream::OnBufferedAmountLowFn;

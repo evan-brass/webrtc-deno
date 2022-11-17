@@ -83,7 +83,7 @@ use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering};
 use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
+use deno_net::{SystemTime, UNIX_EPOCH};
 use tokio::sync::{mpsc, Mutex};
 
 /// SIMULCAST_PROBE_COUNT is the amount of RTP Packets
