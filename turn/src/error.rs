@@ -3,7 +3,7 @@ use thiserror::Error;
 use std::io;
 use std::net;
 use std::num::ParseIntError;
-use std::time::SystemTimeError;
+use deno_net::SystemTimeError;
 
 pub type Result<T> = std::result::Result<T, Error>;
 

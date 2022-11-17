@@ -5,7 +5,7 @@ use crate::error::*;
 
 use std::net::SocketAddr;
 use std::time::Duration;
-use deno_net::{SystemTime, SystemTime::UNIX_EPOCH};
+use deno_net::{SystemTime, UNIX_EPOCH};
 
 use md5::{Digest, Md5};
 use ring::hmac;

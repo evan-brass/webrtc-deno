@@ -8,7 +8,6 @@ pub mod cipher_suite_tls_psk_with_aes_128_ccm8;
 pub mod cipher_suite_tls_psk_with_aes_128_gcm_sha256;
 
 use std::fmt;
-use std::marker::{Send, Sync};
 
 use super::client_certificate_type::*;
 use super::error::*;

@@ -6,7 +6,7 @@ pub mod instant_to_epoch_seconds {
     // Note that an `Instant` is not connected to real world time, so this conversion is
     // approximate.
     use serde::{Serialize, Serializer};
-	use deno_net::{SystemTime, SystemTime::UNIX_EPOCH};
+	use deno_net::{SystemTime, UNIX_EPOCH};
     use tokio::time::Instant;
 
     pub fn serialize<S>(instant: &Instant, serializer: S) -> Result<S::Ok, S::Error>

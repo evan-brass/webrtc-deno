@@ -29,7 +29,6 @@ use util::{replay_detector::*, Conn};
 use async_trait::async_trait;
 use log::*;
 use std::io::{BufReader, BufWriter};
-use std::marker::{Send, Sync};
 use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicU16, Ordering};
 use std::sync::Arc;

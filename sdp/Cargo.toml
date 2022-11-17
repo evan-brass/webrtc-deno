@@ -11,6 +11,8 @@ repository = "https://github.com/webrtc-rs/sdp"
 rust-version = "1.60.0"
 
 [dependencies]
+deno-net = { path = "../deno-net" }
+
 wasm-bindgen = "0.2.83"
 wasm-bindgen-futures = "0.4.33"
 url = "2.2"

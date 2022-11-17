@@ -19,7 +19,6 @@ use util::Conn;
 use std::sync::atomic::AtomicUsize;
 use std::{
     collections::HashMap,
-    marker::{Send, Sync},
     net::SocketAddr,
     sync::{atomic::AtomicBool, atomic::Ordering, Arc},
 };

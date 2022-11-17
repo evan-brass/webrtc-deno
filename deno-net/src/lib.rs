@@ -13,24 +13,42 @@ use wasm_bindgen::prelude::*;
 use js_sys::{Function, Promise, Array, Object, Reflect};
 use wasm_bindgen::JsCast;
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+
+#[derive(Debug, Clone, Copy)]
+pub struct SystemTimeError;
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 pub struct SystemTime(u64);
 impl SystemTime {
-	const UNIX_EPOCH: Self = Self(0);
-	pub fn new() -> Self {
+	pub const UNIX_EPOCH: Self = Self(0);
+	pub fn now() -> Self {
 		Self(js_sys::Date::now() as u64)
+	}
+	pub fn duration_since(&self, earlier: Self) -> Result<Duration, SystemTimeError> {
+		if earlier.0 > self.0 {
+			Err(SystemTimeError)
+		} else {
+			Ok(Duration::from_millis(self.0 - earlier.0))
+		}
+	}
+	pub fn checked_add(&self, dur: Duration) -> Option<Self> {
+		self.0.checked_add(dur.as_millis() as u64).map(|v| Self(v))
+	}
+	pub fn elapsed(&self) -> Result<Duration, SystemTimeError> {
+		SystemTime::now().duration_since(self.clone())
 	}
 }
 impl std::ops::Add<Duration> for SystemTime {
+	type Output = Self;
 	fn add(self, rhs: Duration) -> Self::Output {
-		SystemTime(self.0 + rhs.as_millis())
+		SystemTime(self.0 + rhs.as_millis() as u64)
 	}
 }
 impl std::ops::AddAssign<Duration> for SystemTime {
 	fn add_assign(&mut self, rhs: Duration) {
-		self.0 += rhs.as_millis();
+		self.0 += rhs.as_millis() as u64;
 	}
 }
+pub const UNIX_EPOCH: SystemTime = SystemTime::UNIX_EPOCH;
 
 #[wasm_bindgen]
 extern "C" {

@@ -9,7 +9,6 @@ use crate::error::*;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::io::{BufWriter, Cursor};
-use std::marker::{Send, Sync};
 use std::sync::atomic::{AtomicU16, Ordering};
 use std::sync::Arc;
 use tokio::sync::Mutex;

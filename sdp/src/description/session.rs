@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::time::Duration;
-use deno_net::{SystemTime, SystemTime::UNIX_EPOCH};
+use deno_net::{SystemTime, UNIX_EPOCH};
 use std::{fmt, io};
 use url::Url;
 

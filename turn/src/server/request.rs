@@ -31,7 +31,6 @@ use stun::xoraddr::*;
 use util::Conn;
 
 use std::collections::HashMap;
-use std::marker::{Send, Sync};
 use std::net::SocketAddr;
 #[cfg(feature = "metrics")]
 use std::sync::atomic::Ordering;
