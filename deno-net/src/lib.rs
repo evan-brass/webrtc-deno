@@ -67,7 +67,7 @@ extern "C" {
 	#[wasm_bindgen(method, catch)]
 	pub async fn receive(this: &DatagramConn, p: Option<&mut [u8]>) -> Result<JsValue, JsValue>; // Promise<[Uint8Array, Addr]>
 	#[wasm_bindgen(method, catch)]
-	pub async fn send(this: &DatagramConn, p: &[u8], addr: Addr) -> Result<JsValue, JsValue>; // Promise<number>
+	pub async fn send(this: &DatagramConn, p: &[u8], addr: Option<Addr>) -> Result<JsValue, JsValue>; // Promise<number>
 	#[wasm_bindgen(method)]
 	pub fn close(this: &DatagramConn);
 

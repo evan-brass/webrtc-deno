@@ -102,18 +102,17 @@ impl ConnTrait for DatagramConn {
 		Ok((u8a.byte_length() as usize, SocketAddr::new(ip, addr.port())))
 	}
 	async fn send(&self, buf: &[u8]) -> super::Result<usize> {
-		if let Some(target) = self.remote_addr() {
-			self.send_to(buf, target).await
-		} else {
-			Err(NetErr::ErrNoAddressAssigned)
-		}
+		let ret = DatagramConn::send(&self, buf, None).await
+			.map_err(|_| NetErr::Other("Failed to send".into()))?;
+		let ret = ret.unchecked_into_f64() as usize;
+		Ok(ret)
 	}
 	async fn send_to(&self, buf: &[u8], target: SocketAddr) -> super::Result<usize> {
 		let addr = Object::new();
 		let _ = Reflect::set(&addr, &JsValue::from_str("hostname"), &JsValue::from(target.ip().to_string()));
 		let _ = Reflect::set(&addr, &JsValue::from_str("port"), &JsValue::from(target.port()));
-		let ret = DatagramConn::send(&self, buf, addr.unchecked_into()).await
-			.map_err(|_| NetErr::Other("Failed to send".into()))?;
+		let ret = DatagramConn::send(&self, buf, Some(addr.unchecked_into())).await
+		.map_err(|_| NetErr::Other("Failed to send".into()))?;
 		let ret = ret.unchecked_into_f64() as usize;
 		Ok(ret)
 	}
