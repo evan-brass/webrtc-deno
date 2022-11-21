@@ -111,7 +111,7 @@ impl ConnTrait for DatagramConn {
 	async fn send_to(&self, buf: &[u8], target: SocketAddr) -> super::Result<usize> {
 		let addr = Object::new();
 		let _ = Reflect::set(&addr, &JsValue::from_str("hostname"), &JsValue::from(target.ip().to_string()));
-		let _ = Reflect::set(&addr, &JsValue::from_str("ip"), &JsValue::from(target.port()));
+		let _ = Reflect::set(&addr, &JsValue::from_str("port"), &JsValue::from(target.port()));
 		let ret = DatagramConn::send(&self, buf, addr.unchecked_into()).await
 			.map_err(|_| NetErr::Other("Failed to send".into()))?;
 		let ret = ret.unchecked_into_f64() as usize;
