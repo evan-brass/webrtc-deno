@@ -60,8 +60,10 @@ extern "C" {
 	pub async fn accept(this: &Listener) -> JsValue; // Returns a Conn
 
 	pub type DatagramConn;
-	#[wasm_bindgen(method)]
+	#[wasm_bindgen(method, getter)]
 	pub fn addr(this: &DatagramConn) -> Addr;
+	#[wasm_bindgen(method, getter)]
+	pub fn remoteAddr(this: &DatagramConn) -> Option<Addr>;
 	#[wasm_bindgen(method, catch)]
 	pub async fn receive(this: &DatagramConn, p: Option<&mut [u8]>) -> Result<JsValue, JsValue>; // Promise<[Uint8Array, Addr]>
 	#[wasm_bindgen(method, catch)]

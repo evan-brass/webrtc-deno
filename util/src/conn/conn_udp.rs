@@ -101,7 +101,13 @@ impl ConnTrait for DatagramConn {
 			.map_err(|_| NetErr::Other("Failed to parse hostname".into()))?;
 		Ok((u8a.byte_length() as usize, SocketAddr::new(ip, addr.port())))
 	}
-	async fn send(&self, _buf: &[u8]) -> super::Result<usize> { unimplemented!() }
+	async fn send(&self, buf: &[u8]) -> super::Result<usize> {
+		if let Some(target) = self.remote_addr() {
+			self.send_to(buf, target).await
+		} else {
+			Err(NetErr::ErrNoAddressAssigned)
+		}
+	}
 	async fn send_to(&self, buf: &[u8], target: SocketAddr) -> super::Result<usize> {
 		let addr = Object::new();
 		let _ = Reflect::set(&addr, &JsValue::from_str("hostname"), &JsValue::from(target.ip().to_string()));
@@ -117,7 +123,11 @@ impl ConnTrait for DatagramConn {
 			.map_err(|_| NetErr::ErrAddrNotUdpAddr)?;
 		Ok(SocketAddr::new(ip, addr.port()))
 	}
-	fn remote_addr(&self) -> Option<SocketAddr> { unimplemented!() }
+	fn remote_addr(&self) -> Option<SocketAddr> {
+		let raddr = self.remoteAddr()?;
+		let ip: IpAddr = raddr.hostname().parse().ok()?;
+		Some(SocketAddr::new(ip, raddr.port()))
+	}
 	async fn close(&self) -> super::Result<()> {
 		DatagramConn::close(self);
 		Ok(())
